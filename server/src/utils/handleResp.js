@@ -35,7 +35,7 @@ export const unauthorized = (err, res) => {
     });
 };
 export const alreadyExistRow = (err, res) => {
-    const error = createError.Conflict(er);
+    const error = createError.Conflict(err);
     return res.status(error.status).json({
         err: 1,
         mes: err,

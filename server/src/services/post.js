@@ -3,7 +3,7 @@ import db, { Sequelize } from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 import post from '../models/post';
-import { VISIBILITY_POST_FRIEND, VISIBILITY_POST_PUBLIC } from '../../constant';
+import { VISIBILITY_POST_FRIEND, VISIBILITY_POST_PRIVATE, VISIBILITY_POST_PUBLIC } from '../../constant';
 export const getPosts = (
     postId,
     { page, pageSize, orderBy, orderDirection, userId, title },
@@ -35,7 +35,7 @@ export const getPosts = (
                         )`),
                         },
                     },
-                    { visibility: VISIBILITY_POST_PUBLIC, poster: req.user.id }
+                    { visibility: VISIBILITY_POST_PRIVATE, poster: req.user.id }
                 );
             }
             query.where = {
@@ -73,6 +73,15 @@ export const getPosts = (
                               )`),
                         'likes',
                     ],
+                    [
+                        literal(`(
+                            SELECT COUNT(*)
+                                  FROM commentsPost cp
+                                  WHERE
+                                    cp.postId = post.id
+                            )`),
+                            'comments'
+                    ]
                 ],
             };
 

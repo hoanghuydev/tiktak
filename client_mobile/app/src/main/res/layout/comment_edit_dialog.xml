@@ -1,0 +1,40 @@
+<!-- comment_edit_dialog.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editCommentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Edit your comment"
+        android:inputType="textMultiLine"
+        android:gravity="start|top"
+        android:lines="4"
+        android:maxLines="4"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+</LinearLayout>

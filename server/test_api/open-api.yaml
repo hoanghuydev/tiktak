@@ -1,14 +1,24 @@
 openapi: 3.0.0
 info:
-    title: Tiktok API
-    version: 1.0
+    title: Amazing Toys API
+    description: API for Amazing Toys application
+    version: 1.0.0
 servers:
     - url: http://localhost:8000/api/v1
+
+# Define security scheme for authorization
+security:
+    - bearerAuth: []
+
 paths:
+    # Auth
+
     /auth/register:
         post:
-            summary: Register a new user
+            summary: Register a new account
+            tags: [Auth]
             requestBody:
+                required: true
                 content:
                     application/json:
                         schema:
@@ -16,21 +26,109 @@ paths:
                             properties:
                                 email:
                                     type: string
+                                    description: User's email address
+                                    example: vanhuy@gmail.com
                                 fullName:
                                     type: string
+                                    description: User's full name
+                                    example: Nguyễn Van Huy
                                 userName:
                                     type: string
+                                    description: User's username
+                                    example: vanhuy
                                 password:
                                     type: string
+                                    description: User's password
+                                    example: 123456
                                 association:
                                     type: string
+                                    description: User's association (optional)
+                                    example: ''
             responses:
-                '200':
-                    description: Successful operation
+                200:
+                    description: Registered successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    err:
+                                        type: integer
+                                        example: 0
+                                    mes:
+                                        type: string
+                                        example: 'Registered successfully, Your otp has been sent to email address. OTP will be expired in 5 minutes'
+                                    user:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 6
+                                            email:
+                                                type: string
+                                                example: 'vanhuy@gmail.com'
+                                            fullName:
+                                                type: string
+                                                example: 'Nguyễn Van Huy'
+                                            userName:
+                                                type: string
+                                                example: 'vanhuy'
+                                            password:
+                                                type: string
+                                                example: ''
+                                            association:
+                                                type: string
+                                                example: ''
+                                            isVertified:
+                                                type: boolean
+                                                example: false
+                                            updatedAt:
+                                                type: string
+                                                example: '2024-06-17T18:44:20.839Z'
+                                            createdAt:
+                                                type: string
+                                                example: '2024-06-17T18:44:20.839Z'
+
+    /auth/vertify-email:
+        post:
+            summary: Verify email address after registration
+            tags: [Auth]
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    description: User's email address
+                                    example: vanhuy@gmail.com
+                                otp:
+                                    type: string
+                                    description: Verification code
+                                    example: dul5x8
+            responses:
+                200:
+                    description: Verified successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    err:
+                                        type: integer
+                                        example: 0
+                                    mes:
+                                        type: string
+                                        example: 'Verified successfully, now you can login'
+
     /auth/login:
         post:
-            summary: Log in to the system
+            summary: Login to user account
+            tags: [Auth]
             requestBody:
+                required: true
                 content:
                     application/json:
                         schema:
@@ -38,269 +136,247 @@ paths:
                             properties:
                                 emailOrUsername:
                                     type: string
+                                    description: User's email or username
+                                    example: hoanghuydev@gmail.com
                                 password:
                                     type: string
+                                    description: User's password
+                                    example: admin
             responses:
-                '200':
-                    description: Successful operation
-    /auth/vertify-email:
-        post:
-            summary: Verify email
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-                                otp:
-                                    type: string
-            responses:
-                '200':
-                    description: Successful operation
-    /user/{userId}:
-        get:
-            summary: Get user by ID
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-        put:
-            summary: Update user by ID
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                userName:
-                                    type: string
-            responses:
-                '200':
-                    description: Successful operation
-        delete:
-            summary: Remove user avatar
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-    /user/avatar/{userId}:
-        post:
-            summary: Upload user avatar
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                avatar:
-                                    type: string
-                                    format: binary
-                                    description: The avatar file to upload
-            responses:
-                '200':
-                    description: Successful operation
-        delete:
-            summary: Remove user avatar
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-    /post:
-        get:
-            summary: Get all posts
-            responses:
-                '200':
-                    description: Successful operation
+                200:
+                    description: Login successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    err:
+                                        type: integer
+                                        example: 0
+                                    mes:
+                                        type: string
+                                        example: 'Login successful'
+                                    user:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 1
+                                            fullName:
+                                                type: string
+                                                example: 'Hoàng Huy'
+                                            userName:
+                                                type: string
+                                                example: 'hoanghuydev'
+                                            email:
+                                                type: string
+                                                example: 'hoanghuydev@gmail.com'
+                                            password:
+                                                type: string
+                                                example: '' # Hide password response
+                                            association:
+                                                type: string
+                                                example: ''
+                                            isVertified:
+                                                type: boolean
+                                                example: true
+                                            peerId:
+                                                type: string
+                                                example: ''
+                                            createdAt:
+                                                type: string
+                                                example: '2024-02-24T06:39:20.000Z'
+                                            updatedAt:
+                                                type: string
+                                                example: '2024-05-22T06:20:34.000Z'
+                                            avatarData:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 2
+                                                    publicId:
+                                                        type: string
+                                                        example: 'tiktok_avatar/tfgnuwbhky8rbyg3pgzm'
+                                                    url:
+                                                        type: string
+                                                        example: 'http://res.cloudinary.com/da5wewzih/image/upload/v1716358843/tiktok_avatar/tfgnuwbhky8rbyg3pgzm.jpg'
+                                                    code:
+                                                        type: string
+                                                        example: 'avatarOfUser1'
+                                            roleData:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 3
+                                                    code:
+                                                        type: string
+                                                        example: 'R3'
+                                                    value:
+                                                        type: string
+                                                        example: 'User'
+                                            accessToken:
+                                                type: string
+                                                description: Access token for authorization
+                                                example: 'Bearer eyJhdfahsd'
+        # Post
+
     /post/{postId}:
         get:
-            summary: Get post by ID
+            summary: Get post by post ID
+            tags: [Get]
             parameters:
                 - name: postId
                   in: path
                   required: true
-                  schema:
-                      type: integer
-                      format: int64
+                  type: integer
+                  description: The ID of the post
             responses:
-                '200':
-                    description: Successful operation
-    /post/user/{userId}:
-        get:
-            summary: Get posts by user ID
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-        post:
-            summary: Upload post
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            type: object
-                            properties:
-                                title:
-                                    type: string
-                                video:
-                                    type: string
-                                    format: binary
-                                    description: Video file
-                                thumnail:
-                                    type: string
-                                    format: binary
-                                    description: Thumnail file (optional)
-
-            responses:
-                '200':
-                    description: Successful operation
-    /follow/{userId}:
-        post:
-            summary: Follow a user
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-        delete:
-            summary: Unfollow a user
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int
-            responses:
-                '200':
-                    description: Successful operation
-    /follow/followers/{userId}:
-        get:
-            summary: Get followers of a user
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-    /follow/following/{userId}:
-        get:
-            summary: Get users following a user
-            parameters:
-                - name: userId
-                  in: path
-                  required: true
-                  schema:
-                      type: integer
-                      format: int64
-            responses:
-                '200':
-                    description: Successful operation
-    /user:
-        get:
-            summary: Retrieve all users
-            operationId: getUsers
-            responses:
-                '200':
-                    description: A list of users
+                200:
+                    description: Post retrieved successfully
                     content:
                         application/json:
                             schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/User'
-components:
-    schemas:
-        User:
-            type: object
-            properties:
-                id:
-                    type: string
-                    format: uuid
-                username:
-                    type: string
-                email:
-                    type: string
-                    format: email
-                createdAt:
-                    type: string
-                    format: date-time
-                updatedAt:
-                    type: string
-                    format: date-time
-            required:
-                - id
-                - username
-                - email
-                - createdAt
-                - updatedAt
-        LoginRequest:
-            type: object
-            properties:
-                email:
-                    type: string
-                    format: email
-                password:
-                    type: string
-            required:
-                - email
-                - password
-        LoginResponse:
-            type: object
-            properties:
-                token:
-                    type: string
-        UserAvatarResponse:
-            type: object
-            properties:
-                avatarUrl:
-                    type: string
-                    format: uri
+                                type: object
+                                properties:
+                                    err:
+                                        type: integer
+                                        example: 0
+                                    mes:
+                                        type: string
+                                        example: ''
+                                    post:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                                example: 8
+                                            title:
+                                                type: string
+                                                example: 'Talking kittens cat'
+                                            videoUrl:
+                                                type: string
+                                                example: 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220712/tiktok_video/qkfwangsiwkmaszsem1v.mp4'
+                                            videoId:
+                                                type: string
+                                                example: 'tiktok_video/qkfwangsiwkmaszsem1v'
+                                            thumnailUrl:
+                                                type: string
+                                                example: 'https://drive.usercontent.google.com/download?id=1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ&export=view&authuser=1'
+                                            thumnailId:
+                                                type: string
+                                                example: '1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ'
+                                            comments:
+                                                type: integer
+                                                example: 0
+                                            visibility:
+                                                type: integer
+                                                example: 1
+                                            views:
+                                                type: integer
+                                                example: 0
+                                            shares:
+                                                type: integer
+                                                example: 7
+                                            poster:
+                                                type: integer
+                                                example: 1
+                                            createdAt:
+                                                type: string
+                                                example: '2024-05-20T15:58:20.000Z'
+                                            updatedAt:
+                                                type: string
+                                                example: '2024-06-17T19:01:08.000Z'
+                                            likes:
+                                                type: integer
+                                                example: 1
+                                            posterData:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                        example: 1
+                                                    userName:
+                                                        type: string
+                                                        example: 'hoanghuydev'
+                                                    fullName:
+                                                        type: string
+                                                        example: 'Hoàng Huy'
+                                                    email:
+                                                        type: string
+                                                        example: 'hoanghuydev@gmail.com'
+                                                    password:
+                                                        type: string
+                                                        example: '' # Hide password response
+                                                    association:
+                                                        type: string
+                                                        example: ''
+                                                    isVertified:
+                                                        type: boolean
+                                                        example: true
+                                                    peerId:
+                                                        type: string
+                                                        example: ''
+                                                    createdAt:
+                                                        type: string
+                                                        example: '2024-02-24T06:39:20.000Z'
+                                                    updatedAt:
+                                                        type: string
+                                                        example: '2024-05-22T06:20:34.000Z'
+                                                    avatarData:
+                                                        type: object
+                                                        properties:
+                                                            id:
+                                                                type: integer
+                                                                example: 2
+                                                            publicId:
+                                                                type: string
+                                                                example: 'tiktok_avatar/tfgnuwbhky8rbyg3pgzm'
+                                                            url:
+                                                                type: string
+                                                                example: 'http://res.cloudinary.com/da5wewzih/image/upload/v1716358843/tiktok_avatar/tfgnuwbhky8rbyg3pgzm.jpg'
+                                                            code:
+                                                                type: string
+                                                                example: 'avatarOfUser1'
+                                                    roleData:
+                                                        type: object
+                                                        properties:
+                                                            id:
+                                                                type: integer
+                                                                example: 3
+                                                            code:
+                                                                type: string
+                                                                example: 'R3'
+                                                            value:
+                                                                type: string
+                                                                example: 'User'
+                                                    accessToken:
+                                                        type: string
+                                                        description: Access token for authorization
+                                                        example: 'Bearer eyJhdfahsd'
+    # Post
+
+    /post:
+        get:
+            summary: Get all posts
+            tags: [Post]
+            responses:
+                200:
+                    description: List of posts retrieved successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    err:
+                                        type: integer
+                                        example: 0
+                                    mes:
+                                        type: string
+                                        example: ''
+                                    posts:
+                                        type: array
+                                        description: Array of post objects
+                                        items:
+                                            type: object

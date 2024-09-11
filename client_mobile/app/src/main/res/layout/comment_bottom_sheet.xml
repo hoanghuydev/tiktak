@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_comment_header"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:id="@+id/amountComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 bình luận"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:background="@android:color/transparent"
+            android:id="@+id/exitComment"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/exit_comment"
+            app:srcCompat="@drawable/baseline_close_24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="400dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewComments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#FEFEFE"
+            >
+
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <View
+            android:id="@+id/borderline"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#F1F1F1"
+            app:layout_constraintBottom_toTopOf="@+id/commentInput"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewComments"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/commentInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FEFEFE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/recyclerViewComments"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userAvatar"
+                android:layout_width="46dp"
+                android:layout_height="49dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/avatar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <EditText
+                android:id="@+id/editTextComment"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:singleLine="true"
+                android:layout_marginStart="70dp"
+                android:layout_marginEnd="16dp"
+                android:paddingRight="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_comment_chat"
+                android:hint="Thêm bình luận..."
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="#757575"
+                app:layout_constraintBottom_toBottomOf="@+id/userAvatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/userAvatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/userAvatar" />
+
+            <ImageButton
+                android:id="@+id/sendComment"
+                android:layout_width="54dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextComment"
+                app:layout_constraintEnd_toEndOf="@+id/editTextComment"
+                app:layout_constraintTop_toTopOf="@+id/editTextComment"
+                app:srcCompat="@drawable/baseline_arrow_circle_up_24"
+                app:tint="#FB2B4E"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

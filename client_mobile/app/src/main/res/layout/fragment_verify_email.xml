@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.VerifyEmailActivity"
+    >
+
+   
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_36sdp"
+        android:background="@android:color/white"
+>
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="376dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:singleLine="true"
+            android:paddingTop="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:textColor="@color/dark_black"
+            android:textColorHint="@color/medium_grey"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Email to verify" />
+
+        <EditText
+            android:id="@+id/otp"
+            android:layout_width="376dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:background="@android:color/transparent"
+            android:ems="10"
+            android:singleLine="true"
+            android:paddingTop="@dimen/_6sdp"
+            android:paddingBottom="@dimen/_6sdp"
+            android:textColor="@color/dark_black"
+            android:textColorHint="@color/medium_grey"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/email"
+            tools:text="OTP code" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:background="@color/light_grey"
+            app:layout_constraintEnd_toEndOf="@+id/otp"
+            app:layout_constraintStart_toStartOf="@+id/otp"
+            app:layout_constraintTop_toBottomOf="@+id/otp" />
+
+        <TextView
+            android:id="@+id/tos_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/terms_of_services_email"
+            app:layout_constraintEnd_toEndOf="@+id/line"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/line"
+            app:layout_constraintTop_toBottomOf="@+id/line" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/_8sdp"
+            android:text="@string/next"
+            android:textAllCaps="false"
+            app:cornerRadius="@dimen/_4sdp"
+            app:layout_constraintEnd_toEndOf="@+id/tos_text"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tos_text"
+            app:layout_constraintTop_toBottomOf="@+id/tos_text"
+            tools:backgroundTint="@color/pinkBtnBackground" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

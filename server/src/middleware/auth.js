@@ -80,6 +80,7 @@ class Auth {
             }
         );
     }
+
     isSeftUser(req, res, next) {
         new Auth().origin(req, res, () => {
             if (

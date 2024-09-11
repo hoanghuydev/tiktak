@@ -1,0 +1,151 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/black"
+    android:paddingVertical="5dp"
+    app:layout_constraintBottom_toBottomOf="parent">
+    <!--Menu Item-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/homeTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpload"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnUpload">
+
+        <ImageView
+            android:id="@+id/btnHome"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/home_fill"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trang chủ"
+            android:textColor="@color/white"
+            android:textSize="8dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/btnHome"
+            app:layout_constraintStart_toStartOf="@+id/btnHome"
+            app:layout_constraintTop_toBottomOf="@+id/btnHome" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--End Menu Item-->
+    <!--Menu Item-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpload"
+        app:layout_constraintEnd_toStartOf="@+id/btnUpload"
+        app:layout_constraintStart_toEndOf="@+id/homeTab"
+        app:layout_constraintTop_toTopOf="@+id/btnUpload">
+
+        <ImageView
+            android:id="@+id/btnShop"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/shop_outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textShop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cửa hàng"
+            android:textColor="@color/white"
+            android:textSize="8dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/btnShop"
+            app:layout_constraintStart_toStartOf="@+id/btnShop"
+            app:layout_constraintTop_toBottomOf="@+id/btnShop" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--End Menu Item-->
+    <ImageButton
+        android:id="@+id/btnUpload"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/upload_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--Menu Item-->
+    <!--End Menu Item-->
+    <!--Menu Item-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpload"
+        app:layout_constraintEnd_toStartOf="@+id/profileTab"
+        app:layout_constraintStart_toEndOf="@+id/btnUpload"
+        app:layout_constraintTop_toTopOf="@+id/btnUpload">
+
+        <ImageView
+            android:id="@+id/btnChat"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/chat_outline"
+            app:layout_constraintBottom_toTopOf="@+id/textChat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hộp thư"
+            android:textColor="@color/white"
+            android:textSize="8dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnChat" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnUpload">
+
+        <ImageView
+            android:id="@+id/btnProfile"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/user_outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hồ sơ"
+            android:textColor="@color/white"
+            android:textSize="8dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/btnProfile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnProfile" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--End Menu Item-->
+</androidx.constraintlayout.widget.ConstraintLayout>

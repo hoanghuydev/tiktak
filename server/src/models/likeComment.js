@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
                 targetKey: 'id',
             });
             LikeComment.belongsTo(models.CommentPost, {
-                foreignKey: 'commentPostId',
+                foreignKey: 'commentId',
                 targetKey: 'id',
             });
         }
@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     LikeComment.init(
         {
             liker: DataTypes.INTEGER,
-            commentPostId: DataTypes.INTEGER,
+            commentId: DataTypes.INTEGER,
+            isCommentPost : DataTypes.BOOLEAN
         },
         {
             sequelize,

@@ -7,6 +7,7 @@ const roleRouter = require('./role');
 const notificationRouter = require('./notification');
 const messageRouter = require('./message');
 const postRouter = require('./post');
+const commentRouter = require('./comment');
 function route(app) {
     app.use('/api/v1/auth', authRouter);
     app.use('/api/v1/user', userRouter);
@@ -16,5 +17,6 @@ function route(app) {
     app.use('/api/v1/notification', notificationRouter);
     app.use('/api/v1/message', messageRouter);
     app.use('/api/v1/post', postRouter);
+    app.use('/api/v1/comment', commentRouter);
 }
 export default route;

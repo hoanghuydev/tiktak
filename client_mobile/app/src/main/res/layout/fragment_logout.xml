@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.LogoutActivity">
+    <ImageView
+        android:id="@+id/dummy_image"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:srcCompat="@drawable/user_identity"
+        />
+
+    <TextView
+        android:id="@+id/dummy_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:text="Log out for account"
+        app:layout_constraintBottom_toTopOf="@+id/log_out_btn"
+        app:layout_constraintEnd_toEndOf="@+id/dummy_image"
+        app:layout_constraintStart_toStartOf="@+id/dummy_image"
+        app:layout_constraintTop_toBottomOf="@+id/dummy_image"
+        app:layout_constraintVertical_bias="0.19" />
+
+    <Button
+        android:id="@+id/log_out_btn"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        app:backgroundTint="@color/pinkBtnBackground"
+        android:fontFamily="sans-serif-medium"
+        android:text="Log out"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/dummy_image"
+        app:layout_constraintStart_toStartOf="@+id/dummy_image"
+        app:layout_constraintTop_toBottomOf="@+id/dummy_image" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

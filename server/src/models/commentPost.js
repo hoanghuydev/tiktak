@@ -25,8 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         {
             commenter: DataTypes.INTEGER,
             postId: DataTypes.INTEGER,
-            likes: DataTypes.INTEGER,
-            replies: DataTypes.INTEGER,
             content: DataTypes.STRING,
         },
         {

@@ -6,7 +6,7 @@ import Auth from '../middleware/auth';
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 router.get('/', Auth.setUser, PostController.getPosts);
-router.get('/:postId', PostController.getPostById);
+router.get('/:postId', Auth.setUser,PostController.getPostById);
 router.get('/user/:userId', PostController.getPosts);
 router.post('/share/:postId', Auth.origin, PostController.sharePost);
 router.post('/upload', upload.any(), Auth.origin, PostController.upload);

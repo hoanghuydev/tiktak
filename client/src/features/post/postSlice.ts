@@ -20,14 +20,7 @@ export const uploadPost = createAsyncThunk(
   'post/uploadPost',
   async (postFormData: FormData, thunkAPI) => {
     try {
-      const onUploadProgress = (progressEvent: any) => {
-        console.log(progressEvent);
-        const percentCompleted = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
-        thunkAPI.dispatch(setPecentLoading(percentCompleted));
-      };
-      const resp = await PostService.uploadPost(postFormData, onUploadProgress);
+      const resp = await PostService.uploadPost(postFormData);
       return resp;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -66,7 +59,7 @@ const initialState: InitStatePostType = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  pecentLoading: 0,
+  pecentLoading: 99,
   message: '',
 };
 const postSlice = createSlice({
@@ -112,6 +105,8 @@ const postSlice = createSlice({
         state.post = payload.post;
         state.isLoading = false;
         state.isSuccess = true;
+        state.pecentLoading = 100;
+        message.success(payload.mes);
       })
       .addCase(uploadPost.rejected, (state: InitStatePostType, action) => {
         state.isLoading = false;

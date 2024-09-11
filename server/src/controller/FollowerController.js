@@ -8,7 +8,8 @@ class FollowController {
             const { userId } = req.params;
             const followings = await followerServices.getListFollower(
                 userId,
-                req.query
+                req.user?.id,
+                req.query,
             );
             return res.status(200).json({ ...followings });
         } catch (error) {
@@ -21,6 +22,7 @@ class FollowController {
             const { userId } = req.params;
             const followings = await followerServices.getListFollowing(
                 userId,
+                req.user?.id,
                 req.query
             );
             return res.status(200).json({ ...followings });

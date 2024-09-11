@@ -49,10 +49,7 @@ const PostService = {
       }
     });
   },
-  async uploadPost(
-    postFormData: FormData,
-    onUploadProgress: (progressEvent: any) => void
-  ) {
+  async uploadPost(postFormData: FormData) {
     return new Promise<AbstractPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.post(
@@ -62,7 +59,6 @@ const PostService = {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
-            onUploadProgress,
           }
         );
         resolve(resp.data);

@@ -3,9 +3,23 @@ import { badRequest, internalServerError, notFound } from '../utils/handleResp';
 import UploadFile from '../utils/uploadFile';
 import * as avatarServices from '../services/avatar';
 class UserController {
+    
+    /**
+     * Find users with pagination and sorting options.
+     * 
+     * @param {Object} req - The request object.
+     * @param {Object} req.query - The query parameters.
+     * @param {number} req.query.page - The page number.
+     * @param {number} req.query.pageSize - The number of items per page.
+     * @param {string} req.query.orderBy - The field to order by.
+     * @param {string} req.query.orderDirection - The direction to order (asc or desc).
+     * @param {string} req.query.name - The name to filter by.
+     * @param {Object} res - The response object.
+     * @returns {Promise<void>} - The function returns a promise.
+     */
     async findUser(req, res) {
         try {
-            let users = await userServices.findUsers(req.query);
+            let users = await userServices.findUsers(req.query,req.user?.id);
             return res.status(200).json({
                 err: 0,
                 mes: '',
@@ -31,15 +45,30 @@ class UserController {
             return internalServerError(res);
         }
     }
+    async getProfile(req,res) {
+        try {
+            const {userId} = req.params;
+            const user = await userServices.getProfile(userId,req.user?.id)
+            if (!user) return badRequest("Not found user",res)
+            return res.status(200).json({
+                err : 0,
+                mes : "Get profile successfull",
+                user,
+            })        
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res)
+        }
+    }
     async getUser(req, res) {
         try {
             const user = await userServices.findOne({ id: req.params.userId });
             if (!user) return notFound('User not found', res);
-            const { password, ...other } = user;
+            user.password = '';
             return res.status(200).json({
                 err: 0,
                 mes: 'Found user',
-                user: { ...other },
+                user,
             });
         } catch (error) {
             console.log(error);
@@ -59,7 +88,9 @@ class UserController {
                     });
                 });
             else return badRequest('Cannot update peer id', res);
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
     }
     async updateAvatar(req, res) {
         try {

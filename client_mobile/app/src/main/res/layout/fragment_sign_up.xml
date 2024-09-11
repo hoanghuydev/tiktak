@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white"
+    tools:context=".activity.SignUpActivity">
+
+    <ImageButton
+        android:id="@+id/sign_up_cancel_btn"
+        android:background="@android:color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/close_page"
+        android:padding="@dimen/_6sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_round_close" />
+
+    <TextView
+        android:id="@+id/sign_up_to_tiktok_plain_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign up to Tiktok"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_24ssp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.20" />
+
+    <TextView
+        android:id="@+id/log_in_description_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:gravity="center"
+        android:maxWidth="@dimen/_280sdp"
+        android:text="@string/log_in_description_text"
+        app:layout_constraintEnd_toEndOf="@+id/sign_up_to_tiktok_plain_text"
+        app:layout_constraintStart_toStartOf="@+id/sign_up_to_tiktok_plain_text"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_to_tiktok_plain_text" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:hint="Email"
+        android:textAllCaps="false"
+        android:singleLine="true"
+        android:textColor="@color/dark_black"
+        app:cornerRadius="@dimen/_4sdp"
+        app:elevation="0dp"
+        app:iconGravity="start"
+        app:iconSize="@dimen/_20sdp"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintEnd_toEndOf="@+id/log_in_description_text"
+        app:layout_constraintStart_toStartOf="@+id/log_in_description_text"
+        app:layout_constraintTop_toBottomOf="@+id/log_in_description_text" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:singleLine="true"
+        android:hint="Password"
+        android:textAllCaps="false"
+        app:backgroundTint="#4267B2"
+        app:iconPadding="@dimen/_12sdp"
+        app:iconSize="@dimen/_16sdp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/email"
+        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <EditText
+        android:id="@+id/retype_password"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:singleLine="true"
+        android:hint="Retype Password"
+        android:textAllCaps="false"
+        app:backgroundTint="#4267B2"
+        app:iconPadding="@dimen/_12sdp"
+        app:iconSize="@dimen/_16sdp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:singleLine="true"
+        android:hint="Username"
+        android:textAllCaps="false"
+        app:backgroundTint="#4267B2"
+        app:iconPadding="@dimen/_12sdp"
+        app:iconSize="@dimen/_16sdp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/retype_password"
+        app:layout_constraintStart_toStartOf="@+id/retype_password"
+        app:layout_constraintTop_toBottomOf="@+id/retype_password" />
+
+    <EditText
+        android:id="@+id/fullname"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:singleLine="true"
+        android:hint="Fullname"
+        android:textAllCaps="false"
+        app:backgroundTint="#4267B2"
+        app:iconPadding="@dimen/_12sdp"
+        app:iconSize="@dimen/_16sdp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/username"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sign_up"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:paddingStart="@dimen/_6sdp"
+        android:paddingEnd="@dimen/_6sdp"
+        android:text="Sign up"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/pinkBtnBackground"
+        app:cornerRadius="@dimen/_4sdp"
+        app:iconSize="@dimen/_14sdp"
+        app:iconTint="@null"
+        app:layout_constraintEnd_toEndOf="@+id/fullname"
+        app:layout_constraintStart_toStartOf="@+id/fullname"
+        app:layout_constraintTop_toBottomOf="@+id/fullname" />
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="#F1F1FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/log_in_already_have_account_plain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="Already have account?"
+            android:textColor="@color/dark_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/use_sign_up_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-medium"
+            android:padding="@dimen/_4sdp"
+            android:text="@string/log_in"
+            android:textColor="@color/pinkBtnBackground"
+            app:layout_constraintBottom_toBottomOf="@+id/log_in_already_have_account_plain_text"
+            app:layout_constraintStart_toEndOf="@+id/log_in_already_have_account_plain_text"
+            app:layout_constraintTop_toTopOf="@+id/log_in_already_have_account_plain_text" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

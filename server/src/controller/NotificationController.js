@@ -1,10 +1,10 @@
-import { internalServerError } from '../utils/handleResp';
+import { badRequest, internalServerError } from '../utils/handleResp';
 import * as notificationServices from '../services/notification';
 class NotificationController {
     async getNotifies(req, res) {
         try {
             const { userId } = req.params;
-            const resp = await notificationServices.getNotifications(
+            const resp = await notificationServices.getNotificationsByUserId(
                 userId,
                 req.query
             );
@@ -19,10 +19,13 @@ class NotificationController {
     }
     async seenNotify(req, res) {
         try {
+            const resp = await notificationServices.seenNotification();
+            if (resp)
             return res.status(200).json({
                 err: 0,
                 mes: '',
             });
+            else return badRequest("Some error occured",res)
         } catch (error) {
             return internalServerError(res);
         }

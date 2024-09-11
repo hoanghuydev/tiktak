@@ -15,7 +15,7 @@ const Sidebar = () => {
     <div className="p-4 pt-8 h-full bg-white min-w-[70px]  w-fit lg:w-[250px] border-e-[1px] border-gray-200 lg:border-none overflow-y-auto">
         <nav className='ps-1 mb-2 '>
              <ul>
-                 <LinkSidebar href='/' active icon={<AiOutlineHome className='my-auto' fontSize={25} />}>For You</LinkSidebar>
+                 <LinkSidebar isATag href='/' active icon={<AiOutlineHome className='my-auto' fontSize={25} />}>For You</LinkSidebar>
                  <LinkSidebar href='/following' icon={<RiUserFollowLine className='my-auto' fontSize={25} />}>Following</LinkSidebar>
                  <LinkSidebar href='/friends' icon={<LuUsers2 className='my-auto' fontSize={25} />}>Friends</LinkSidebar>
                  <LinkSidebar href='/explore' icon={<IoCompassOutline className='my-auto' fontSize={25} />}>Explore</LinkSidebar>

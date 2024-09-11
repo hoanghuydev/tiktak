@@ -1,3 +1,0 @@
-apis:
-  server/test_api/open-api.yaml:
-    alias: tiktok-api

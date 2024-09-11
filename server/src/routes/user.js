@@ -6,7 +6,8 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 router.get('/find', Auth.origin, UserController.findUser);
 router.get('/me', Auth.origin, UserController.me);
-router.get('/:userId', Auth.origin, UserController.getUser);
+router.get('/profile/:userId',Auth.setUser,UserController.getProfile)
+router.get('/:userId', UserController.getUser);
 router.put('/peer/id', Auth.isSeftUser, UserController.getUser);
 router.post(
     '/avatar/:userId',

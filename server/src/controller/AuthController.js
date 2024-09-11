@@ -138,11 +138,7 @@ class AuthController {
             association = association ? association : '';
             if (!email || !fullName || !userName || !password)
                 return badRequest('Please fill all required', res);
-            if (
-                !/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/.test(
-                    email
-                )
-            )
+            if (!/^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(email))
                 return badRequest('Please enter a valid email address', res);
             const resp = await authServices.register(
                 email,
@@ -166,11 +162,12 @@ class AuthController {
                     'Your otp is ' + otp,
                     email
                 );
-                const { password, ...other } = resp[0];
+                const user = resp[0];
+                user.password = '';
                 return res.status(200).json({
                     err: 0,
                     mes: 'Registered successfully, Your otp has been sent to email address. OTP will be expired in 5 minutes',
-                    user: { ...other },
+                    user,
                 });
             } else {
                 return alreadyExistRow(

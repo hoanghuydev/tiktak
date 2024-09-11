@@ -17,13 +17,18 @@ module.exports = {
                     key: 'id',
                 },
             },
-            commentPostId: {
+            commentId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,
                 references: {
                     model: 'CommentsPost',
                     key: 'id',
                 },
+            },
+            isCommentPost: {
+                allowNull: false,
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
             },
             createdAt: {
                 allowNull: false,

@@ -2,7 +2,7 @@ const express = require('express');
 import cors from 'cors';
 const jwt = require('jsonwebtoken');
 const app = express();
-const port = 8000;
+const port = 6000;
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -19,7 +19,7 @@ const handleSocket = require('./socket');
 getConnection();
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: 'http://localhost:8000',
         credentials: true,
     })
 );
@@ -34,6 +34,8 @@ app.use(
 const server = app.listen(port, function () {
     console.log('Server listening on port ' + port);
 });
+
+
 const io = new Server(server, {
     allowEIO3: true,
     cors: {

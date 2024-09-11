@@ -5,6 +5,9 @@ const path = require('path');
 import * as postServices from '../services/post';
 import { uuidv4 } from 'uuid';
 import * as likePostService from '../services/likePost';
+import * as notificationService from '../services/notification';
+import * as postService from '../services/post';
+
 import {
     VISIBILITY_POST_FRIEND,
     VISIBILITY_POST_PRIVATE,
@@ -15,6 +18,10 @@ class PostController {
     async likePost(req, res) {
         try {
             const { postId } = req.params;
+            const post = await postService.getOne(postId);
+            const userId = post.poster;
+            console.log("Poster ",userId)
+            // const notify = await notificationService.insertNotification(userId,"User "+ req.user.id + " liked your post")
             const likeData = { liker: req.user.id, postId };
             const isLiked = await likePostService.isLikedPost(likeData);
             if (isLiked) {
@@ -150,20 +157,24 @@ class PostController {
                         res
                     );
             }
+            video = files.filter((file) => file.fieldname == 'video')[0];
+            if (!video) {
+                return badRequest('Please provide a video', res);
+            }
+            console.log(video.mimetype)
+            if (
+                !['video/mp4', 'video/m4v', 'video/mov'].includes(
+                    video.mimetype
+                )
+            )
+                return badRequest('Field video must be video type', res);
+            thumnail = files.filter((file) => file.fieldname == 'thumnail')[0];
             const post = await postServices.insertPost({
                 poster,
                 title,
                 visibility,
             });
             postId = post.id;
-            video = files.filter((file) => file.fieldname == 'video')[0];
-            if (!video) {
-                return badRequest('Please provide a video', res);
-            }
-            if (!video.mimetype.includes('video'))
-                return badRequest('Field video must be video type', res);
-            thumnail = files.filter((file) => file.fieldname == 'thumnail')[0];
-
             if (thumnail) {
                 if (!thumnail.mimetype.includes('image'))
                     return badRequest('Field thumnail must be image type', res);
@@ -214,7 +225,7 @@ class PostController {
                 thumnailUrl: thumnailUpload.url,
             });
             const postUpdated = await postServices.getOne(post.id);
-            return res.json(postUpdated);
+            return res.status(200).json(postUpdated);
         } catch (error) {
             console.log(error);
             try {

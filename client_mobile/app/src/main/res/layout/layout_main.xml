@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+        />
+
+    <ImageView
+        android:id="@+id/preThumbnail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.5"
+        />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/videoView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/videoView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnPause"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_media_pause"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/videoView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/videoView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <!--Left-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/userComponent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnLike"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userAvatar"
+                android:layout_width="45dp"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="1dp"
+                android:layout_height="45dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:src="@drawable/avatar" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/followIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_below="@+id/userAvatar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-13dp"
+                android:background="@drawable/circle_white"
+                android:padding="3dp"
+                android:src="@drawable/tick" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/btnLike"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="34dp"
+            android:src="@drawable/like"
+            app:layout_constraintBottom_toTopOf="@+id/btnComment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/amountLike"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLike" />
+
+        <ImageView
+            android:id="@+id/btnComment"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="34dp"
+            android:src="@drawable/comment"
+            app:layout_constraintBottom_toTopOf="@+id/btnShare"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/amountComment"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnComment" />
+
+        <ImageView
+            android:id="@+id/btnShare"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="34dp"
+            android:src="@drawable/share"
+            app:layout_constraintBottom_toTopOf="@+id/soundDisk"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/amountShare"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnShare" />
+
+        <ImageView
+            android:id="@+id/soundDisk"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:elevation="16dp"
+            android:src="@drawable/disk"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--    End Left-->
+
+    <TextView
+        android:id="@+id/videoUserName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="User"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/videoContent"
+        app:layout_constraintEnd_toEndOf="@+id/videoContent"
+        app:layout_constraintStart_toStartOf="@+id/videoContent" />
+
+    <kr.co.prnd.readmore.ReadMoreTextView
+        android:id="@+id/videoContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="50dp"
+        app:readMoreColor="@color/white"
+        app:readMoreMaxLine="3"
+        app:readMoreText="...Xem thêm"
+        android:text="This is demo title hehe This is demo title hehe This is demo title hehe This is demo title hehe This is demo title hehe This is demo title hehe"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--Menu-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

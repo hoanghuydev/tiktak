@@ -30,16 +30,6 @@ module.exports = {
                 type: Sequelize.STRING,
                 defaultValue: '',
             },
-            likes: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                defaultValue: 0,
-            },
-            replies: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-                defaultValue: 0,
-            },
             createdAt: {
                 allowNull: false,
                 type: 'TIMESTAMP',

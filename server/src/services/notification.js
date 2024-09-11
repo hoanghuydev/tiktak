@@ -1,7 +1,7 @@
 import { Op, where } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
-export const getNotifications = (
+export const getNotificationsByUserId = (
     userId,
     { page, pageSize, orderBy, orderDirection }
 ) =>
@@ -66,3 +66,36 @@ export const removeNotification = (id) =>
             reject(error);
         }
     });
+/**
+ * @typedef {Object} NotifyModel
+ * @property {boolean} isSeen - is Seen that notify
+ * @property {string} content - The content of the notify.
+ */
+
+/**
+ * @param {NotifyModel} notifyModel - The notify object.
+ */
+export const updateNotification = (id,notifyModel) =>
+    new Promise((resolve, reject) => {
+        try {
+            const resp = db.Notification.update({
+                where : {id},
+                data : notifyModel
+            });
+            resolve(resp);
+        } catch (error) {
+            reject(error);
+        }
+    });
+export const seenNotification = async () => {
+    try {
+        const resp = await db.Notification.updateMany({
+            data: {
+                isSeen: true
+            }
+        });
+        return resp;
+    } catch (error) {
+        throw error;
+    }
+};
