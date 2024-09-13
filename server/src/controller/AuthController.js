@@ -55,7 +55,7 @@ class AuthController {
         try {
             const refreshToken = req.cookies.refreshToken;
             if (!refreshToken) {
-                return forBidden("You're not authenticated", res);
+                return unauthorized("You're not authenticated", res);
             }
             try {
                 const userId = await jwt.verify(
@@ -71,7 +71,6 @@ class AuthController {
                 if (storedToken == null || storedToken != refreshToken) {
                     return unauthorized('Refresh token is not valid', res);
                 }
-
                 const newAccessToken = new AuthController().generateAccessToken(
                     user
                 );
@@ -98,7 +97,7 @@ class AuthController {
                 });
             } catch (err) {
                 console.error(err);
-                return forBidden('Refresh token is not valid', res);
+                return unauthorized('Refresh token is not valid', res);
             }
         } catch (err) {
             console.error(err);

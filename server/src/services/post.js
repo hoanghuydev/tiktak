@@ -3,9 +3,88 @@ import db, { Sequelize } from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 import post from '../models/post';
-import { VISIBILITY_POST_FRIEND, VISIBILITY_POST_PRIVATE, VISIBILITY_POST_PUBLIC } from '../../constant';
+import {
+    VISIBILITY_POST_FRIEND,
+    VISIBILITY_POST_PRIVATE,
+    VISIBILITY_POST_PUBLIC,
+} from '../../constant';
+/**
+ * @typedef {Object} ConditionModel
+ * @property {number} visibility - The ID of the liker.
+ */
+/**
+ *
+ * @param {number} userId - Current user ID
+ * @param {"following" | "all" | "friends"} type - Get list video according to type of page
+ * @returns {ConditionModel[]} - List of conditions for visibility
+ */
+function getVisibilityConditions(userId, type) {
+    const conditions = [];
+    switch (type) {
+        case 'all':
+            conditions.push({ visibility: VISIBILITY_POST_PUBLIC });
+            if (userId) {
+                conditions.push(
+                    {
+                        visibility: VISIBILITY_POST_FRIEND,
+                        poster: {
+                            [Op.in]: literal(`(
+                            SELECT f1.followee
+                            FROM followers f1
+                            JOIN followers f2 ON f1.followee = f2.follower
+                            WHERE f1.follower = ${userId}
+                            AND f2.followee = ${userId}
+                        )`),
+                        },
+                    },
+                    { visibility: VISIBILITY_POST_PRIVATE, poster: userId }
+                );
+            }
+            break;
+        case 'friends':
+            if (userId)
+                conditions.push({
+                    visibility: {
+                        [Op.or]: [
+                            VISIBILITY_POST_PUBLIC,
+                            VISIBILITY_POST_FRIEND,
+                        ],
+                    },
+                    poster: {
+                        [Op.in]: literal(`(
+                        SELECT f1.followee
+                        FROM followers f1
+                        JOIN followers f2 ON f1.followee = f2.follower
+                        WHERE f1.follower = ${userId}
+                        AND f2.followee = ${userId}
+                    )`),
+                    },
+                });
+            break;
+        case 'following':
+            if (userId)
+                conditions.push({
+                    visibility: {
+                        [Op.or]: [
+                            VISIBILITY_POST_PUBLIC,
+                            VISIBILITY_POST_FRIEND,
+                        ],
+                    },
+                    poster: {
+                        [Op.in]: literal(`(
+                        SELECT f1.followee
+                        FROM followers f1
+                        WHERE f1.follower = ${userId}
+                    )`),
+                    },
+                });
+            break;
+    }
+    return conditions;
+}
 export const getPosts = (
     postId,
+    type = 'all',
     { page, pageSize, orderBy, orderDirection, userId, title },
     req
 ) =>
@@ -18,26 +97,10 @@ export const getPosts = (
                 orderDirection
             );
             const query = {};
-            const getPostWithVisibility = [
-                { visibility: VISIBILITY_POST_PUBLIC },
-            ];
-            if (req.user?.id) {
-                getPostWithVisibility.push(
-                    {
-                        visibility: VISIBILITY_POST_FRIEND,
-                        poster: {
-                            [Op.in]: literal(`(
-                            SELECT f1.followee
-                            FROM followers f1
-                            JOIN followers f2 ON f1.followee = f2.follower
-                            WHERE f1.follower = ${req.user.id}
-                            AND f2.followee = ${req.user.id}
-                        )`),
-                        },
-                    },
-                    { visibility: VISIBILITY_POST_PRIVATE, poster: req.user.id }
-                );
-            }
+            const getPostWithVisibility = getVisibilityConditions(
+                req.user?.id,
+                type
+            );
             query.where = {
                 [Op.or]: getPostWithVisibility,
             };
@@ -80,8 +143,8 @@ export const getPosts = (
                                   WHERE
                                     cp.postId = post.id
                             )`),
-                            'comments'
-                    ]
+                        'comments',
+                    ],
                 ],
             };
 
@@ -105,25 +168,15 @@ export const getPosts = (
                 query.attributes.include.push([
                     literal(`(
                         SELECT EXISTS (
-                          SELECT 1
-                          FROM followers f
-                          JOIN posts p ON p.poster = f.followee
-                          JOIN users u ON u.id = f.followee
-                          WHERE f.follower = ${req.user.id}
-                            AND p.poster = u.id
-                            AND post.id = p.id
-                            AND post.poster = p.poster
-                        )
-                        AND EXISTS (
-                          SELECT 1
-                          FROM followers f
-                          JOIN posts p ON p.poster = f.follower
-                          JOIN users u ON u.id = f.follower
-                          WHERE f.followee = ${req.user.id}
-                            AND p.poster = u.id
-                            AND post.id = p.id
-                            AND post.poster = p.poster
-                        )
+                            SELECT 1
+                            FROM followers f1
+                            JOIN followers f2 ON f1.follower = f2.followee AND f1.followee = f2.follower
+                            JOIN posts p ON p.poster = f1.followee
+                            JOIN users u ON u.id = p.poster
+                            WHERE f1.follower = ${req.user.id}
+                              AND f2.followee = ${req.user.id}
+                              AND post.id = p.id
+                        )                           
                       )`),
                     'isFriend',
                 ]);

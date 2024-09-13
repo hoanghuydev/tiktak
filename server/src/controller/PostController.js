@@ -20,7 +20,7 @@ class PostController {
             const { postId } = req.params;
             const post = await postService.getOne(postId);
             const userId = post.poster;
-            console.log("Poster ",userId)
+            console.log('Poster ', userId);
             // const notify = await notificationService.insertNotification(userId,"User "+ req.user.id + " liked your post")
             const likeData = { liker: req.user.id, postId };
             const isLiked = await likePostService.isLikedPost(likeData);
@@ -93,11 +93,12 @@ class PostController {
             return internalServerError(res);
         }
     }
-    async getPosts(req, res) {
+    async handleGetPosts(req, res, type) {
         try {
             if (req.params.userId) req.query.userId = req.params.userId;
             const posts = await postServices.getPosts(
                 req.params.postId,
+                type,
                 req.query,
                 req
             );
@@ -112,33 +113,86 @@ class PostController {
         }
     }
 
+    async getPosts(req, res) {
+        return new PostController().handleGetPosts(req, res, 'all');
+    }
+
+    async getFriendPosts(req, res) {
+        return new PostController().handleGetPosts(req, res, 'friends');
+    }
+
+    async getFollowingPosts(req, res) {
+        return new PostController().handleGetPosts(req, res, 'following');
+    }
+
+    async removeFileIfErr(
+        postId,
+        thumnailUpload,
+        videoUploadMain,
+        video,
+        thumnail
+    ) {
+        if (postId) await postServices.deletePost(postId);
+        if (thumnailUpload)
+            await UploadFile.removeFromGGDriver(thumnailUpload.id);
+        if (videoUploadMain)
+            await UploadFile.removeFromCloudinary(
+                process.env.VIDEO_TYPE_FILE,
+                videoUploadMain.id
+            );
+        if (video) fs.unlink(video.path, () => {});
+        if (thumnail) fs.unlink(thumnail.path, () => {});
+    }
+
+    async handleVideoUpload(video) {
+        const videoBuffer = await UploadFile.getBufferFileWithPath(video.path);
+        return await UploadFile.uploadToCloudinary(
+            videoBuffer,
+            process.env.VIDEO_TYPE_FILE,
+            process.env.CLOUDINARY_FOLDER_VIDEO
+        );
+    }
+
+    async handleThumbnailUpload(thumnail, postId, videoPath) {
+        if (thumnail) {
+            if (!thumnail.mimetype.includes('image'))
+                throw new Error('Field thumnail must be image type');
+            const thumnailUpload = await UploadFile.uploadToGGDriver(
+                thumnail,
+                `thumnailPost${postId}`,
+                process.env.GG_DRIVE_FOLDER_THUMNAIL_ID
+            );
+            fs.unlink(thumnail.path, () => {});
+            return thumnailUpload;
+        } else {
+            const thumnailBuffer = await FfmpegUtil.captureVideo(videoPath);
+            const thumnailFile = {
+                buffer: thumnailBuffer,
+                mimeType: 'image/jpeg',
+            };
+            return await UploadFile.uploadToGGDriver(
+                thumnailFile,
+                `thumnailPost${postId}`,
+                process.env.GG_DRIVE_FOLDER_THUMNAIL_ID
+            );
+        }
+    }
+
     async upload(req, res) {
         let postId;
         let thumnailUpload;
         let videoUploadMain;
         let video;
         let thumnail;
-        async function removeFileIfErr() {
-            if (postId) await postServices.deletePost(postId);
-            if (thumnailUpload)
-                await UploadFile.removeFromGGDriver(thumnailUpload.id);
-            if (videoUploadMain)
-                await UploadFile.removeFromCloudinary(
-                    process.env.VIDEO_TYPE_FILE,
-                    videoUploadMain.id
-                );
-            if (video) fs.unlink(video.path);
-            if (thumnail) fs.unlink(thumnail.path);
-        }
+
         try {
             const { files } = req;
             const poster = req.user.id;
-            const { title } = req.body;
-            const visibility = parseInt(req.body.visibility);
+            const { title, visibility } = req.body;
 
             if (
                 !title ||
-                visibility == undefined ||
+                visibility === undefined ||
                 ![
                     VISIBILITY_POST_FRIEND,
                     VISIBILITY_POST_PUBLIC,
@@ -150,89 +204,61 @@ class PostController {
                     res
                 );
             }
+
             for (const file of files) {
-                if (file.size / (1024 * 1024) > 80)
+                if (file.size / (1024 * 1024) > 80) {
                     return badRequest(
                         'Cannot upload file with size more than 80mb',
                         res
                     );
+                }
             }
-            video = files.filter((file) => file.fieldname == 'video')[0];
-            if (!video) {
-                return badRequest('Please provide a video', res);
-            }
-            console.log(video.mimetype)
+
+            video = files.find((file) => file.fieldname === 'video');
             if (
+                !video ||
                 !['video/mp4', 'video/m4v', 'video/mov'].includes(
                     video.mimetype
                 )
-            )
+            ) {
                 return badRequest('Field video must be video type', res);
-            thumnail = files.filter((file) => file.fieldname == 'thumnail')[0];
+            }
+
+            thumnail = files.find((file) => file.fieldname === 'thumnail');
             const post = await postServices.insertPost({
                 poster,
                 title,
                 visibility,
             });
             postId = post.id;
-            if (thumnail) {
-                if (!thumnail.mimetype.includes('image'))
-                    return badRequest('Field thumnail must be image type', res);
-                thumnailUpload = await UploadFile.uploadToGGDriver(
-                    thumnail,
-                    'thumnailPost' + post.id,
-                    process.env.GG_DRIVE_FOLDER_THUMNAIL_ID
-                );
-                fs.unlink(thumnail.path, function (err) {
-                    if (err) {
-                        removeFileIfErr();
-                        thumnail = null;
-                    }
-                });
-            } else {
-                const thumnailBuffer = await FfmpegUtil.captureVideo(
-                    video.path,
-                    res
-                );
-                const thumnailFile = {
-                    buffer: thumnailBuffer,
-                    mimeType: 'image/jpeg',
-                };
-                thumnailUpload = await UploadFile.uploadToGGDriver(
-                    thumnailFile,
-                    'thumnailPost' + post.id,
-                    process.env.GG_DRIVE_FOLDER_THUMNAIL_ID
-                );
-            }
-            const videoBuffer = await UploadFile.getBufferFileWithPath(
+
+            thumnailUpload = await new PostController().handleThumbnailUpload(
+                thumnail,
+                postId,
                 video.path
             );
-            videoUploadMain = await UploadFile.uploadToCloudinary(
-                videoBuffer,
-                process.env.VIDEO_TYPE_FILE,
-                process.env.CLOUDINARY_FOLDER_VIDEO
+            videoUploadMain = await new PostController().handleVideoUpload(
+                video
             );
-            fs.unlink(video.path, function (err) {
-                if (err) {
-                    removeFileIfErr();
-                    video = null;
-                }
-            });
+
             await postServices.updatePost(post.id, {
                 videoId: videoUploadMain.id,
                 videoUrl: videoUploadMain.url,
                 thumnailId: thumnailUpload.id,
                 thumnailUrl: thumnailUpload.url,
             });
+
             const postUpdated = await postServices.getOne(post.id);
             return res.status(200).json(postUpdated);
         } catch (error) {
-            console.log(error);
-            try {
-                removeFileIfErr();
-            } catch (err) {
-                return internalServerError(res);
-            }
+            console.error(error);
+            await new PostController().removeFileIfErr(
+                postId,
+                thumnailUpload,
+                videoUploadMain,
+                video,
+                thumnail
+            );
             return internalServerError(res);
         }
     }
