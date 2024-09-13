@@ -179,17 +179,20 @@ class PostController {
     }
 
     async upload(req, res) {
+        // init variables
+
         let postId;
         let thumnailUpload;
         let videoUploadMain;
         let video;
         let thumnail;
-
+        // open transaction
+        const t = await sequelize.transaction();
         try {
             const { files } = req;
             const poster = req.user.id;
             const { title, visibility } = req.body;
-
+            // Validate fields
             if (
                 !title ||
                 visibility === undefined ||
@@ -204,17 +207,22 @@ class PostController {
                     res
                 );
             }
-
+            // Validate file size
             for (const file of files) {
-                if (file.size / (1024 * 1024) > 80) {
+                if (
+                    file.size / (1024 * 1024) >
+                    process.env.LIMIT_FILE_SIZE_UPLOAD
+                ) {
                     return badRequest(
-                        'Cannot upload file with size more than 80mb',
+                        `Cannot upload file with size more than ${process.env.LIMIT_FILE_SIZE_UPLOAD}mb`,
                         res
                     );
                 }
             }
-
+            // Get file video and thumnail
             video = files.find((file) => file.fieldname === 'video');
+            thumnail = files.find((file) => file.fieldname === 'thumnail');
+            // Validate video file
             if (
                 !video ||
                 !['video/mp4', 'video/m4v', 'video/mov'].includes(
@@ -223,35 +231,37 @@ class PostController {
             ) {
                 return badRequest('Field video must be video type', res);
             }
-
-            thumnail = files.find((file) => file.fieldname === 'thumnail');
+            // Insert post to get postId
             const post = await postServices.insertPost({
                 poster,
                 title,
                 visibility,
             });
             postId = post.id;
-
+            // Handle upload thumbnail to gg driver
             thumnailUpload = await new PostController().handleThumbnailUpload(
                 thumnail,
                 postId,
                 video.path
             );
+            // handle upload video file to cloudinary
             videoUploadMain = await new PostController().handleVideoUpload(
                 video
             );
-
+            // update field video and thumbnail url
             await postServices.updatePost(post.id, {
                 videoId: videoUploadMain.id,
                 videoUrl: videoUploadMain.url,
                 thumnailId: thumnailUpload.id,
                 thumnailUrl: thumnailUpload.url,
             });
-
+            await t.commit();
             const postUpdated = await postServices.getOne(post.id);
             return res.status(200).json(postUpdated);
         } catch (error) {
+            await t.rollback();
             console.error(error);
+            // Remove file in upload folder if some error occurred
             await new PostController().removeFileIfErr(
                 postId,
                 thumnailUpload,

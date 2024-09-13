@@ -9,6 +9,7 @@ import { Dispatch } from 'react';
 import FollowService from '@/features/follow/followService';
 import showToast from '@/utils/toast';
 import { message } from 'antd';
+import Video from '@/components/Video';
 export interface VideoRecommendChildProps {
   post: PostModel;
   isFollow: boolean;
@@ -22,6 +23,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
   const [isFriend, setIsFriend] = useState<boolean>(post.isFriend!);
   const [play, setPlay] = useState<boolean>(false);
   useEffect(() => {
+    // Examine the video within the user's view
     let observer: IntersectionObserver | null;
     if (videoRef && videoRef.current) {
       const handleBeforeLeaveTab = () => {
@@ -99,14 +101,11 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
         />
         {/* Video */}
         <div className="flex mt-5">
-          <video
-            autoPlay
-            loop
-            ref={videoRef}
-            className="min-w-[40%] max-w-[65%] md:max-w-[55%] lg:max-w-[45%] min-h-[200px] rounded-lg overflow-hidden bg-black"
-          >
-            <source src={post.videoUrl || ''} type="video/mp4" />
-          </video>
+          <Video
+            videoRef={videoRef}
+            videoUrl={post.videoUrl + ''}
+            className="min-w-[40%] max-w-[65%] md:max-w-[55%] lg:max-w-[45%] min-h-[200px]"
+          />
           <VideoRecommendActions
             followUser={followUser}
             post={post}

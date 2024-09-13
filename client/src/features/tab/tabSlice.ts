@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-export type TabType = 'home' | 'following' | 'friends';
+export type TabType =
+  | 'home'
+  | 'following'
+  | 'friends'
+  | 'livestream'
+  | 'explore'
+  | 'profile';
 export interface TabState {
   tab: TabType;
 }

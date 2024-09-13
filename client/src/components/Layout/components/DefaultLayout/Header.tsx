@@ -28,12 +28,12 @@ const Header = () => {
             placeholder="Search"
           />
           <div
-            className="absolute top-[100%] w-full h-[15px] hidden"
+            className="absolute z-30 top-[100%] w-full h-[15px] hidden"
             id="lineHiddenSearchInputHeader"
           ></div>
           <div
             id="searchPopupHeader"
-            className="p-4 hidden absolute bg-white shadow-custom rounded-md top-[55px] start-0 end-0"
+            className="p-4 hidden z-30 absolute bg-white shadow-custom rounded-md top-[55px] start-0 end-0"
           >
             <p className="font-bold text-[12px] text-gray-400">You may like</p>
             <div className="flex mt-2 gap-3">

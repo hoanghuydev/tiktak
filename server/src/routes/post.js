@@ -4,7 +4,10 @@ const router = express.Router();
 import PostController from '../controller/PostController';
 import Auth from '../middleware/auth';
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({
+    dest: 'uploads/',
+    limits: { fileSize: process.env.LIMIT_FILE_SIZE_UPLOAD * 1024 * 1024 },
+});
 router.get('/', Auth.setUser, PostController.getPosts);
 router.get('/friends', Auth.setUser, PostController.getFriendPosts);
 router.get('/following', Auth.setUser, PostController.getFollowingPosts);

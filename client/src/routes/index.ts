@@ -7,6 +7,7 @@ import Friends from '@/site/Friends';
 import Login from '@/site/Login';
 import LoginEmail from '@/site/LoginEmail';
 import Upload from '@/site/Upload';
+import Livestream from '@/site/Livestream';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -26,6 +27,12 @@ export const publicRoutes: RouteType[] = [
     path: '/login-email',
     element: LoginEmail,
     layout: LoginLayout,
+    fullScreen: true,
+  },
+  {
+    path: '/live',
+    element: Livestream,
+    layout: DefaultLayout,
     fullScreen: true,
   },
 ];

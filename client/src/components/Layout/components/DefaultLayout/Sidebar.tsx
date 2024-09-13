@@ -40,12 +40,14 @@ const Sidebar = () => {
           </LinkSidebar>
           <LinkSidebar
             href="/explore"
+            active={tab === 'explore'}
             icon={<IoCompassOutline className="my-auto" fontSize={25} />}
           >
             Explore
           </LinkSidebar>
           <LinkSidebar
             href="/live"
+            active={tab === 'livestream'}
             icon={<MdLiveTv className="my-auto" fontSize={25} />}
           >
             LIVE
