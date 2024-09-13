@@ -19,6 +19,26 @@ const PostService = {
       }
     });
   },
+  async getFollowingPosts() {
+    return new Promise<PostsPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.get(routePath + '/following');
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async getFriendPosts() {
+    return new Promise<PostsPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.get(routePath + '/friends');
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
   async sharePost(postId: number) {
     return new Promise<AbstractPayload>(async (resolve, reject) => {
       try {

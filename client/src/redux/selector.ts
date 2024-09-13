@@ -4,8 +4,10 @@ import { RootState } from './reducer';
 import { InitStatePostType } from '@/features/post/postSlice';
 import { PostModel } from '@/models/post';
 import { PostUploadModel } from '@/models/postUpload';
+import { TabState, TabType } from '@/features/tab/tabSlice';
 
 export const authSelector = (state: RootState): InitStateAuthType => state.auth;
+export const tabSelector = (state: RootState): TabType => state.tab.tab;
 export const currentUserSelector = (state: RootState): UserModel | null =>
   state.auth.user;
 export const getPostsSelector = (state: RootState): PostModel[] =>

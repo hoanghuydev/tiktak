@@ -5,7 +5,7 @@ import VideoRecommend from './components/VideoRecommend';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPostsSelector, postSelector } from '@/redux/selector';
 import { AppDispatch } from '@/redux/store';
-import { getPosts } from '@/features/post/postSlice';
+import { getFollowingPosts } from '@/features/post/postSlice';
 import Button from '@/components/Button';
 import { Spin } from 'antd';
 import { setTab } from '@/features/tab/tabSlice';
@@ -15,8 +15,8 @@ const Home = () => {
   const postState = useSelector(postSelector);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    dispatch(getPosts());
-    dispatch(setTab('home'));
+    dispatch(getFollowingPosts());
+    dispatch(setTab('following'));
   }, []);
   return (
     <div className="h-full flex-1 flex flex-col items-center overflow-y-auto pt-5 pb-10">
