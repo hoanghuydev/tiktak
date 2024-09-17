@@ -13,7 +13,7 @@ const Sidebar = () => {
   const user = useSelector(currentUserSelector);
   const tab = useSelector(tabSelector);
   return (
-    <div className="p-4 pt-8 h-full bg-white min-w-[70px]  w-fit lg:w-[250px] border-e-[1px] border-gray-200 lg:border-none overflow-y-auto">
+    <div className="p-2 md:p-4 pt-8 h-full bg-white min-w-[50px] md:min-w-[70px]  w-fit lg:w-[250px] border-e-[1px] border-gray-200 lg:border-none overflow-y-auto">
       <nav className="ps-1 mb-2 ">
         <ul>
           <LinkSidebar
@@ -53,7 +53,7 @@ const Sidebar = () => {
             LIVE
           </LinkSidebar>
           <LinkSidebar
-            href="/profile"
+            href={user ? `/@${user.userName}` : '/login'}
             icon={
               user ? (
                 <img

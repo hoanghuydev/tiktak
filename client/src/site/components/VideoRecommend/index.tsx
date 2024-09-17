@@ -82,7 +82,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
 
   return (
     <div className="px-5 w-full flex" id={'post-' + post.id}>
-      <div className="min-w-[56px] max-w-[56px] h-[56px] rounded-full me-4 overflow-hidden">
+      <div className="hidden md:flex min-w-[56px] max-w-[56px] h-[56px] rounded-full me-4 overflow-hidden">
         <Link to={'/user/' + post.posterData.userName}>
           <img
             src={post.posterData.avatarData.url || ''}
@@ -104,7 +104,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
           <Video
             videoRef={videoRef}
             videoUrl={post.videoUrl + ''}
-            className="min-w-[40%] max-w-[65%] md:max-w-[55%] lg:max-w-[45%] min-h-[200px]"
+            className="min-w-[43%] max-w-[90%] sm:max-w-[70%] md:max-w-[55%] lg:max-w-[45%] min-h-[200px]"
           />
           <VideoRecommendActions
             followUser={followUser}

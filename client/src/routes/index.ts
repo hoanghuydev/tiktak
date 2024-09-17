@@ -8,15 +8,23 @@ import Login from '@/site/Login';
 import LoginEmail from '@/site/LoginEmail';
 import Upload from '@/site/Upload';
 import Livestream from '@/site/Livestream';
+import Profile from '@/site/Profile';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
   layout?: React.ComponentType<{ children: React.ReactNode }>;
   fullScreen?: boolean;
+  children?: RouteType[];
 }
 
 export const publicRoutes: RouteType[] = [
-  { path: '/', element: Home, layout: DefaultLayout, fullScreen: true },
+  {
+    path: '/',
+    element: Home,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+
   {
     path: '/login',
     element: Login,
@@ -32,6 +40,12 @@ export const publicRoutes: RouteType[] = [
   {
     path: '/live',
     element: Livestream,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: '/:usernamehaveCuff',
+    element: Profile,
     layout: DefaultLayout,
     fullScreen: true,
   },

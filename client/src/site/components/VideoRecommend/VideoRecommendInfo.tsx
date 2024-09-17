@@ -33,7 +33,7 @@ const VideoRecommendInfo = ({
     }
   }, [post.title]);
   return (
-    <div className="flex justify-between flex-wrap md:flex-nowrap">
+    <div className="hidden md:flex justify-between flex-wrap md:flex-nowrap">
       <div>
         <div className="flex gap-2">
           <Link

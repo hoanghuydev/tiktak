@@ -117,7 +117,7 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
   return (
     <div
       className={clsx(
-        'video-container rounded-lg overflow-hidden relative w-fit h-fit',
+        'video-container bg-black grid place-items-center rounded-lg overflow-hidden relative w-fit h-fit',
         className
       )}
       onClick={togglePlayPause}
@@ -192,7 +192,7 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
       {/* Video Element */}
       <video
         ref={videoRef}
-        className="w-full h-full object-cover"
+        className="w-full h-full"
         autoPlay
         loop
         muted={videoState.isMuted} // Set video muted state

@@ -3,10 +3,9 @@ import { badRequest, internalServerError, notFound } from '../utils/handleResp';
 import UploadFile from '../utils/uploadFile';
 import * as avatarServices from '../services/avatar';
 class UserController {
-    
     /**
      * Find users with pagination and sorting options.
-     * 
+     *
      * @param {Object} req - The request object.
      * @param {Object} req.query - The query parameters.
      * @param {number} req.query.page - The page number.
@@ -19,7 +18,7 @@ class UserController {
      */
     async findUser(req, res) {
         try {
-            let users = await userServices.findUsers(req.query,req.user?.id);
+            let users = await userServices.findUsers(req.query, req.user?.id);
             return res.status(200).json({
                 err: 0,
                 mes: '',
@@ -45,19 +44,19 @@ class UserController {
             return internalServerError(res);
         }
     }
-    async getProfile(req,res) {
+    async getProfile(req, res) {
         try {
-            const {userId} = req.params;
-            const user = await userServices.getProfile(userId,req.user?.id)
-            if (!user) return badRequest("Not found user",res)
+            const { username } = req.params;
+            const user = await userServices.getProfile(username, req.user?.id);
+            if (!user) return badRequest('Not found user', res);
             return res.status(200).json({
-                err : 0,
-                mes : "Get profile successfull",
+                err: 0,
+                mes: 'Get profile successfull',
                 user,
-            })        
+            });
         } catch (error) {
             console.log(error);
-            return internalServerError(res)
+            return internalServerError(res);
         }
     }
     async getUser(req, res) {

@@ -10,7 +10,7 @@ const Livestream = () => {
   useEffect(() => {
     dispatch(setTab('livestream'));
   }, []);
-  return <div></div>;
+  return <div className="overflow-y-auto"></div>;
 };
 
 export default Livestream;

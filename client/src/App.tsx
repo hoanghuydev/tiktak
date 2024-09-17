@@ -15,6 +15,7 @@ import { setCurrentUser } from './features/auth/authSlice';
 import { UserModel } from './models/user';
 import { axiosNoToken, axiosToken } from './axios';
 import { jwtDecode } from 'jwt-decode';
+import { ConfigProvider } from 'antd';
 function App() {
   const token = localStorage.getItem('accessToken') || '';
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +32,7 @@ function App() {
   const RouteRender = (route: RouteType, index: number) => {
     const Layout = route.layout || DefaultLayout;
     const Page = route.element;
+    const ChildrenNode = route.children ?? [];
     return (
       <Route
         key={index}
@@ -40,37 +42,56 @@ function App() {
             <Page />
           </Layout>
         }
-      />
+      >
+        {ChildrenNode.map((routeObject, index: number) =>
+          RouteRender(routeObject, index)
+        )}
+      </Route>
     );
   };
   return (
-    <div className="">
-      <Router>
-        <Routes>
-          {publicRoutes.map((route: RouteType, index: number) =>
-            RouteRender(route, index)
-          )}
-          {user &&
-            privateRoutes.map((route: RouteType, index: number) =>
+    <ConfigProvider
+      theme={{
+        components: {
+          Tabs: {
+            cardGutter: 100,
+            itemActiveColor: 'black',
+            inkBarColor: 'black',
+            itemColor: '#73747b',
+            itemHoverColor: 'black',
+            itemSelectedColor: 'black',
+          },
+        },
+      }}
+    >
+      <div className="">
+        <Router>
+          <Routes>
+            {publicRoutes.map((route: RouteType, index: number) =>
               RouteRender(route, index)
             )}
-          <Route path="*" element={<Page404 />}></Route>
-        </Routes>
-      </Router>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <ToastContainer />
-    </div>
+            {user &&
+              privateRoutes.map((route: RouteType, index: number) =>
+                RouteRender(route, index)
+              )}
+            <Route path="*" element={<Page404 />}></Route>
+          </Routes>
+        </Router>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <ToastContainer />
+      </div>
+    </ConfigProvider>
   );
 }
 export default App;

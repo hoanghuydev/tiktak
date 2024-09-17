@@ -27,13 +27,10 @@ export const formatQueryUser = {
         },
     ],
 };
-export const findUsers = ({
-    page,
-    pageSize,
-    orderBy,
-    orderDirection,
-    name
-},myId) =>
+export const findUsers = (
+    { page, pageSize, orderBy, orderDirection, name },
+    myId
+) =>
     new Promise(async (resolve, reject) => {
         try {
             const queries = pagingConfig(
@@ -42,14 +39,16 @@ export const findUsers = ({
                 orderBy,
                 orderDirection
             );
-            
-            const whereClause = name ? {
-                [Op.or]: [
-                    { userName: { [Op.like]: `%${name}%` } },
-                    { fullName: { [Op.like]: `%${name}%` } }
-                ]
-            } : {};
-            const attributes = ['id', 'userName', 'fullName']
+
+            const whereClause = name
+                ? {
+                      [Op.or]: [
+                          { userName: { [Op.like]: `%${name}%` } },
+                          { fullName: { [Op.like]: `%${name}%` } },
+                      ],
+                  }
+                : {};
+            const attributes = ['id', 'userName', 'fullName'];
             if (myId) {
                 attributes.include = [
                     [
@@ -83,7 +82,7 @@ export const findUsers = ({
                           )`),
                         'isFriend',
                     ],
-                ]
+                ];
             }
             const { count, rows } = await db.User.findAndCountAll({
                 where: whereClause,
@@ -111,12 +110,13 @@ export const findUsers = ({
             reject(error);
         }
     });
-export const getProfile = (partnerId,myId) => 
-    new Promise(async (resolve,reject) => {
+export const getProfile = (partnerUsername, myId) =>
+    new Promise(async (resolve, reject) => {
         try {
-            if(!partnerId) reject(false)
+            if (!partnerUsername) reject(false);
             const attributes = {
-                include : [
+                exclude: ['password'],
+                include: [
                     [
                         literal(`(
                             SELECT COUNT(*)
@@ -125,6 +125,7 @@ export const getProfile = (partnerId,myId) =>
                         )`),
                         'followers',
                     ],
+
                     [
                         literal(`(
                             SELECT COUNT(*)
@@ -140,9 +141,9 @@ export const getProfile = (partnerId,myId) =>
                             WHERE lp.postId = p.id AND p.poster = User.id
                         )`),
                         'likes',
-                    ]
-                ]
-            }
+                    ],
+                ],
+            };
             if (myId) {
                 attributes.include.push(
                     [
@@ -156,6 +157,17 @@ export const getProfile = (partnerId,myId) =>
                             )
                             )`),
                         'isFollow',
+                    ],
+                    [
+                        literal(`(
+                            SELECT EXISTS (
+                            SELECT 1
+                            FROM users u
+                            WHERE u.id = ${myId}
+                            AND u.username = User.username
+                        )
+                        )`),
+                        'isMe',
                     ],
                     [
                         literal(`(
@@ -175,21 +187,21 @@ export const getProfile = (partnerId,myId) =>
                             )
                           )`),
                         'isFriend',
-                    ],
-                )
+                    ]
+                );
             }
             const user = await db.User.findOne({
-                where : {
-                    id : partnerId
+                where: {
+                    username: partnerUsername,
                 },
                 attributes,
-                ...formatQueryUser
-            })
+                ...formatQueryUser,
+            });
             resolve(user);
         } catch (error) {
-            reject(error)
+            reject(error);
         }
-    })
+    });
 export const updateUser = (newDataUser, id) =>
     new Promise((resolve, reject) => {
         try {

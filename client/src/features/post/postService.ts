@@ -19,6 +19,16 @@ const PostService = {
       }
     });
   },
+  async getPostsByUserId(userId: number) {
+    return new Promise<PostsPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.get(routePath + `/user/${userId}`);
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
   async getFollowingPosts() {
     return new Promise<PostsPayload>(async (resolve, reject) => {
       try {

@@ -25,7 +25,7 @@ const Home = () => {
           posts.map((post: PostModel, index) => (
             <div className="h-fit" key={index}>
               <VideoRecommend post={post} />
-              <div className="h-[1px] w-full bg-gray-100 my-5"></div>
+              <div className="h-[1px] w-full bg-gray-100 my-8 md:my-5"></div>
             </div>
           ))}
         {posts && postState?.isError && (
