@@ -12,9 +12,13 @@ export const currentUserSelector = (state: RootState): UserModel | null =>
   state.auth.user;
 export const getPostsSelector = (state: RootState): PostModel[] =>
   state.post.posts;
-export const postSelector = (state: RootState): InitStatePostType | null =>
+export const getPostSelector = (state: RootState): PostModel =>
+  state.post.post!;
+export const postSliceSelector = (state: RootState): InitStatePostType | null =>
   state.post;
 export const postUploadSelector = (state: RootState): PostUploadModel | null =>
   state.post.postUpload;
 export const pecentLoadingPostSelector = (state: RootState): number =>
   state.post.pecentLoading;
+export const getPostLoadingSelector = (state: RootState): boolean =>
+  state.post.isLoading;

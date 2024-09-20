@@ -43,6 +43,18 @@ export const getFriendPosts = createAsyncThunk(
   }
 );
 
+export const getPostById = createAsyncThunk(
+  'post/getPostById',
+  async (postId: number, thunkAPI) => {
+    try {
+      const resp = await PostService.getPostById(postId);
+      return resp;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const uploadPost = createAsyncThunk(
   'post/uploadPost',
   async (postFormData: FormData, thunkAPI) => {
@@ -128,11 +140,35 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    setPostUpload(state, action) {
+    setPostUpload(state, action: { payload: PostUploadModel; type: string }) {
       state.postUpload = action.payload;
     },
-    setPecentLoading(state, action) {
+    setPecentLoading(state, action: { payload: number; type: string }) {
       state.pecentLoading = action.payload;
+    },
+    setPosts(state, action: { payload: PostModel[]; type: string }) {
+      state.posts = action.payload;
+    },
+    setPost(state, action: { payload: PostModel; type: string }) {
+      state.post = action.payload;
+    },
+    setCountLike(state, action: { payload: number; type: string }) {
+      state.post!.likes = action.payload;
+    },
+    setCountShare(state, action: { payload: number; type: string }) {
+      state.post!.shares = action.payload;
+    },
+    setCountCommnent(state, action: { payload: number; type: string }) {
+      state.post!.comments = action.payload;
+    },
+    setIsLike(state, action: { payload: boolean; type: string }) {
+      state.post!.isLiked = action.payload;
+    },
+    setIsFollow(state, action: { payload: boolean; type: string }) {
+      state.post!.isLiked = action.payload;
+    },
+    setPostLoading(state, action: { payload: boolean; type: string }) {
+      state.isLoading = action.payload;
     },
   },
   extraReducers: (builder) =>
@@ -168,8 +204,42 @@ const postSlice = createSlice({
         } else {
           message.error('Unknown error occurred');
         }
+      })
+
+      .addCase(getPostById.rejected, (state: InitStatePostType, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        const payload = action.payload as PostPayload;
+        if (payload) {
+          state.message = payload.mes;
+          state.post = null;
+          message.error(payload.mes);
+        } else {
+          message.error('Unknown error occurred');
+        }
+      })
+      .addCase(getPostById.pending, handlePending)
+
+      .addCase(getPostById.fulfilled, (state: InitStatePostType, action) => {
+        state.isError = false;
+        const payload = action.payload as PostPayload;
+        state.post = payload.post;
+        state.isLoading = false;
+        state.isSuccess = true;
       }),
 });
 
-export const { setPostUpload, setPecentLoading } = postSlice.actions;
+export const {
+  setPostUpload,
+  setPecentLoading,
+  setPost,
+  setPosts,
+  setPostLoading,
+  setCountLike,
+  setCountShare,
+  setCountCommnent,
+  setIsLike,
+  setIsFollow,
+} = postSlice.actions;
 export default postSlice.reducer;

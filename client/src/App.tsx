@@ -8,7 +8,7 @@ import DefaultLayout from './components/Layout/DefaultLayout';
 import Page404 from './site/Page404';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelector } from './redux/selector';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AppDispatch } from './redux/store';
 import UserService, { UserPayload } from './features/user/userService';
 import { setCurrentUser } from './features/auth/authSlice';
@@ -17,13 +17,16 @@ import { axiosNoToken, axiosToken } from './axios';
 import { jwtDecode } from 'jwt-decode';
 import { ConfigProvider } from 'antd';
 function App() {
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('accessToken') || '';
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector(currentUserSelector);
   useEffect(() => {
     const setMyInfo = async () => {
+      setLoading(true);
       const resp: UserPayload = await UserService.me();
       dispatch(setCurrentUser(resp.user));
+      setLoading(false);
     };
     if (token && !user) {
       setMyInfo();
@@ -67,13 +70,16 @@ function App() {
       <div className="">
         <Router>
           <Routes>
-            {publicRoutes.map((route: RouteType, index: number) =>
-              RouteRender(route, index)
-            )}
-            {user &&
+            {!loading &&
+              user &&
               privateRoutes.map((route: RouteType, index: number) =>
                 RouteRender(route, index)
               )}
+            {!loading &&
+              publicRoutes.map((route: RouteType, index: number) =>
+                RouteRender(route, index)
+              )}
+
             <Route path="*" element={<Page404 />}></Route>
           </Routes>
         </Router>

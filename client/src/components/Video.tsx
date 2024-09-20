@@ -50,10 +50,10 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
   const handleTimeUpdate = () => {
     if (!videoRef.current) return;
     const currentTime = videoRef.current.currentTime;
-    const videoDuration = videoRef.current.duration;
+    const videoDuration = videoRef.current.duration || 1;
     setVideoState((prev) => ({
       ...prev,
-      progress: (currentTime / videoDuration) * 100,
+      progress: (currentTime / videoDuration) * 100 || 0,
     }));
   };
 
@@ -149,7 +149,7 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
                     type="range"
                     min="0"
                     max="100"
-                    value={videoState.volume}
+                    value={Math.max(0, Math.min(100, videoState.volume))}
                     className="w-[50px] h-[4px] range-white cursor-pointer"
                     onChange={handleVolumeChange} // Adjust volume when slider changes
                   />
@@ -181,7 +181,7 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
               type="range"
               min="0"
               max="100"
-              value={videoState.progress}
+              value={Math.max(0, Math.min(100, videoState.progress))}
               className="w-full range-primary h-1 bg-primary cursor-pointer"
               onChange={handleTimelineChange} // Adjust video progress when the slider changes
             />

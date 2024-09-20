@@ -83,7 +83,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
   return (
     <div className="px-5 w-full flex" id={'post-' + post.id}>
       <div className="hidden md:flex min-w-[56px] max-w-[56px] h-[56px] rounded-full me-4 overflow-hidden">
-        <Link to={'/user/' + post.posterData.userName}>
+        <Link to={'/profile/@' + post.posterData.userName}>
           <img
             src={post.posterData.avatarData.url || ''}
             className="w-full h-full object-cover"

@@ -37,7 +37,7 @@ const VideoRecommendInfo = ({
       <div>
         <div className="flex gap-2">
           <Link
-            to={'/user/' + post.posterData.userName}
+            to={'/profile/@' + post.posterData.userName}
             className="hidden md:block hover:underline text-[18px] font-bold"
           >
             {post.posterData.userName}

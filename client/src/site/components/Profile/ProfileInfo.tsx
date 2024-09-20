@@ -53,7 +53,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
                 <Button
                   outlineBlack
                   icon={<AiOutlineEdit className="my-auto" size={20} />}
-                  className="p-[5px] font-semibolds"
+                  className="p-[5px] font-semibold"
                 >
                   <p className="text-[14px]">Edit Profile</p>
                 </Button>

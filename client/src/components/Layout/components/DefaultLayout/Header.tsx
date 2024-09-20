@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEllipsisVertical, FaPlus } from 'react-icons/fa6';
 import { IoIosSearch } from 'react-icons/io';
 import TiktokLogo from '@/assets/tiktok-logo.svg';
 import { TbPointFilled } from 'react-icons/tb';
 import Button from '@/components/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { currentUserSelector } from '@/redux/selector';
+import { currentUserSelector, tabSelector } from '@/redux/selector';
 import { FiSend } from 'react-icons/fi';
 import { RiMessageLine } from 'react-icons/ri';
 import clsx from 'clsx';
 const Header = () => {
+  const [searchText, setSearchText] = useState<string>('');
   const user = useSelector(currentUserSelector);
+  const currentTab = useSelector(tabSelector);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  useEffect(() => {
+    const query = searchParams.get('q');
+    setSearchText(query ?? '');
+  }, [searchParams]);
   return (
     <header className="h-[60px] bg-white justify-between shadow-sm flex items-center ps-4 pe-6 border-b-[1px] border-b-gray-200">
       <div className="logo w-[280px]">
@@ -21,9 +28,18 @@ const Header = () => {
         </a>
       </div>
       <div className="flex-1 me-2 hidden md:flex max-w-[500px] ">
-        <div className="w-full border-[1px] border-gray-300 px-4 py-[9px] bg-gray-100 rounded-full flex relative ">
+        <form
+          method="GET"
+          action="/search"
+          className="w-full border-[1px] border-gray-300 px-4 py-[9px] bg-gray-100 rounded-full flex relative"
+        >
           <input
             id="searchInputHeader"
+            name="q"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
             className="ms-2 outline-none border-none my-auto flex-1 bg-transparent text-color"
             placeholder="Search"
           />
@@ -44,8 +60,10 @@ const Header = () => {
             </div>
           </div>
           <div className="w-[1px] h-full bg-gray-200"></div>
-          <IoIosSearch fontSize={22} className="my-auto mx-3 text-gray-400" />
-        </div>
+          <button type="submit">
+            <IoIosSearch fontSize={22} className="my-auto mx-3 text-gray-400" />
+          </button>
+        </form>
       </div>
       <div
         className={clsx(

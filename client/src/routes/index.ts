@@ -9,6 +9,13 @@ import LoginEmail from '@/site/LoginEmail';
 import Upload from '@/site/Upload';
 import Livestream from '@/site/Livestream';
 import Profile from '@/site/Profile';
+import Explore from '@/site/Explore';
+import Search from '@/site/Search';
+import LiveSearch from '@/site/LiveSearch';
+import VideoSearch from '@/site/VideoSearch';
+import UserSearch from '@/site/UserSearch';
+import EmptyLayout from '@/components/Layout/EmptyLayout';
+import Post from '@/site/Post';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -38,14 +45,52 @@ export const publicRoutes: RouteType[] = [
     fullScreen: true,
   },
   {
+    path: '/explore',
+    element: Explore,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
     path: '/live',
     element: Livestream,
     layout: DefaultLayout,
     fullScreen: true,
   },
   {
-    path: '/:usernamehaveCuff',
+    path: '/search',
+    element: Search,
+    layout: DefaultLayout,
+    fullScreen: true,
+    children: [
+      {
+        path: 'live',
+        element: LiveSearch,
+        layout: EmptyLayout,
+        fullScreen: false,
+      },
+      {
+        path: 'video',
+        element: VideoSearch,
+        layout: EmptyLayout,
+        fullScreen: false,
+      },
+      {
+        path: 'user',
+        element: UserSearch,
+        layout: EmptyLayout,
+        fullScreen: false,
+      },
+    ],
+  },
+  {
+    path: '/profile/:usernamehaveCuff',
     element: Profile,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: '/post/:postId',
+    element: Post,
     layout: DefaultLayout,
     fullScreen: true,
   },

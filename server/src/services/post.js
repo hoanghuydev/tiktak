@@ -28,13 +28,15 @@ function getVisibilityConditions(userId, type) {
                     {
                         visibility: VISIBILITY_POST_FRIEND,
                         poster: {
-                            [Op.in]: literal(`(
-                            SELECT f1.followee
+                            [Op.in]: literal(
+                                `(
+                                SELECT f1.followee
                             FROM followers f1
                             JOIN followers f2 ON f1.followee = f2.follower
                             WHERE f1.follower = ${userId}
                             AND f2.followee = ${userId}
-                        )`),
+                            )`
+                            ),
                         },
                     },
                     { visibility: VISIBILITY_POST_PRIVATE, poster: userId }
@@ -51,13 +53,13 @@ function getVisibilityConditions(userId, type) {
                         ],
                     },
                     poster: {
-                        [Op.in]: literal(`(
-                        SELECT f1.followee
+                        [Op.in]: literal(
+                            ` (SELECT f1.followee
                         FROM followers f1
                         JOIN followers f2 ON f1.followee = f2.follower
                         WHERE f1.follower = ${userId}
-                        AND f2.followee = ${userId}
-                    )`),
+                        AND f2.followee = ${userId})`
+                        ),
                     },
                 });
             break;
@@ -71,13 +73,33 @@ function getVisibilityConditions(userId, type) {
                         ],
                     },
                     poster: {
-                        [Op.in]: literal(`(
-                        SELECT f1.followee
+                        [Op.in]: literal(
+                            `(SELECT f1.followee
                         FROM followers f1
-                        WHERE f1.follower = ${userId}
-                    )`),
+                        WHERE f1.follower = ${userId})`
+                        ),
                     },
                 });
+            break;
+        default:
+            conditions.push({ visibility: VISIBILITY_POST_PUBLIC });
+            if (userId) {
+                conditions.push(
+                    {
+                        visibility: VISIBILITY_POST_FRIEND,
+                        poster: {
+                            [Op.in]: literal(
+                                ` (SELECT f1.followee
+                            FROM followers f1
+                            JOIN followers f2 ON f1.followee = f2.follower
+                            WHERE f1.follower = ${userId}
+                            AND f2.followee = ${userId})`
+                            ),
+                        },
+                    },
+                    { visibility: VISIBILITY_POST_PRIVATE, poster: userId }
+                );
+            }
             break;
     }
     return conditions;
@@ -98,7 +120,7 @@ export const getPosts = (
             );
             const query = {};
             const getPostWithVisibility = getVisibilityConditions(
-                req.user?.id,
+                req?.user?.id,
                 type
             );
             query.where = {
@@ -148,7 +170,7 @@ export const getPosts = (
                 ],
             };
 
-            if (req.user) {
+            if (req?.user) {
                 query.attributes.include.push([
                     literal(`(
                         SELECT EXISTS (

@@ -53,7 +53,8 @@ const Sidebar = () => {
             LIVE
           </LinkSidebar>
           <LinkSidebar
-            href={user ? `/@${user.userName}` : '/login'}
+            href={user ? `/profile/@${user.userName}` : '/login'}
+            active={tab === 'profile'}
             icon={
               user ? (
                 <img

@@ -3,23 +3,25 @@ import { PostModel } from '@/models/post';
 import React, { useEffect, useState } from 'react';
 import VideoRecommend from './components/VideoRecommend';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPostsSelector, postSelector } from '@/redux/selector';
+import { getPostsSelector, postSliceSelector } from '@/redux/selector';
 import { AppDispatch } from '@/redux/store';
-import { getFriendPosts } from '@/features/post/postSlice';
+import { getFriendPosts, setPosts } from '@/features/post/postSlice';
 import Button from '@/components/Button';
 import { Spin } from 'antd';
 import { setTab } from '@/features/tab/tabSlice';
 
-const Home = () => {
+const Friends = () => {
   const posts = useSelector(getPostsSelector);
-  const postState = useSelector(postSelector);
+  const postState = useSelector(postSliceSelector);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
+    dispatch(setPosts([]));
     dispatch(getFriendPosts());
+    document.title = 'TikTok - Make Your Day';
     dispatch(setTab('friends'));
   }, []);
   return (
-    <div className="h-full flex-1 flex flex-col items-center overflow-y-auto pt-5 pb-10">
+    <div className="h-full flex-1 flex flex-col items-center overflow-y-auto py-5 pb-10">
       <div className="w-full md:w-[75%] lg:w-[60%] h-full flex flex-col">
         {posts &&
           posts.map((post: PostModel, index) => (
@@ -58,4 +60,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Friends;

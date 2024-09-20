@@ -49,6 +49,17 @@ const PostService = {
       }
     });
   },
+  async getPostById(postId: number) {
+    return new Promise<PostPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.get(routePath + `/${postId}`);
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
   async sharePost(postId: number) {
     return new Promise<AbstractPayload>(async (resolve, reject) => {
       try {

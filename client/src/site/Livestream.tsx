@@ -9,6 +9,7 @@ const Livestream = () => {
 
   useEffect(() => {
     dispatch(setTab('livestream'));
+    document.title = 'TikTok LIVE | TikTok';
   }, []);
   return <div className="overflow-y-auto"></div>;
 };

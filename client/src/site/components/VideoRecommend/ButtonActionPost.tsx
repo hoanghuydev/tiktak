@@ -2,10 +2,12 @@ import clsx from 'clsx';
 import React from 'react';
 interface ButtonActionPostProps {
   icon: React.ReactNode;
-  count: number;
+  count?: number;
   onClick?: () => void;
   postId: number;
   className?: string;
+  iconClassName?: string;
+  textClassName?: string;
 }
 const ButtonActionPost = ({
   icon,
@@ -13,16 +15,26 @@ const ButtonActionPost = ({
   onClick,
   postId,
   className,
+  iconClassName,
+  textClassName,
 }: ButtonActionPostProps) => {
   return (
-    <div className={clsx('flex flex-col', className)}>
+    <div className={clsx('flex', className)}>
       <div
-        className="min-w-10 mx-auto max-w-10 h-10 md:min-w-12 md:max-w-12 md:h-12  hover:cursor-pointer hover:opacity-90 rounded-full flex bg-gray-200"
+        className={clsx(
+          'hover:cursor-pointer hover:opacity-90 rounded-full flex bg-gray-200',
+          iconClassName
+        )}
         onClick={onClick}
       >
         {icon}
       </div>
-      <p className="text-[13px] mx-auto text-center font-bold text-[#161823bf]">
+      <p
+        className={clsx(
+          'text-[13px] mx-auto text-center font-bold text-[#161823bf]',
+          textClassName
+        )}
+      >
         {count}
       </p>
     </div>

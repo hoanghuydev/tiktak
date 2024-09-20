@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties, StyleHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { ButtonHTMLType, ButtonType } from 'antd/es/button';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   setWidth?: boolean;
   outlineBlack?: boolean;
+  style?: CSSProperties;
 }
 const Button: React.FC<ButtonProps> = ({
   text,
@@ -35,10 +36,12 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   setWidth,
   outlineBlack,
+  style,
 }) => {
   const navigate = useNavigate();
   return (
     <button
+      style={style}
       onClick={href ? () => navigate(href) : onClick}
       type={type}
       disabled={disabled}

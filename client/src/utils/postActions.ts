@@ -1,0 +1,60 @@
+import { clientURL } from '@/axios';
+import PostService from '@/features/post/postService';
+import { message } from 'antd';
+
+/**
+ * Handles the like action for a post.
+ * @param postId The ID of the post to like.
+ * @param isLiked The current like status.
+ * @param setLikes The state setter function for the number of likes.
+ * @param setIsLiked The state setter function for the like status.
+ */
+const likePost = async (
+  postId: number,
+  isLiked: boolean,
+  setLikes: any,
+  setIsLiked: any
+) => {
+  if (!isLiked) {
+    await PostService.likePost(postId)
+      .then(() => {
+        setLikes((prevLikes: any) => prevLikes + 1);
+        setIsLiked(true);
+      })
+      .catch((err) => {
+        message.error(err.response.data.mes);
+      });
+  } else {
+    await PostService.unlikePost(postId)
+      .then(() => {
+        setIsLiked(false);
+        setLikes((prevLikes: number) => prevLikes - 1);
+      })
+      .catch((err) => {
+        message.error(err.response.data.mes);
+      });
+  }
+};
+
+/**
+ * Handles the share action for a post.
+ * @param postId The ID of the post to share.
+ * @param setShares The state setter function for the number of shares.
+ */
+const sharePost = async (postId: number, setShares: any) => {
+  navigator.clipboard
+    .writeText(`${clientURL}post/${postId}`)
+    .then(async () => {
+      try {
+        const resp = await PostService.sharePost(postId);
+        setShares((prevShares: number) => prevShares + 1);
+        message.success('Copied link to clipboard');
+      } catch (error) {
+        message.success('Copied link to clipboard');
+      }
+    })
+    .catch(() => {
+      message.error("Can't share video");
+    });
+};
+export const PostActions = { likePost, sharePost };

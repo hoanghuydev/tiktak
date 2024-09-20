@@ -6,6 +6,10 @@ import ProfileInfo from './components/Profile/ProfileInfo';
 import { PiUser } from 'react-icons/pi';
 import clsx from 'clsx';
 import ProfileTabs from './components/Profile/ProfileTabs';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { setTab } from '@/features/tab/tabSlice';
+import { Spin } from 'antd';
 
 const Profile = () => {
   const { usernamehaveCuff } = useParams();
@@ -13,6 +17,11 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [profileInfo, setProfileInfo] = useState<UserModel>();
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(setTab('profile'));
+  }, []);
+  useEffect(() => {}, []);
   // Get username
   useEffect(() => {
     // Check if username starts with '@'
@@ -24,14 +33,33 @@ const Profile = () => {
   }, [usernamehaveCuff, navigate]);
   // Get profile info
   useEffect(() => {
-    if (username)
-      UserService.getProfile(username).then((payload) => {
-        setProfileInfo(payload.user);
+    const getProfileInfo = async () => {
+      if (username) {
+        try {
+          const profileInfo = await UserService.getProfile(username);
+          setProfileInfo(profileInfo.user);
+          document.title = profileInfo.user.userName
+            ? `${profileInfo.user.userName} (@${profileInfo.user.fullName}) `
+            : 'Profile';
+        } catch (err) {
+          console.error(err);
+        }
         setLoading(false);
-      });
+      }
+    };
+    getProfileInfo();
   }, [username]);
   return (
     <div className="w-full h-full overflow-y-auto">
+      {loading && (
+        <div className="m-auto">
+          <Spin
+            tip="Loading"
+            size="large"
+            className="h-fit w-fit text-gray-400"
+          ></Spin>
+        </div>
+      )}
       {profileInfo && !loading && (
         <div className="p-5">
           <ProfileInfo profileInfo={profileInfo} />

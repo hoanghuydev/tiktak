@@ -5,7 +5,8 @@ export type TabType =
   | 'friends'
   | 'livestream'
   | 'explore'
-  | 'profile';
+  | 'profile'
+  | 'search';
 export interface TabState {
   tab: TabType;
 }

@@ -11,11 +11,12 @@ const upload = multer({
 router.get('/', Auth.setUser, PostController.getPosts);
 router.get('/friends', Auth.setUser, PostController.getFriendPosts);
 router.get('/following', Auth.setUser, PostController.getFollowingPosts);
-router.get('/:postId', Auth.setUser, PostController.getPostById);
 router.get('/user/:userId', PostController.getPosts);
 router.post('/share/:postId', Auth.origin, PostController.sharePost);
 router.post('/upload', upload.any(), Auth.origin, PostController.upload);
 router.post('/like/:postId', Auth.origin, PostController.likePost);
 router.post('/unlike/:postId', Auth.origin, PostController.unlikePost);
 router.post('/remove', Auth.origin, PostController.removePost);
+router.get('/:postId', Auth.setUser, PostController.getPostById);
+
 module.exports = router;
