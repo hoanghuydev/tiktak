@@ -11,6 +11,7 @@ import {
 } from '@/redux/selector';
 import { AppDispatch } from '@/redux/store';
 import { setPost } from '@/features/post/postSlice';
+import PostComment from './components/Post/PostComment';
 
 const Post = () => {
   let { postId } = useParams();
@@ -29,20 +30,21 @@ const Post = () => {
   return (
     <div className=" h-full">
       {!postSlice?.isLoading && post && (
-        <div className="grid grid-cols-1 md:grid-cols-3 h-full">
+        <div className="flex h-full">
           {/* First row: video */}
-          <div className="md:col-span-2 bg-black grid place-items-center">
+          <div className="flex-[200%] flex bg-black">
             <video
               autoPlay
               loop
-              className="w-full md:w-fit md:h-full object-cover object-center"
+              className="object-cover object-center mx-auto"
               src={post?.videoUrl ?? ''}
             ></video>
           </div>
 
           {/* Second row: post details */}
-          <div className="md:col-span-1 bg-white p-2 md:p-5 overflow-y-auto relative">
+          <div className="flex-[100%] bg-white overflow-y-auto relative">
             <PostInfo />
+            <PostComment />
           </div>
         </div>
       )}

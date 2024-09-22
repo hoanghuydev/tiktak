@@ -25,7 +25,7 @@ const PostSmall = ({ post }: { post: PostModel }) => {
 
   return (
     <div
-      className="hover:cursor-pointer hover:opacity-95 rounded-sm rounded-lg overflow-hidden max-w-[370px] min-w-[150px] relative"
+      className="hover:cursor-pointer hover:opacity-95 rounded-sm rounded-lg bg-black overflow-hidden max-w-[370px] min-w-[150px] relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

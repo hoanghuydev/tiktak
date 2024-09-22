@@ -20,14 +20,11 @@ const Home = () => {
     document.title = 'TikTok - Make Your Day';
   }, []);
   return (
-    <div className="h-full flex-1 flex flex-col items-center overflow-y-auto py-5 pb-10">
-      <div className="w-full md:w-[75%] lg:w-[60%] h-full flex flex-col">
+    <div className="h-full flex-1 flex flex-col items-center overflow-y-auto">
+      <div className="w-full h-full flex flex-col snap-y snap-mandatory overflow-y-scroll scrollbar-none">
         {posts &&
           posts.map((post: PostModel, index) => (
-            <div className="h-fit" key={index}>
-              <VideoRecommend post={post} />
-              <div className="h-[1px] w-full bg-gray-100 my-8 md:my-5"></div>
-            </div>
+            <VideoRecommend post={post} key={index} />
           ))}
         {posts && postSlice?.isError && (
           <div className="m-auto w-[300px] flex flex-col items-center">

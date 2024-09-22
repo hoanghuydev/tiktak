@@ -6,6 +6,30 @@ import { message } from 'antd';
 import { PostUploadModel } from '@/models/postUpload';
 import AbstractPayload from '@/utils/abtractPayloadType';
 
+// Interfaces
+export interface PostPayload {
+  err: number;
+  mes: string;
+  post: PostModel;
+}
+
+export interface PostsPayload extends PaginationModel {
+  err: number;
+  mes: string;
+  posts: PostModel[];
+}
+
+export interface InitStatePostType {
+  posts: PostModel[];
+  post: PostModel | null;
+  postUpload: PostUploadModel;
+  isError: boolean;
+  isLoading: boolean;
+  pecentLoading: number;
+  isSuccess: boolean;
+  message: string;
+}
+
 // Async Thunks
 export const getPosts = createAsyncThunk(
   'post/getPosts',
@@ -67,47 +91,6 @@ export const uploadPost = createAsyncThunk(
   }
 );
 
-// Interfaces
-export interface PostPayload {
-  err: number;
-  mes: string;
-  post: PostModel;
-}
-
-export interface PostsPayload extends PaginationModel {
-  err: number;
-  mes: string;
-  posts: PostModel[];
-}
-
-export interface InitStatePostType {
-  posts: PostModel[];
-  post: PostModel | null;
-  postUpload: PostUploadModel;
-  isError: boolean;
-  isLoading: boolean;
-  pecentLoading: number;
-  isSuccess: boolean;
-  message: string;
-}
-
-// Initial state
-const initialState: InitStatePostType = {
-  posts: [],
-  post: null,
-  postUpload: {
-    video: null,
-    thumnail: null,
-    title: '',
-    visibility: 1,
-  },
-  isError: false,
-  isSuccess: false,
-  isLoading: false,
-  pecentLoading: 99,
-  message: '',
-};
-
 // Utility functions
 const handlePending = (state: InitStatePostType) => {
   state.isLoading = true;
@@ -130,9 +113,24 @@ const handleRejected = (state: InitStatePostType, action: any) => {
     state.message = payload.mes;
     state.posts = [];
     message.error(payload.mes);
-  } else {
-    message.error('Unknown error occurred');
   }
+};
+
+// Initial state
+const initialState: InitStatePostType = {
+  posts: [],
+  post: null,
+  postUpload: {
+    video: null,
+    thumnail: null,
+    title: '',
+    visibility: 1,
+  },
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  pecentLoading: 99,
+  message: '',
 };
 
 // Slice

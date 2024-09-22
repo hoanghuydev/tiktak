@@ -78,9 +78,11 @@ class PostController {
         try {
             const postList = await postServices.getPosts(
                 req.params.postId,
+                'all',
                 req.query,
                 req
             );
+
             if (postList.posts[0])
                 return res.status(200).json({
                     err: 0,

@@ -24,7 +24,13 @@ function App() {
   useEffect(() => {
     const setMyInfo = async () => {
       setLoading(true);
-      const resp: UserPayload = await UserService.me();
+      const resp: UserPayload = await UserService.me()
+        .then((resp: UserPayload) => resp)
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          window.location.reload();
+          return {} as UserPayload;
+        });
       dispatch(setCurrentUser(resp.user));
       setLoading(false);
     };

@@ -129,7 +129,6 @@ export const getPosts = (
 
             if (postId) query.where.id = postId;
             if (title) query.where.title = { [Op.substring]: title };
-
             query.include = [];
             if (userId)
                 query.include.push({

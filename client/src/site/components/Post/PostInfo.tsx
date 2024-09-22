@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import { currentUserSelector, getPostSelector } from '@/redux/selector';
 import { FaShare } from 'react-icons/fa6';
 import PostAction from './PostAction';
+import { clientURL } from '@/axios';
+import { message } from 'antd';
 
 const PostInfo = () => {
   const titleRef = useRef<HTMLParagraphElement>(null);
@@ -27,8 +29,16 @@ const PostInfo = () => {
       }
     }
   }, [post.title]);
+  function handleCopyLink(): void {
+    navigator.clipboard
+      .writeText(`${clientURL}post/${post.id}`)
+      .then(async () => {
+        message.info('Copied link to clipboard');
+      });
+  }
+
   return (
-    <div className="">
+    <div className="p-2 md:p-5">
       <div className="rounded-lg flex flex-col gap-3 bg-[#16182308] p-2">
         {/* User info */}
         <div className="flex justify-between flex-wrap gap-3">
@@ -49,7 +59,7 @@ const PostInfo = () => {
               </p>
             </div>
           </div>
-          <Button className="px-6 w-[70px] md:w-[100px] rounded-md">
+          <Button className="px-6 py-2 w-[105px] h-fit rounded-md">
             Follow
           </Button>
         </div>
@@ -87,6 +97,15 @@ const PostInfo = () => {
       </div>
       <div className="flex gap-5">
         <PostAction />
+      </div>
+      <div className="flex mt-2 text-[#161823bf] justify-between bg-[#1618230f] border-[#1618231f] rounded-md border-[1px]">
+        <p className="bg-[#1618230f] w-full ps-3 pb-1 pt-2 line-clamp-1">{`${clientURL}post/${post.id}`}</p>
+        <button
+          className=" py-2 px-4 text-[#161823] font-bold whitespace-nowrap"
+          onClick={handleCopyLink}
+        >
+          Copy link
+        </button>
       </div>
     </div>
   );

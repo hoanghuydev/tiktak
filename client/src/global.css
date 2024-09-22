@@ -49,3 +49,13 @@ input[type='range'].range-white {
   background-color: white;
   accent-color: white;
 }
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.snap-start-center {
+  scroll-snap-align: start center;
+}

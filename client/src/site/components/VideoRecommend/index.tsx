@@ -81,8 +81,11 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
   };
 
   return (
-    <div className="px-5 w-full flex" id={'post-' + post.id}>
-      <div className="hidden md:flex min-w-[56px] max-w-[56px] h-[56px] rounded-full me-4 overflow-hidden">
+    <article
+      className="snap-always snap-start-center px-5 md:pe-[15vw] w-fit  flex my-3 mx-auto"
+      id={'post-' + post.id}
+    >
+      <div className="hidden md:flex md:min-w-[45px] md:max-w-[45px] md:h-[45px] lg:min-w-[56px] lg:max-w-[56px] lg:h-[56px] rounded-full me-4 overflow-hidden">
         <Link to={'/profile/@' + post.posterData.userName}>
           <img
             src={post.posterData.avatarData.url || ''}
@@ -91,7 +94,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
           />
         </Link>
       </div>
-      <div className="flex-1">
+      <div className="flex flex-col">
         <VideoRecommendInfo
           followUser={followUser}
           post={post}
@@ -100,11 +103,11 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
           setIsFollow={setIsFollow}
         />
         {/* Video */}
-        <div className="flex mt-5">
+        <div className="flex mx-auto mt-5 h-[calc(100vh-170px)]">
           <Video
             videoRef={videoRef}
             videoUrl={post.videoUrl + ''}
-            className="min-w-[43%] max-w-[90%] sm:max-w-[70%] md:max-w-[55%] lg:max-w-[45%] min-h-[200px]"
+            className="h-full aspect-[9/16]"
           />
           <VideoRecommendActions
             followUser={followUser}
@@ -115,7 +118,7 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
           />
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

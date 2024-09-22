@@ -17,8 +17,8 @@ export const getCommentsByPostId = (
         userId,
         fullName,
         content,
-    }
-    ,req
+    },
+    req
 ) =>
     new Promise(async (resolve, reject) => {
         try {
@@ -46,8 +46,8 @@ export const getCommentsByPostId = (
                         where: userQuery,
                     },
                 ],
-                attributes : {
-                    include : [
+                attributes: {
+                    include: [
                         [
                             literal(`(
                                 SELECT COUNT(*)
@@ -56,11 +56,19 @@ export const getCommentsByPostId = (
                                   lc.commentId = commentPost.id
                                   AND lc.isCommentPost = true
                                 )`),
-                            'likes'
-                        ]
-                        
-                    ]
-                }
+                            'likes',
+                        ],
+                        [
+                            literal(`(
+                                SELECT COUNT(*)
+                                FROM commentsReply cr
+                                WHERE
+                                  cr.commentPostId = commentPost.id
+                                )`),
+                            'replies',
+                        ],
+                    ],
+                },
             };
             if (req.user) {
                 commonQuery.attributes.include.push([
@@ -76,10 +84,10 @@ export const getCommentsByPostId = (
                                 AND u.id = ${req.user.id}
                         )
                     )`),
-                    'isLiked'
-                ])
+                    'isLiked',
+                ]);
             }
-            
+
             const { count, rows } = await db.CommentPost.findAndCountAll({
                 attributes: {
                     exclude: ['createdAt', 'updatedAt'],
@@ -137,36 +145,41 @@ export const insertCommentPost = (commentPostModel) =>
             reject(error);
         }
     });
-export const removeCommentPost = (commentPostId) => 
-    new Promise(async (resolve,reject)=> {
+export const removeCommentPost = (commentPostId) =>
+    new Promise(async (resolve, reject) => {
         const transaction = await sequelize.transaction();
         try {
-            await commentReplyServices.removeCommentReplyByCommentPostId(commentPostId)
+            await commentReplyServices.removeCommentReplyByCommentPostId(
+                commentPostId
+            );
             await db.LikeComment.destroy({
                 where: {
                     commentId: commentPostId,
-                    isCommentPost: 1
+                    isCommentPost: 1,
                 },
-                transaction
+                transaction,
             });
             await db.CommentPost.destroy({
                 where: { id: commentPostId },
-                transaction
+                transaction,
             });
             await transaction.commit();
-            resolve(true)
+            resolve(true);
         } catch (error) {
             await transaction.rollback();
-            reject(error)
+            reject(error);
         }
-    })
-    
-export const updateCommentPost = (id,content) =>
+    });
+
+export const updateCommentPost = (id, content) =>
     new Promise(async (resolve, reject) => {
         try {
-            const updated = await db.CommentPost.update({content}, {
-                where: { id },
-            });
+            const updated = await db.CommentPost.update(
+                { content },
+                {
+                    where: { id },
+                }
+            );
             resolve(updated);
         } catch (error) {
             reject(error);

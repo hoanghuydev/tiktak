@@ -117,7 +117,7 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
   return (
     <div
       className={clsx(
-        'video-container bg-black grid place-items-center rounded-lg overflow-hidden relative w-fit h-fit',
+        'video-container bg-black grid place-items-center rounded-lg overflow-hidden relative',
         className
       )}
       onClick={togglePlayPause}

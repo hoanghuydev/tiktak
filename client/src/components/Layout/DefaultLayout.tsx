@@ -13,7 +13,7 @@ const DefaultLayout = ({ children, fullScreen }: LayoutProps) => {
       <Header />
       <div className="flex h-full">
         <Sidebar />
-        <div className="w-full mt-5 mb-10">{children}</div>
+        <div className="w-full mt-4 mb-16">{children}</div>
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ const VideoRecommendActions = ({
   const [likes, setLikes] = useState<number>(post.likes!);
 
   return (
-    <div className="ms-5 flex flex-col justify-end">
+    <div className="ms-5 flex flex-col justify-end h-full">
       {!post.isMe ? (
         <div className="mb-3 relative min-w-10 mx-auto max-w-10 h-10 md:min-w-12 md:max-w-12 md:h-12 rounded-full object-cover">
           <Link to={`/profile/@${post.posterData.userName}`}>

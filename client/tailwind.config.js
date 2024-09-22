@@ -14,6 +14,15 @@ module.exports = {
         'black-to-transparent-bottom':
           'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.00))',
       },
+      scrollSnapAlign: {
+        'start-center': 'start center',
+      },
+      scrollbar: {
+        none: 'scrollbar-width: none',
+      },
+      display: {
+        'webkit-box': '-webkit-box',
+      },
     },
   },
   plugins: [],
