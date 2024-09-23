@@ -102,11 +102,13 @@ const Header = () => {
             <FiSend fontSize={28} className="my-auto" />
             <RiMessageLine fontSize={28} className="my-auto" />
             <div className="min-w-8 max-w-8 h-8 ">
-              <img
-                src={user.avatarData.url || ''}
-                alt="User avatar"
-                className="object-cover w-full h-full rounded-full"
-              />
+              <Link to={`/profile/@${user.userName}`}>
+                <img
+                  src={user.avatarData.url || ''}
+                  alt="User avatar"
+                  className="object-cover w-full h-full rounded-full"
+                />
+              </Link>
             </div>
           </div>
         )}

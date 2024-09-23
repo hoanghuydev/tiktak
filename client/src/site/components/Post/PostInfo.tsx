@@ -59,7 +59,10 @@ const PostInfo = () => {
               </p>
             </div>
           </div>
-          <Button className="px-6 py-2 w-[105px] h-fit rounded-md">
+          <Button
+            className="px-6 py-2 h-fit rounded-sm"
+            style={{ width: '80px' }}
+          >
             Follow
           </Button>
         </div>
