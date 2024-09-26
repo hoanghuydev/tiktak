@@ -33,9 +33,10 @@ export interface InitStatePostType {
 // Async Thunks
 export const getPosts = createAsyncThunk(
   'post/getPosts',
-  async (postId, thunkAPI) => {
+  async (title: string | undefined, thunkAPI) => {
     try {
-      const resp = await PostService.getPosts();
+      const optionalTitle = title || '';
+      const resp = await PostService.getPosts(optionalTitle);
       return resp;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);

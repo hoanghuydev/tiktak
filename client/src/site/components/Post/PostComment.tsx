@@ -1,8 +1,12 @@
 import Comment from '@/components/Comment';
+import Loading from '@/components/Loading';
+import PostSmall from '@/components/PostSmall';
 import CommentService from '@/features/comment/commentService';
+import PostService from '@/features/post/postService';
 import { CommentModel } from '@/models/comment';
+import { PostModel } from '@/models/post';
 import { getPostSelector } from '@/redux/selector';
-import { Tabs } from 'antd';
+import { Spin, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import React, { useEffect, useState } from 'react';
 import { CgMenuGridO } from 'react-icons/cg';
@@ -13,16 +17,23 @@ const PostComment = () => {
   const [miniTab, setMiniTab] = useState<'comments' | 'creator-videos'>(
     'comments'
   );
+  const [posts, setPosts] = useState<PostModel[]>([]);
+  const [loading, setLoading] = useState(false);
   const post = useSelector(getPostSelector);
   const [comments, setComments] = useState<CommentModel[]>([]);
   useEffect(() => {
-    const getComments = async (postId: number) => {
-      await CommentService.getCommentsByPostId(postId).then((resp) => {
-        setComments(resp.comments);
-      });
-    };
     if (post && miniTab == 'comments' && comments.length == 0) {
-      getComments(post.id!);
+      setLoading(true);
+      CommentService.getCommentsByPostId(post.id!).then((resp) => {
+        setComments(resp.comments);
+        setLoading(false);
+      });
+    } else if (miniTab == 'creator-videos' && posts.length == 0) {
+      setLoading(true);
+      PostService.getPostsByUserId(post.poster!).then((resp) => {
+        setPosts(resp.posts);
+        setLoading(false);
+      });
     }
   }, [miniTab, post]);
   return (
@@ -30,22 +41,53 @@ const PostComment = () => {
       <Tabs animated defaultActiveKey="comments" className="w-full">
         <TabPane
           className="w-full p-3"
-          tab={<p className="text-center font-semibold px-5">Comments</p>}
+          tab={
+            <p
+              className="text-center font-semibold px-5"
+              onClick={() => {
+                setMiniTab('comments');
+              }}
+            >
+              Comments
+            </p>
+          }
           key="comments"
         >
-          {comments.map((comment) => (
-            <Comment comment={comment} className="mb-6" />
-          ))}
+          {loading && <Loading />}
+          {!loading &&
+            comments.map((comment) => (
+              <Comment comment={comment} key={comment.id} className="mb-6" />
+            ))}
         </TabPane>
 
         <TabPane
           className="w-full"
           tab={
-            <p className="text-center font-semibold  px-5">Creator videos</p>
+            <p
+              className="text-center font-semibold px-5"
+              onClick={() => {
+                setMiniTab('creator-videos');
+              }}
+            >
+              Creator videos
+            </p>
           }
           key="creator-videos"
         >
-          Content of Tab Pane 3
+          {loading && <Loading />}
+          {!loading && posts && (
+            <div className="flex mb-5">
+              <div className="flex flex-wrap mx-auto gap-5 px-0 md:px-4 lg:px-6">
+                {posts.map((post, index) => (
+                  <PostSmall
+                    className="mx-auto flex-grow flex-shrink max-w-[200px]"
+                    key={index}
+                    post={post}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </TabPane>
       </Tabs>
     </div>

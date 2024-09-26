@@ -13,6 +13,7 @@ import {
 import Button from '@/components/Button';
 import { Spin } from 'antd';
 import { setTab } from '@/features/tab/tabSlice';
+import Loading from '@/components/Loading';
 
 const Following = () => {
   const posts = useSelector(getPostsSelector);
@@ -51,15 +52,7 @@ const Following = () => {
             </Button>
           </div>
         )}
-        {posts && postSlice?.isLoading && !postSlice.isError && (
-          <div className="m-auto">
-            <Spin
-              tip="Loading"
-              size="large"
-              className="h-fit w-fit text-gray-400"
-            ></Spin>
-          </div>
-        )}
+        {posts && postSlice?.isLoading && !postSlice.isError && <Loading />}
       </div>
     </div>
   );

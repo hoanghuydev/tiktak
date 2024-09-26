@@ -36,8 +36,14 @@ export const findUsers = (
             const queries = pagingConfig(
                 page,
                 pageSize,
-                orderBy,
-                orderDirection
+                name
+                    ? literal(`(
+                    SELECT COUNT(*)
+                    FROM followers f
+                    WHERE f.followee = User.id
+                )`)
+                    : orderBy,
+                name ? 'DESC' : orderDirection
             );
 
             const whereClause = name

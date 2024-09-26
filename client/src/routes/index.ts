@@ -16,6 +16,7 @@ import VideoSearch from '@/site/VideoSearch';
 import UserSearch from '@/site/UserSearch';
 import EmptyLayout from '@/components/Layout/EmptyLayout';
 import Post from '@/site/Post';
+import TopSearch from '@/site/TopSearch';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -61,26 +62,6 @@ export const publicRoutes: RouteType[] = [
     element: Search,
     layout: DefaultLayout,
     fullScreen: true,
-    children: [
-      {
-        path: 'live',
-        element: LiveSearch,
-        layout: EmptyLayout,
-        fullScreen: false,
-      },
-      {
-        path: 'video',
-        element: VideoSearch,
-        layout: EmptyLayout,
-        fullScreen: false,
-      },
-      {
-        path: 'user',
-        element: UserSearch,
-        layout: EmptyLayout,
-        fullScreen: false,
-      },
-    ],
   },
   {
     path: '/profile/:usernamehaveCuff',

@@ -115,8 +115,8 @@ export const getPosts = (
             const queries = pagingConfig(
                 page,
                 pageSize,
-                orderBy,
-                orderDirection
+                title ? 'likes' : orderBy,
+                title ? 'DESC' : orderDirection
             );
             const query = {};
             const getPostWithVisibility = getVisibilityConditions(
@@ -128,6 +128,7 @@ export const getPosts = (
             };
 
             if (postId) query.where.id = postId;
+            // Give title in req.query to search videos with title
             if (title) query.where.title = { [Op.substring]: title };
             query.include = [];
             if (userId)

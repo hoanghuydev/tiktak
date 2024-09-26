@@ -6,6 +6,7 @@ import { CgMenuGridO } from 'react-icons/cg';
 import PostService from '@/features/post/postService';
 import { PostModel } from '@/models/post';
 import PostSmall from '@/components/PostSmall';
+import Loading from '@/components/Loading';
 const ProfileTabs = ({ userId }: { userId: number }) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [loading, setLoading] = useState(false);
@@ -24,15 +25,7 @@ const ProfileTabs = ({ userId }: { userId: number }) => {
         }
         key="videos"
       >
-        {loading && (
-          <div className="m-auto">
-            <Spin
-              tip="Loading"
-              size="large"
-              className="h-fit w-fit text-gray-400"
-            ></Spin>
-          </div>
-        )}
+        {loading && <Loading />}
         {!loading && posts && (
           <div className="flex flex-wrap gap-5">
             {posts.map((post, index) => (

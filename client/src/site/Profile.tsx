@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setTab } from '@/features/tab/tabSlice';
 import { Spin } from 'antd';
+import Loading from '@/components/Loading';
 
 const Profile = () => {
   const { usernamehaveCuff } = useParams();
@@ -51,15 +52,7 @@ const Profile = () => {
   }, [username]);
   return (
     <div className="w-full h-full overflow-y-auto">
-      {loading && (
-        <div className="m-auto">
-          <Spin
-            tip="Loading"
-            size="large"
-            className="h-fit w-fit text-gray-400"
-          ></Spin>
-        </div>
-      )}
+      {loading && <Loading />}
       {profileInfo && !loading && (
         <div className="p-5">
           <ProfileInfo profileInfo={profileInfo} />

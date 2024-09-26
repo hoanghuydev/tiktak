@@ -22,7 +22,7 @@ class UserController {
             return res.status(200).json({
                 err: 0,
                 mes: '',
-                users,
+                ...users,
             });
         } catch (error) {
             console.log(error);

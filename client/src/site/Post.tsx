@@ -21,6 +21,7 @@ const Post = () => {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     const getPostInfoById = async (postId: number) => {
+      setPost({} as PostModel);
       const resp = await PostService.getPostById(postId);
       dispatch(setPost(resp.post));
     };

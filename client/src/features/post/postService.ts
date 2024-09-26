@@ -9,10 +9,12 @@ export interface PostPayload extends AbstractPayload {
   post: PostModel;
 }
 const PostService = {
-  async getPosts() {
+  async getPosts(title?: string) {
     return new Promise<PostsPayload>(async (resolve, reject) => {
       try {
-        const resp = await axiosToken.get(routePath + '/');
+        const resp = await axiosToken.get(
+          routePath + `/${title ? `?title=${title}` : ''}`
+        );
         resolve(resp.data);
       } catch (error) {
         reject(error);

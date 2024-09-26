@@ -31,5 +31,38 @@ const CommentService = {
       }
     });
   },
+  async likeAndUnlikeCommentPost(commentId: number, like: boolean) {
+    return new Promise<AbstractPayload>(async (resolve, reject) => {
+      try {
+        let resp = null;
+        if (like)
+          // like comment post
+          resp = await axiosToken.post(routePath + `/${commentId}/like`);
+        // unlike comment post
+        else resp = await axiosToken.post(routePath + `/${commentId}/unlike`);
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async likeAndUnlikeCommentReply(commentId: number, like: boolean) {
+    return new Promise<AbstractPayload>(async (resolve, reject) => {
+      try {
+        let resp = null;
+        if (like)
+          // like comment reply
+          resp = await axiosToken.post(routePath + `/reply/${commentId}/like`);
+        // unlike comment reply
+        else
+          resp = await axiosToken.post(
+            routePath + `/reply/${commentId}/unlike`
+          );
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
 };
 export default CommentService;

@@ -1,6 +1,7 @@
 import { axiosToken } from '@/axios';
 import { UserModel } from '@/models/user';
 import AbstractPayload from '@/utils/abtractPayloadType';
+import { UsersPayload } from './userSlice';
 
 export interface GetUserParams {
   userId: number;
@@ -34,6 +35,16 @@ const UserService = {
     return new Promise<UserPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(routePath + `/profile/${username}`);
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async searchUsersByFullName(name: string) {
+    return new Promise<UsersPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.get(routePath + `/find?name=${name}`);
         resolve(resp.data);
       } catch (error) {
         reject(error);

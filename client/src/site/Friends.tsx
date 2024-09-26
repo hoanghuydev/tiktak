@@ -9,6 +9,7 @@ import { getFriendPosts, setPosts } from '@/features/post/postSlice';
 import Button from '@/components/Button';
 import { Spin } from 'antd';
 import { setTab } from '@/features/tab/tabSlice';
+import Loading from '@/components/Loading';
 
 const Friends = () => {
   const posts = useSelector(getPostsSelector);
@@ -46,15 +47,7 @@ const Friends = () => {
             </Button>
           </div>
         )}
-        {posts && postState?.isLoading && !postState.isError && (
-          <div className="m-auto">
-            <Spin
-              tip="Loading"
-              size="large"
-              className="h-fit w-fit text-gray-400"
-            ></Spin>
-          </div>
-        )}
+        {posts && postState?.isLoading && !postState.isError && <Loading />}
       </div>
     </div>
   );

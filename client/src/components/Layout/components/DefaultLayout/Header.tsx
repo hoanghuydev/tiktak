@@ -10,16 +10,25 @@ import { currentUserSelector, tabSelector } from '@/redux/selector';
 import { FiSend } from 'react-icons/fi';
 import { RiMessageLine } from 'react-icons/ri';
 import clsx from 'clsx';
+
 const Header = () => {
   const [searchText, setSearchText] = useState<string>('');
   const user = useSelector(currentUserSelector);
   const currentTab = useSelector(tabSelector);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
   useEffect(() => {
     const query = searchParams.get('q');
     setSearchText(query ?? '');
   }, [searchParams]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    if (!searchText.trim()) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <header className="h-[60px] bg-white justify-between shadow-sm flex items-center ps-4 pe-6 border-b-[1px] border-b-gray-200">
       <div className="logo w-[280px]">
@@ -32,6 +41,7 @@ const Header = () => {
           method="GET"
           action="/search"
           className="w-full border-[1px] border-gray-300 px-4 py-[9px] bg-gray-100 rounded-full flex relative"
+          onSubmit={handleSearchSubmit}
         >
           <input
             id="searchInputHeader"
@@ -40,13 +50,10 @@ const Header = () => {
             onChange={(e) => {
               setSearchText(e.target.value);
             }}
+            autoComplete="off"
             className="ms-2 outline-none border-none my-auto flex-1 bg-transparent text-color"
             placeholder="Search"
           />
-          <div
-            className="absolute z-30 top-[100%] w-full h-[15px] hidden"
-            id="lineHiddenSearchInputHeader"
-          ></div>
           <div
             id="searchPopupHeader"
             className="p-4 hidden z-30 absolute bg-white shadow-custom rounded-md top-[55px] start-0 end-0"
@@ -60,21 +67,16 @@ const Header = () => {
             </div>
           </div>
           <div className="w-[1px] h-full bg-gray-200"></div>
-          <button type="submit">
+          <button
+            type="submit"
+            disabled={!searchText.trim()} // Disable the button if search text is empty
+          >
             <IoIosSearch fontSize={22} className="my-auto mx-3 text-gray-400" />
           </button>
         </form>
       </div>
       <div
-        className={clsx(
-          `
-          flex 
-          justify-end 
-          w-[280px]
-        `,
-          user && 'gap-8',
-          !user && 'gap-4'
-        )}
+        className={clsx(`flex justify-end w-[280px]`, user ? 'gap-8' : 'gap-4')}
       >
         <Button
           onClick={() => {

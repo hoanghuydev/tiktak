@@ -22,3 +22,5 @@ export const pecentLoadingPostSelector = (state: RootState): number =>
   state.post.pecentLoading;
 export const getPostLoadingSelector = (state: RootState): boolean =>
   state.post.isLoading;
+export const getUsersSelector = (state: RootState): UserModel[] =>
+  state.user.users;
