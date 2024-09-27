@@ -5,6 +5,7 @@ import { InitStatePostType } from '@/features/post/postSlice';
 import { PostModel } from '@/models/post';
 import { PostUploadModel } from '@/models/postUpload';
 import { TabState, TabType } from '@/features/tab/tabSlice';
+import { CommentModel } from '@/models/comment';
 
 export const authSelector = (state: RootState): InitStateAuthType => state.auth;
 export const tabSelector = (state: RootState): TabType => state.tab.tab;
@@ -24,3 +25,5 @@ export const getPostLoadingSelector = (state: RootState): boolean =>
   state.post.isLoading;
 export const getUsersSelector = (state: RootState): UserModel[] =>
   state.user.users;
+export const getCommentsSelector = (state: RootState): CommentModel[] =>
+  state.comment.comments;

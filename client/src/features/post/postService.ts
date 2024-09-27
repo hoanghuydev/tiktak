@@ -1,9 +1,12 @@
 import { axiosToken } from '@/axios';
+import { PaginationModel } from '@/models';
 import { PostModel } from '@/models/post';
 import AbstractPayload from '@/utils/abtractPayloadType';
 const routePath = '/post';
+
 export interface PostsPayload extends AbstractPayload {
   posts: PostModel[];
+  pagination: PaginationModel;
 }
 export interface PostPayload extends AbstractPayload {
   post: PostModel;

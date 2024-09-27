@@ -20,7 +20,7 @@ const Comment = ({
   className?: string;
 }) => {
   const [showReplyForm, setShowReplyForm] = useState<boolean>(false);
-  const [isLike, setIsLike] = useState<boolean>(comment.isLiked == 1 ?? false);
+  const [isLike, setIsLike] = useState<boolean>(comment.isLiked == 1);
   const [likes, setLikes] = useState<number>(comment.likes ?? 0);
   const user = useSelector(currentUserSelector);
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const Comment = ({
             </div>
             {/* Comment Like */}
             <div className="ms-5 flex gap-2 text-[#0000007a] ">
-              {!isLike && (
+              {!isLike && user && (
                 <IoHeartOutline
                   onClick={() => handleLikeAndUnlikeComment(comment.id!)}
                   className="my-auto "

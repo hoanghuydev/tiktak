@@ -2,16 +2,18 @@ import Comment from '@/components/Comment';
 import Loading from '@/components/Loading';
 import PostSmall from '@/components/PostSmall';
 import CommentService from '@/features/comment/commentService';
+import { getCommentsByPostId } from '@/features/comment/commentSlice';
 import PostService from '@/features/post/postService';
 import { CommentModel } from '@/models/comment';
 import { PostModel } from '@/models/post';
-import { getPostSelector } from '@/redux/selector';
+import { getCommentsSelector, getPostSelector } from '@/redux/selector';
+import { AppDispatch } from '@/redux/store';
 import { Spin, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import React, { useEffect, useState } from 'react';
 import { CgMenuGridO } from 'react-icons/cg';
 import { IoHeartDislikeOutline } from 'react-icons/io5';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const PostComment = () => {
   const [miniTab, setMiniTab] = useState<'comments' | 'creator-videos'>(
@@ -20,14 +22,13 @@ const PostComment = () => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [loading, setLoading] = useState(false);
   const post = useSelector(getPostSelector);
-  const [comments, setComments] = useState<CommentModel[]>([]);
+  const comments = useSelector(getCommentsSelector);
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (post && miniTab == 'comments' && comments.length == 0) {
       setLoading(true);
-      CommentService.getCommentsByPostId(post.id!).then((resp) => {
-        setComments(resp.comments);
-        setLoading(false);
-      });
+      dispatch(getCommentsByPostId(post.id));
+      setLoading(false);
     } else if (miniTab == 'creator-videos' && posts.length == 0) {
       setLoading(true);
       PostService.getPostsByUserId(post.poster!).then((resp) => {

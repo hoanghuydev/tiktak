@@ -1,5 +1,5 @@
 export interface AbstractModel {
-  id: number | null | undefined;
+  id: number;
   createdAt: Date | null | string;
   updatedAt: Date | null;
 }

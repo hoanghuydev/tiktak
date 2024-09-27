@@ -1,23 +1,11 @@
 import { PostModel } from '@/models/post';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import PostService from './postService';
+import PostService, { PostPayload, PostsPayload } from './postService';
 import { PaginationModel } from '@/models';
 import { message } from 'antd';
 import { PostUploadModel } from '@/models/postUpload';
 import AbstractPayload from '@/utils/abtractPayloadType';
-
-// Interfaces
-export interface PostPayload {
-  err: number;
-  mes: string;
-  post: PostModel;
-}
-
-export interface PostsPayload extends PaginationModel {
-  err: number;
-  mes: string;
-  posts: PostModel[];
-}
+import { setComment } from '../comment/commentSlice';
 
 export interface InitStatePostType {
   posts: PostModel[];
@@ -169,6 +157,9 @@ const postSlice = createSlice({
     setPostLoading(state, action: { payload: boolean; type: string }) {
       state.isLoading = action.payload;
     },
+    setComments(state, action: { payload: number; type: string }) {
+      state.post!.comments = action.payload;
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -240,5 +231,6 @@ export const {
   setCountCommnent,
   setIsLike,
   setIsFollow,
+  setComments,
 } = postSlice.actions;
 export default postSlice.reducer;
