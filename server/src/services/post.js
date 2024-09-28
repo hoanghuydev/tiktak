@@ -316,6 +316,22 @@ export const updatePost = (id, postModel) =>
             reject(error);
         }
     });
+export const watchPost = (id) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            const resp = await db.Post.update(
+                { views: Sequelize.literal('views + 1') },
+                {
+                    where: {
+                        id,
+                    },
+                }
+            );
+            resolve(resp);
+        } catch (error) {
+            reject(error);
+        }
+    });
 export const sharePost = (id) =>
     new Promise(async (resolve, reject) => {
         try {

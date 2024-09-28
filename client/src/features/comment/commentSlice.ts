@@ -86,6 +86,9 @@ const commentSlice = createSlice({
     setComment(state, action: { payload: CommentModel; type: string }) {
       state.comment = action.payload;
     },
+    setComments(state, action: { payload: CommentModel[]; type: string }) {
+      state.comments = action.payload;
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -112,5 +115,5 @@ const commentSlice = createSlice({
       .addCase(commentPost.rejected, handleRejected),
 });
 
-export const { addComment, setComment } = commentSlice.actions;
+export const { addComment, setComment, setComments } = commentSlice.actions;
 export default commentSlice.reducer;

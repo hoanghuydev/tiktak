@@ -157,9 +157,6 @@ const postSlice = createSlice({
     setPostLoading(state, action: { payload: boolean; type: string }) {
       state.isLoading = action.payload;
     },
-    setComments(state, action: { payload: number; type: string }) {
-      state.post!.comments = action.payload;
-    },
   },
   extraReducers: (builder) =>
     builder
@@ -231,6 +228,5 @@ export const {
   setCountCommnent,
   setIsLike,
   setIsFollow,
-  setComments,
 } = postSlice.actions;
 export default postSlice.reducer;

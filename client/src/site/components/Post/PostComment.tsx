@@ -56,6 +56,7 @@ const PostComment = () => {
         >
           {loading && <Loading />}
           {!loading &&
+            comments.length != 0 &&
             comments.map((comment) => (
               <Comment comment={comment} key={comment.id} className="mb-6" />
             ))}

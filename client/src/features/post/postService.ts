@@ -1,4 +1,4 @@
-import { axiosToken } from '@/axios';
+import { axiosNoToken, axiosToken } from '@/axios';
 import { PaginationModel } from '@/models';
 import { PostModel } from '@/models/post';
 import AbstractPayload from '@/utils/abtractPayloadType';
@@ -18,6 +18,16 @@ const PostService = {
         const resp = await axiosToken.get(
           routePath + `/${title ? `?title=${title}` : ''}`
         );
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async watchPost(postId?: number) {
+    return new Promise<PostsPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosNoToken.post(routePath + `/${postId}/watch`);
         resolve(resp.data);
       } catch (error) {
         reject(error);

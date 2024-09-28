@@ -1,11 +1,14 @@
 import EmojiPicker from '@/components/EmoijPicker';
 import { commentPost } from '@/features/comment/commentSlice';
-import { setComments } from '@/features/post/postSlice';
+import { setCountCommnent } from '@/features/post/postSlice';
 import { PostModel } from '@/models/post';
+import { currentUserSelector } from '@/redux/selector';
 import { AppDispatch } from '@/redux/store';
+import { message } from 'antd';
 import clsx from 'clsx';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { ref } from 'yup';
 interface CommentFormProps {
   post: PostModel;
@@ -18,6 +21,7 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
     const commentInputRef = useRef<HTMLParagraphElement | null>(null);
     const dispatch = useDispatch<AppDispatch>();
     const maxCharacters = 150;
+    const user = useSelector(currentUserSelector);
     useEffect(() => {
       if (isFocused) commentInputRef.current?.focus();
       else commentInputRef.current?.blur();
@@ -46,9 +50,10 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
         if (commentInputRef.current) {
           commentInputRef.current.innerText = '';
         }
-        dispatch(setComments((post.comments ?? 0) + 1));
+        dispatch(setCountCommnent((post.comments ?? 0) + 1));
         setCommentText('');
         setIsFocused(false);
+        message.success('Commented');
       }
     };
 
@@ -67,7 +72,7 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLParagraphElement>) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter') {
         e.preventDefault();
         handleCommentSubmit(e as React.FormEvent);
       }
@@ -84,55 +89,64 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
         ref={ref}
         className={` bg-white border-t-[2px] border-[#e9e9ea] shadow-sm  ${className}`}
       >
-        <form method="POST" onSubmit={handleCommentSubmit}>
-          <div className="flex py-3 px-5 md:py-5 md:px-8">
-            <div className="bg-[#f1f1f2] flex-1 rounded-md px-2 flex-grow">
-              <div className="flex gap-3 relative">
-                <p
-                  ref={commentInputRef}
-                  contentEditable
-                  onInput={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  suppressContentEditableWarning={true}
-                  className="my-3 border-none min-w-[180px] flex-1 whitespace-pre-wrap select-text break-words break-all text-wrap outline-none h-fit max-h-[80px] overflow-y-auto bg-transparent text-[14px] text-[#161823bf]"
-                >
-                  {isFocused || commentText ? commentText : 'Add comment...'}
-                </p>
-                <EmojiPicker
-                  inputRef={commentInputRef}
-                  commentText={commentText}
-                  setCommentText={setCommentText}
-                  maxCharacters={maxCharacters}
-                />
-              </div>
-              {/* Display character count when commentText length > 24 */}
-              {commentText.length > 24 && (
-                <div
-                  className={`text-[12px] mt-1 ${
-                    commentText.length === maxCharacters
-                      ? 'text-primary'
-                      : 'text-gray-500'
-                  }`}
-                >
-                  {commentText.length}/{maxCharacters}
-                </div>
-              )}
-            </div>
-            <div className="my-auto">
-              <button
-                className={clsx(
-                  'text-[#16182357] p-2 font-semibold',
-                  commentText && 'text-primary'
-                )}
-                type="submit"
-              >
-                Post
-              </button>
-            </div>
+        {!user && (
+          <div className="my-3 mx-5 p-3 bg-[#f1f1f1]">
+            <Link to={'/login'}>
+              <p className="text-primary font-bold">Log in to comment</p>
+            </Link>
           </div>
-        </form>
+        )}
+        {user && (
+          <form method="POST" onSubmit={handleCommentSubmit}>
+            <div className="flex py-3 px-5 md:py-5 md:px-8">
+              <div className="bg-[#f1f1f2] flex-1 rounded-md px-2 flex-grow">
+                <div className="flex gap-3 relative">
+                  <p
+                    ref={commentInputRef}
+                    contentEditable
+                    onInput={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    suppressContentEditableWarning={true}
+                    className="my-3 border-none min-w-[180px] flex-1 whitespace-pre-wrap select-text break-words break-all text-wrap outline-none h-fit max-h-[80px] overflow-y-auto bg-transparent text-[14px] text-[#161823e2]"
+                  >
+                    {isFocused || commentText ? commentText : 'Add comment...'}
+                  </p>
+                  <EmojiPicker
+                    inputRef={commentInputRef}
+                    commentText={commentText}
+                    setCommentText={setCommentText}
+                    maxCharacters={maxCharacters}
+                  />
+                </div>
+                {/* Display character count when commentText length > 24 */}
+                {commentText.length > 24 && (
+                  <div
+                    className={`text-[12px] mt-1 ${
+                      commentText.length === maxCharacters
+                        ? 'text-primary'
+                        : 'text-gray-500'
+                    }`}
+                  >
+                    {commentText.length}/{maxCharacters}
+                  </div>
+                )}
+              </div>
+              <div className="my-auto">
+                <button
+                  className={clsx(
+                    'text-[#16182357] p-2 font-semibold',
+                    commentText && 'text-primary'
+                  )}
+                  type="submit"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </div>
     );
   }

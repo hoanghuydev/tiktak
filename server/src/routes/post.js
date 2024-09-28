@@ -9,6 +9,7 @@ const upload = multer({
     limits: { fileSize: process.env.LIMIT_FILE_SIZE_UPLOAD * 1024 * 1024 },
 });
 router.get('/', Auth.setUser, PostController.getPosts);
+router.post('/:postId/watch', Auth.setUser, PostController.watchPost);
 router.get('/friends', Auth.setUser, PostController.getFriendPosts);
 router.get('/following', Auth.setUser, PostController.getFollowingPosts);
 router.get('/user/:userId', Auth.setUser, PostController.getPosts);

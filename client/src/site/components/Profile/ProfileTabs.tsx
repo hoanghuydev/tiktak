@@ -26,7 +26,8 @@ const ProfileTabs = ({ userId }: { userId: number }) => {
         key="videos"
       >
         {loading && <Loading />}
-        {!loading && posts && (
+        {!loading && posts.length == 0 && 'No videos'}
+        {!loading && posts.length > 0 && (
           <div className="flex flex-wrap gap-5">
             {posts.map((post, index) => (
               <PostSmall key={index} post={post} />
@@ -45,7 +46,7 @@ const ProfileTabs = ({ userId }: { userId: number }) => {
         }
         key="likes"
       >
-        Content of Tab Pane 3
+        Private
       </TabPane>
     </Tabs>
   );

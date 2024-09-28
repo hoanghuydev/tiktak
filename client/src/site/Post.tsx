@@ -14,6 +14,7 @@ import { setPost } from '@/features/post/postSlice';
 import PostComment from './components/Post/PostComment';
 import CommentForm from './components/Post/CommentForm';
 import clsx from 'clsx';
+import { setComments } from '@/features/comment/commentSlice';
 
 const Post = () => {
   let { postId } = useParams();
@@ -21,21 +22,20 @@ const Post = () => {
   const post = useSelector(getPostSelector);
   const postSlice = useSelector(postSliceSelector);
   const commentFormRef = useRef<HTMLDivElement | null>(null);
-  const [paddingBottom, setPaddingBottom] = useState<number>(0);
+  const [paddingBottom, setPaddingBottom] = useState<number>(90);
   const dispatch = useDispatch<AppDispatch>();
-
   useEffect(() => {
     const getPostInfoById = async (postId: number) => {
       setPost({} as PostModel);
       const resp = await PostService.getPostById(postId);
       dispatch(setPost(resp.post));
     };
+    dispatch(setComments([]));
     getPostInfoById(parsedPostId);
   }, [parsedPostId]);
   // Update paddingBottom when CommentForm change height
   useEffect(() => {
     const commentFormElement = commentFormRef.current;
-
     if (!commentFormElement) return;
 
     const resizeObserver = new ResizeObserver(() => {

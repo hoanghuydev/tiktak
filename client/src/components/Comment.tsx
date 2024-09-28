@@ -1,123 +1,100 @@
-import CommentService from '@/features/comment/commentService';
-import { CommentModel } from '@/models/comment';
-import { ReplyCommentModel } from '@/models/replyComment';
-import { currentUserSelector } from '@/redux/selector';
-import { message } from 'antd';
-import clsx from 'clsx';
-import React, { useRef, useState } from 'react';
+import { useState } from 'react';
 import { IoHeartOutline, IoHeart } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { message } from 'antd';
+import clsx from 'clsx';
+import ReactTimeago from 'react-timeago';
+import CommentService from '@/features/comment/commentService';
 import ReplyCommnet from './ReplyCommnet';
+import { currentUserSelector } from '@/redux/selector';
+import { CommentModel } from '@/models/comment';
+import { ReplyCommentModel } from '@/models/replyComment';
 
 const Comment = ({
   comment,
-  isReplyComment,
+  isReplyComment = false,
   className,
 }: {
   comment: CommentModel | ReplyCommentModel;
   isReplyComment?: boolean;
   className?: string;
 }) => {
-  const [showReplyForm, setShowReplyForm] = useState<boolean>(false);
-  const [isLike, setIsLike] = useState<boolean>(comment.isLiked == 1);
-  const [likes, setLikes] = useState<number>(comment.likes ?? 0);
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [isLike, setIsLike] = useState(comment.isLiked === 1);
+  const [likes, setLikes] = useState(comment.likes ?? 0);
   const user = useSelector(currentUserSelector);
   const navigate = useNavigate();
+
   const handleLikeAndUnlikeComment = (commentId: number) => {
-    if (!user) navigate('/login');
-    if (isReplyComment)
-      CommentService.likeAndUnlikeCommentReply(commentId, !isLike)
-        .then((resp) => {
-          setLikes((prev) => {
-            return !isLike ? prev + 1 : prev - 1;
-          });
-          setIsLike(!isLike);
-        })
-        .catch((err) => message.error(err.msg));
-    else
-      CommentService.likeAndUnlikeCommentPost(commentId, !isLike)
-        .then(() => {
-          setLikes((prev) => {
-            return !isLike ? prev + 1 : prev - 1;
-          });
-          setIsLike(!isLike);
-        })
-        .catch((err) => message.error(err.msg));
+    if (!user) return navigate('/login');
+    const serviceFn = isReplyComment
+      ? CommentService.likeAndUnlikeCommentReply
+      : CommentService.likeAndUnlikeCommentPost;
+
+    serviceFn(commentId, !isLike)
+      .then(() => {
+        setLikes((prev: number) => prev + (isLike ? -1 : 1)); // Explicit type for 'prev'
+        setIsLike(!isLike);
+      })
+      .catch((err) => message.error(err.msg));
   };
+
+  const userData = isReplyComment
+    ? (comment as ReplyCommentModel).responderData
+    : (comment as CommentModel).commenterData;
 
   return (
     <div className={clsx(className)}>
       <div className="flex gap-3">
-        {/* Commenter Avatar */}
-        <div
-          className={clsx(
-            'avatar rounded-full overflow-hidden',
-            !isReplyComment && 'min-w-10 max-w-10 h-10',
-            isReplyComment && 'min-w-6 max-w-6 h-6'
-          )}
-        >
-          <img
-            className="w-full h-full object-cover object-center"
-            src={
-              (isReplyComment
-                ? (comment as ReplyCommentModel).responderData.avatarData.url
-                : (comment as CommentModel).commenterData.avatarData.url) ?? ''
-            }
-            alt="Avatar User"
-          />
-        </div>
-        {/* End Commenter Avatar */}
+        <Link to={`/profile/@${userData.userName ?? ''}`}>
+          <div
+            className={clsx(
+              'avatar rounded-full overflow-hidden',
+              isReplyComment ? 'min-w-6 max-w-6 h-6' : 'min-w-10 max-w-10 h-10'
+            )}
+          >
+            <img
+              className="w-full h-full object-cover"
+              src={userData.avatarData.url ?? ''}
+              alt="Avatar User"
+            />
+          </div>
+        </Link>
         <div className="w-full">
-          <p className="text-[14px] font-semibold">
-            {(isReplyComment
-              ? (comment as ReplyCommentModel).responderData.fullName
-              : (comment as CommentModel).commenterData.fullName) ?? ''}
-          </p>
+          <Link to={`/profile/@${userData.userName ?? ''}`}>
+            <p className="text-[14px] font-semibold">
+              {userData.fullName ?? ''}
+            </p>
+          </Link>
           <p className="text-[16px] font-normal">{comment.content}</p>
-          {/* Comment Info*/}
           <div className="flex justify-between">
-            <div className="flex gap-6 text-[#0000007a] text-[14px]">
-              <p className="text-[#0000007a] ">
-                {new Date(comment.createdAt ?? new Date()).toLocaleDateString()}
-              </p>
+            <div className="flex gap-6 text-[14px] text-[#0000007a]">
+              <ReactTimeago date={comment.createdAt} />
               <p
-                className="font-semibold text-[#0000007a] "
-                onClick={() => {
-                  setShowReplyForm(true);
-                }}
+                className="font-semibold text-[#0000007a] hover:cursor-pointer hover:opacity-90"
+                onClick={() => setShowReplyForm(true)}
               >
                 Reply
               </p>
             </div>
-            {/* Comment Like */}
-            <div className="ms-5 flex gap-2 text-[#0000007a] ">
-              {!isLike && user && (
-                <IoHeartOutline
-                  onClick={() => handleLikeAndUnlikeComment(comment.id!)}
-                  className="my-auto "
-                  size={16}
-                />
-              )}
-              {!isLike && !user && (
-                <IoHeartOutline
-                  onClick={() => handleLikeAndUnlikeComment(comment.id!)}
-                  className="my-auto "
-                  size={16}
-                />
-              )}
-              {isLike && (
+            <div className="flex gap-2 text-[#0000007a]">
+              {isLike ? (
                 <IoHeart
                   onClick={() => handleLikeAndUnlikeComment(comment.id!)}
-                  className="text-primary my-auto"
+                  className="text-primary my-auto hover:cursor-pointer"
                   size={16}
                 />
+              ) : (
+                <IoHeartOutline
+                  onClick={() => handleLikeAndUnlikeComment(comment.id!)}
+                  size={16}
+                  className=" my-auto hover:cursor-pointer"
+                />
               )}
-              <p className="text-[#0000007a] text-[16px] my-auto">{likes}</p>
+              <p className=" my-auto">{likes}</p>
             </div>
           </div>
-          {/* End Comment Info*/}
-          {/* Reply Comment */}
           {!isReplyComment && (comment as CommentModel).replies > 0 && (
             <ReplyCommnet comment={comment as CommentModel} />
           )}

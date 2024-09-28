@@ -13,6 +13,7 @@ import {
     VISIBILITY_POST_PRIVATE,
     VISIBILITY_POST_PUBLIC,
 } from '../../constant';
+import client from '../config/db/redis';
 const fs = require('fs');
 class PostController {
     async likePost(req, res) {
@@ -57,6 +58,45 @@ class PostController {
             return internalServerError(res);
         }
     }
+    async watchPost(req, res) {
+        try {
+            const { postId } = req.params;
+            const ipAddress = req.ip || req.connection.remoteAddress;
+            const rateLimitKey = `watchPost:${postId}:${ipAddress}`;
+
+            // Check if the IP has been rate-limited in Redis
+            const isRateLimited = await client.get(rateLimitKey);
+            if (isRateLimited) {
+                return res.status(429).json({
+                    err: 1,
+                    mes: 'Too many requests. Please wait before watching again.',
+                });
+            }
+
+            // Proceed if not rate-limited
+            const r = await postServices.watchPost(postId);
+            if (r) {
+                // Save IP to Redis with expiration (rate limiting)
+                await client.set(
+                    String(rateLimitKey),
+                    'true',
+                    'EX',
+                    30 // Expire after 30 seconds
+                );
+
+                return res.status(200).json({
+                    err: 0,
+                    mes: 'Watched',
+                });
+            }
+
+            return badRequest('Unknown error', res);
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res);
+        }
+    }
+
     async sharePost(req, res) {
         try {
             const { postId } = req.params;

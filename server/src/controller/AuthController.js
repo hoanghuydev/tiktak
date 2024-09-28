@@ -67,7 +67,9 @@ class AuthController {
                 ).id;
                 const user = await userServices.findOne({ id: userId });
                 user.password = '';
-                const storedToken = await client.get(String(user.id));
+                const storedToken = await client.get(
+                    String(`refreshToken:userId:${user.id}`)
+                );
                 if (storedToken == null || storedToken != refreshToken) {
                     return unauthorized('Refresh token is not valid', res);
                 }
@@ -107,7 +109,7 @@ class AuthController {
     setRefreshTokenToRedis = (token, userId) => {
         return new Promise(async (resolve, reject) => {
             await client.set(
-                String(userId),
+                String(`refreshToken:userId:${userId}`),
                 token,
                 {
                     EX: 356 * 24 * 60 * 60,
@@ -123,11 +125,14 @@ class AuthController {
     };
     removeRefreshTokenFromRedis = (userId) => {
         return new Promise(async (resolve, reject) => {
-            await client.del(String(userId), (err, reply) => {
-                if (err) {
-                    return reject(err);
+            await client.del(
+                String(`refreshToken:userId:${userId}`),
+                (err, reply) => {
+                    if (err) {
+                        return reject(err);
+                    }
                 }
-            });
+            );
             resolve(true);
         });
     };

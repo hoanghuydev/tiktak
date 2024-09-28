@@ -10,6 +10,7 @@ import FollowService from '@/features/follow/followService';
 import showToast from '@/utils/toast';
 import { message } from 'antd';
 import Video from '@/components/Video';
+import PostService from '@/features/post/postService';
 export interface VideoRecommendChildProps {
   post: PostModel;
   isFollow: boolean;
@@ -59,6 +60,11 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
       };
     }
   }, []);
+
+  // Call api watch video
+  useEffect(() => {
+    if (play) PostService.watchPost(post.id);
+  }, [play]);
 
   const followUser = async () => {
     if (!isFollow) {
