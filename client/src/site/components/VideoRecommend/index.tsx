@@ -88,19 +88,19 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
 
   return (
     <article
-      className="snap-always snap-start-center px-5 md:pe-[15vw] w-fit  flex my-3 mx-auto"
+      className="snap-always snap-start-center px-5 md:pe-[15vw] w-fit my-3 mx-auto"
       id={'post-' + post.id}
     >
-      <div className="hidden md:flex md:min-w-[45px] md:max-w-[45px] md:h-[45px] lg:min-w-[56px] lg:max-w-[56px] lg:h-[56px] rounded-full me-4 overflow-hidden">
-        <Link to={'/profile/@' + post.posterData.userName}>
-          <img
-            src={post.posterData.avatarData.url || ''}
-            className="w-full h-full object-cover"
-            alt="User Data"
-          />
-        </Link>
-      </div>
-      <div className="flex flex-col">
+      <div className="flex">
+        <div className="hidden md:flex md:min-w-[45px] md:max-w-[45px] md:h-[45px] lg:min-w-[56px] lg:max-w-[56px] lg:h-[56px] rounded-full me-4 overflow-hidden">
+          <Link to={'/profile/@' + post.posterData.userName}>
+            <img
+              src={post.posterData.avatarData.url || ''}
+              className="w-full h-full object-cover"
+              alt="User Data"
+            />
+          </Link>
+        </div>
         <VideoRecommendInfo
           followUser={followUser}
           post={post}
@@ -108,6 +108,8 @@ const VideoRecommend = ({ post }: { post: PostModel }) => {
           isFriend={isFriend}
           setIsFollow={setIsFollow}
         />
+      </div>
+      <div className="flex flex-col ms-[70px]">
         {/* Video */}
         <div className="flex mx-auto mt-5 h-[calc(100vh-170px)]">
           <Video

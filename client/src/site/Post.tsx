@@ -15,6 +15,7 @@ import PostComment from './components/Post/PostComment';
 import CommentForm from './components/Post/CommentForm';
 import clsx from 'clsx';
 import { setComments } from '@/features/comment/commentSlice';
+import VideoLarge from '@/components/VideoLarge';
 
 const Post = () => {
   let { postId } = useParams();
@@ -30,8 +31,12 @@ const Post = () => {
       const resp = await PostService.getPostById(postId);
       dispatch(setPost(resp.post));
     };
+    // Set comments to empty list
     dispatch(setComments([]));
+    // Get info post
     getPostInfoById(parsedPostId);
+    // Watch post
+    PostService.watchPost(parsedPostId);
   }, [parsedPostId]);
   // Update paddingBottom when CommentForm change height
   useEffect(() => {
@@ -56,14 +61,7 @@ const Post = () => {
       {!postSlice?.isLoading && post && (
         <div className="flex h-full">
           {/* First row: video */}
-          <div className="flex-[200%] flex bg-black">
-            <video
-              autoPlay
-              loop
-              className="object-cover object-center mx-auto"
-              src={post?.videoUrl ?? ''}
-            ></video>
-          </div>
+          <VideoLarge post={post} className="flex-[200%] flex bg-black" />
 
           {/* Second row: post details */}
           <div className="flex-[100%] h-full overflow-hidden relative bg-white flex-col min-w-[290px]">

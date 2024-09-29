@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import ButtonActionPost from '../VideoRecommend/ButtonActionPost';
 import { PostActions } from '@/utils/postActions';
 import { AppDispatch } from '@/redux/store';
-import { setCountShare, setIsLike } from '@/features/post/postSlice';
+import {
+  setCountLike,
+  setCountShare,
+  setIsLike,
+} from '@/features/post/postSlice';
 import clsx from 'clsx';
 import { IoChatbubbleEllipses, IoHeart } from 'react-icons/io5';
 import { FaShare } from 'react-icons/fa6';
@@ -23,10 +27,14 @@ const PostAction = () => {
         post!.id!,
         post.isLiked ?? false,
         (newLikes: any) => {
-          dispatch(setIsLike(newLikes > 0));
+          dispatch(
+            setCountLike(
+              post.isLiked ? (post.likes ?? 0) - 1 : (post.likes ?? 0) + 1
+            )
+          );
         },
         (newIsLiked: any) => {
-          dispatch(setIsLike(newIsLiked));
+          dispatch(setIsLike(!post.isLiked ?? true));
         }
       );
     } else {
@@ -37,7 +45,7 @@ const PostAction = () => {
   const handleSharePost = () => {
     if (user) {
       PostActions.sharePost(post!.id!, (newShares: any) => {
-        dispatch(setCountShare(newShares));
+        dispatch(setCountShare((post.shares ?? 0) + 1));
       });
     } else {
       navigate('/login');

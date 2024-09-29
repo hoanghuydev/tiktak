@@ -11,11 +11,11 @@ import { message } from 'antd';
  */
 const likePost = async (
   postId: number,
-  isLiked: boolean,
+  currentLikeState: boolean,
   setLikes: any,
   setIsLiked: any
 ) => {
-  if (!isLiked) {
+  if (!currentLikeState) {
     await PostService.likePost(postId)
       .then(() => {
         setLikes((prevLikes: any) => prevLikes + 1);

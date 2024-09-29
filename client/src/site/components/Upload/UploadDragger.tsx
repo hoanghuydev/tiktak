@@ -40,10 +40,12 @@ const UploadDragger = () => {
       if (!isLt2M) {
         message.error('Video must smaller than 80MB!');
       }
-      if (isLt2M && isMp4OrMov) {
+      if (isLt2M && isMp4OrMov && postUpload) {
         dispatch(
           setPostUpload({
-            ...postUpload,
+            thumnail: postUpload?.thumnail,
+            title: postUpload?.title,
+            visibility: postUpload?.visibility,
             video: info.fileList[info.fileList.length - 1],
           })
         );

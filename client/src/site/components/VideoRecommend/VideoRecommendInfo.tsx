@@ -38,17 +38,17 @@ const VideoRecommendInfo = ({
         <div className="flex gap-2">
           <Link
             to={'/profile/@' + post.posterData.userName}
-            className="hidden md:block hover:underline md:text-[16px] lg:text-[18px] max-w-[150px] line-clamp-1 font-bold"
+            className="hidden text-ellipsis md:block hover:underline md:text-[16px] lg:text-[18px] max-w-[150px] line-clamp-1 font-bold"
           >
             {post.posterData.userName}
           </Link>
           <Link
             to={'/user/' + post.posterData.userName}
-            className="block md:hidden hover:underline md:text-[16px] lg:text-[18px] max-w-[100px] line-clamp-1 font-bold"
+            className="block text-ellipsis md:hidden hover:underline md:text-[16px] lg:text-[18px] max-w-[100px] line-clamp-1 font-bold"
           >
             {post.posterData.fullName}
           </Link>
-          <p className="my-auto md:text-[14px] lg:text-[16px] max-w-[100px]  line-clamp-1 whitespace-nowrap hidden md:block">
+          <p className="my-auto text-ellipsis md:text-[14px] lg:text-[16px] max-w-[100px]  line-clamp-1 whitespace-nowrap hidden md:block">
             {post.posterData.fullName}
           </p>
         </div>
@@ -57,6 +57,7 @@ const VideoRecommendInfo = ({
             className={clsx(
               `
               text-[16px]
+              text-ellipsis
               font-normal
               w-fit
               max-w-[${widthTitlePost}px]

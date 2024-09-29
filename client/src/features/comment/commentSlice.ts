@@ -67,12 +67,19 @@ const handleFulfilled = (state: InitStateCommentType, action: any) => {
   state.isError = false;
   state.isLoading = false;
   state.isSuccess = true;
+  if (action.payload) {
+    state.message = action.payload.mes;
+  }
 };
 
 const handleRejected = (state: InitStateCommentType, action: any) => {
   state.isLoading = false;
   state.isError = true;
   state.isSuccess = false;
+  if (action.payload) {
+    state.message = action.payload.mes;
+    message.error(action.payload.mes);
+  }
 };
 
 // Slice

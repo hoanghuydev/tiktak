@@ -14,6 +14,7 @@ import {
     VISIBILITY_POST_PUBLIC,
 } from '../../constant';
 import client from '../config/db/redis';
+import { sequelize } from '../models';
 const fs = require('fs');
 class PostController {
     async likePost(req, res) {
@@ -21,7 +22,6 @@ class PostController {
             const { postId } = req.params;
             const post = await postService.getOne(postId);
             const userId = post.poster;
-            console.log('Poster ', userId);
             // const notify = await notificationService.insertNotification(userId,"User "+ req.user.id + " liked your post")
             const likeData = { liker: req.user.id, postId };
             const isLiked = await likePostService.isLikedPost(likeData);
@@ -77,12 +77,7 @@ class PostController {
             const r = await postServices.watchPost(postId);
             if (r) {
                 // Save IP to Redis with expiration (rate limiting)
-                await client.set(
-                    String(rateLimitKey),
-                    'true',
-                    'EX',
-                    30 // Expire after 30 seconds
-                );
+                await client.set(String(rateLimitKey), 'true', { EX: 30 });
 
                 return res.status(200).json({
                     err: 0,
@@ -242,7 +237,7 @@ class PostController {
                     VISIBILITY_POST_FRIEND,
                     VISIBILITY_POST_PUBLIC,
                     VISIBILITY_POST_PRIVATE,
-                ].includes(visibility)
+                ].includes(parseInt(visibility))
             ) {
                 return badRequest(
                     'Please enter full field and valid visibility value',
@@ -299,7 +294,11 @@ class PostController {
             });
             await t.commit();
             const postUpdated = await postServices.getOne(post.id);
-            return res.status(200).json(postUpdated);
+            return res.status(200).json({
+                err: 0,
+                mes: 'Uploaded successfully',
+                post: postUpdated,
+            });
         } catch (error) {
             await t.rollback();
             console.error(error);

@@ -10,6 +10,7 @@ import { currentUserSelector, tabSelector } from '@/redux/selector';
 import { FiSend } from 'react-icons/fi';
 import { RiMessageLine } from 'react-icons/ri';
 import clsx from 'clsx';
+import SearchForm from '@/components/SearchForm';
 
 const Header = () => {
   const [searchText, setSearchText] = useState<string>('');
@@ -37,43 +38,7 @@ const Header = () => {
         </a>
       </div>
       <div className="flex-1 me-2 hidden md:flex max-w-[500px] ">
-        <form
-          method="GET"
-          action="/search"
-          className="w-full border-[1px] border-gray-300 px-4 py-[9px] bg-gray-100 rounded-full flex relative"
-          onSubmit={handleSearchSubmit}
-        >
-          <input
-            id="searchInputHeader"
-            name="q"
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-            }}
-            autoComplete="off"
-            className="ms-2 outline-none border-none my-auto flex-1 bg-transparent text-color"
-            placeholder="Search"
-          />
-          <div
-            id="searchPopupHeader"
-            className="p-4 hidden z-30 absolute bg-white shadow-custom rounded-md top-[55px] start-0 end-0"
-          >
-            <p className="font-bold text-[12px] text-gray-400">You may like</p>
-            <div className="flex mt-2 gap-3">
-              <TbPointFilled className="text-gray-300 my-auto" fontSize={14} />
-              <Link to={'/login'} className="font-semibold text-[16px]">
-                Trend Tập Nhảy Từng Quen
-              </Link>
-            </div>
-          </div>
-          <div className="w-[1px] h-full bg-gray-200"></div>
-          <button
-            type="submit"
-            disabled={!searchText.trim()} // Disable the button if search text is empty
-          >
-            <IoIosSearch fontSize={22} className="my-auto mx-3 text-gray-400" />
-          </button>
-        </form>
+        <SearchForm isGray />
       </div>
       <div
         className={clsx(`flex justify-end w-[280px]`, user ? 'gap-8' : 'gap-4')}

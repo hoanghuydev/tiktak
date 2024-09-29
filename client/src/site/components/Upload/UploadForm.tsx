@@ -9,13 +9,18 @@ import {
 import { IoIosInformationCircleOutline } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  pecentLoadingPostSelector,
+  percentLoadingPostSelector,
+  postSliceSelector,
   postUploadSelector,
 } from '@/redux/selector';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { AppDispatch } from '@/redux/store';
-import { setPostUpload, uploadPost } from '@/features/post/postSlice';
+import {
+  setPercentLoading,
+  setPostUpload,
+  uploadPost,
+} from '@/features/post/postSlice';
 import ThumnailUpload from './ThumnailUpload';
 import Button from '@/components/Button';
 import { PostUploadModel } from '@/models/postUpload';
@@ -30,8 +35,9 @@ const UploadForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showModalUploading, setShowModalUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string>('');
+  const postSlice = useSelector(postSliceSelector);
   const postUpload = useSelector(postUploadSelector);
-  const pecentUploading = useSelector(pecentLoadingPostSelector);
+  const percentUploading = useSelector(percentLoadingPostSelector);
   const video = postUpload?.video;
   const title = postUpload?.title || '';
   const showModal = () => {
@@ -48,18 +54,48 @@ const UploadForm = () => {
   }, []);
   const handleChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    if (value.length <= 1000) {
-      dispatch(setPostUpload({ ...postUpload, title: value }));
+    if (value.length <= 1000 && postUpload) {
+      dispatch(
+        setPostUpload({
+          thumnail: postUpload?.thumnail,
+          title: value,
+          visibility: postUpload?.visibility,
+          video: postUpload?.video,
+        })
+      );
     }
   };
-  const handleChangeVisibility = (value: number) => {
-    dispatch(
-      setPostUpload({
-        ...postUpload,
-        visibility: value,
-      })
-    );
+  const handleChangeVisibility = (value: 0 | 1 | -1) => {
+    if (postUpload)
+      dispatch(
+        setPostUpload({
+          thumnail: postUpload?.thumnail,
+          title: postUpload.title,
+          visibility: value,
+          video: postUpload?.video,
+        })
+      );
   };
+  useEffect(() => {
+    if (
+      ![99, 100].includes(percentUploading) &&
+      showModalUploading &&
+      postSlice?.isLoading
+    ) {
+      setTimeout(() => {
+        dispatch(setPercentLoading(percentUploading + 1));
+      }, 40);
+    }
+    // if ((postSlice?.isSuccess || postSlice?.isError) && showModalUploading) {
+    //   setShowModalUploading(false);
+    // }
+  }, [
+    percentUploading,
+    showModalUploading,
+    postSlice?.isError,
+    postSlice?.isSuccess,
+    postSlice?.isLoading,
+  ]);
   const handleUploadPost = () => {
     if (postUpload?.title) {
       const videoFile = postUpload.video?.originFileObj;
@@ -148,8 +184,8 @@ const UploadForm = () => {
         <div className="flex flex-col">
           <div className="min-w-[90px] max-w-[90px] h-[90px] rounded-full mx-auto">
             <CircularProgressbar
-              value={pecentUploading}
-              text={`${pecentUploading}%`}
+              value={percentUploading}
+              text={`${percentUploading}%`}
               strokeWidth={5}
               styles={buildStyles({
                 textColor: '#828282',

@@ -72,7 +72,7 @@ export const publicRoutes: RouteType[] = [
   {
     path: '/post/:postId',
     element: Post,
-    layout: DefaultLayout,
+    layout: EmptyLayout,
     fullScreen: true,
   },
 ];

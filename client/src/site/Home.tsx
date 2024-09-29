@@ -22,7 +22,7 @@ const Home = () => {
   }, []);
   return (
     <div className="h-full flex-1 flex flex-col items-center overflow-y-auto">
-      <div className="w-full h-full flex flex-col snap-y snap-mandatory overflow-y-scroll scrollbar-none">
+      <div className="w-full h-full flex flex-col  snap-y snap-mandatory overflow-y-scroll scrollbar-none">
         {posts &&
           posts.map((post: PostModel, index) => (
             <VideoRecommend post={post} key={index} />

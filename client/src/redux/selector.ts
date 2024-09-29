@@ -19,8 +19,8 @@ export const postSliceSelector = (state: RootState): InitStatePostType | null =>
   state.post;
 export const postUploadSelector = (state: RootState): PostUploadModel | null =>
   state.post.postUpload;
-export const pecentLoadingPostSelector = (state: RootState): number =>
-  state.post.pecentLoading;
+export const percentLoadingPostSelector = (state: RootState): number =>
+  state.post.percentLoading;
 export const getPostLoadingSelector = (state: RootState): boolean =>
   state.post.isLoading;
 export const getUsersSelector = (state: RootState): UserModel[] =>

@@ -13,7 +13,7 @@ export interface InitStatePostType {
   postUpload: PostUploadModel;
   isError: boolean;
   isLoading: boolean;
-  pecentLoading: number;
+  percentLoading: number;
   isSuccess: boolean;
   message: string;
 }
@@ -118,7 +118,7 @@ const initialState: InitStatePostType = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  pecentLoading: 99,
+  percentLoading: 10,
   message: '',
 };
 
@@ -130,8 +130,8 @@ const postSlice = createSlice({
     setPostUpload(state, action: { payload: PostUploadModel; type: string }) {
       state.postUpload = action.payload;
     },
-    setPecentLoading(state, action: { payload: number; type: string }) {
-      state.pecentLoading = action.payload;
+    setPercentLoading(state, action: { payload: number; type: string }) {
+      state.percentLoading = action.payload;
     },
     setPosts(state, action: { payload: PostModel[]; type: string }) {
       state.posts = action.payload;
@@ -176,7 +176,7 @@ const postSlice = createSlice({
         state.post = payload.post;
         state.isLoading = false;
         state.isSuccess = true;
-        state.pecentLoading = 100;
+        state.percentLoading = 100;
         message.success(payload.mes);
       })
       .addCase(uploadPost.rejected, (state: InitStatePostType, action) => {
@@ -219,7 +219,7 @@ const postSlice = createSlice({
 
 export const {
   setPostUpload,
-  setPecentLoading,
+  setPercentLoading,
   setPost,
   setPosts,
   setPostLoading,
