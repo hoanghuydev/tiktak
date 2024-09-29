@@ -118,7 +118,7 @@ const initialState: InitStatePostType = {
   isError: false,
   isSuccess: false,
   isLoading: false,
-  percentLoading: 10,
+  percentLoading: 0,
   message: '',
 };
 
@@ -183,6 +183,7 @@ const postSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
+        state.percentLoading = 100;
         const payload = action.payload as PostsPayload;
         if (payload) {
           state.message = payload.mes;

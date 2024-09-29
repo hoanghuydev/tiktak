@@ -31,6 +31,7 @@ import {
   CircularProgressbarWithChildren,
   buildStyles,
 } from 'react-circular-progressbar';
+import { useNavigate } from 'react-router-dom';
 const UploadForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showModalUploading, setShowModalUploading] = useState(false);
@@ -40,6 +41,7 @@ const UploadForm = () => {
   const percentUploading = useSelector(percentLoadingPostSelector);
   const video = postUpload?.video;
   const title = postUpload?.title || '';
+  const navigate = useNavigate();
   const showModal = () => {
     setShowModalUploading(true);
   };
@@ -84,11 +86,16 @@ const UploadForm = () => {
     ) {
       setTimeout(() => {
         dispatch(setPercentLoading(percentUploading + 1));
-      }, 40);
+      }, 100);
     }
-    // if ((postSlice?.isSuccess || postSlice?.isError) && showModalUploading) {
-    //   setShowModalUploading(false);
-    // }
+    if (percentUploading == 100) {
+      if (postSlice?.isSuccess) {
+        navigate('/');
+      } else if (postSlice?.isError) {
+        setShowModalUploading(false);
+        setPercentLoading(0);
+      }
+    }
   }, [
     percentUploading,
     showModalUploading,
