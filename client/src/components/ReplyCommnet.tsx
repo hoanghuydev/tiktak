@@ -1,4 +1,3 @@
-import { ReplyCommentModel } from '@/models/replyComment';
 import React, { useState } from 'react';
 import Comment from './Comment';
 import CommentService from '@/features/comment/commentService';
@@ -9,7 +8,7 @@ const ReplyCommnet = ({ comment }: { comment: CommentModel }) => {
   const [repliesRemaining, setRepliesRemaining] = useState<number>(
     comment.replies
   );
-  const [commentReplies, setCommentReplies] = useState<ReplyCommentModel[]>([]);
+  const [commentReplies, setCommentReplies] = useState<CommentModel[]>([]);
   const [showAllReplies, setShowAllReplies] = useState<boolean>(false);
   const handleShowRepliesComment = async (): Promise<void> => {
     const resp = await CommentService.getRepliesCommentByCommentId(comment.id!);

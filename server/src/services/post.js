@@ -161,7 +161,7 @@ export const getPosts = (
                     [
                         literal(`(
                             SELECT COUNT(*)
-                                  FROM commentsPost cp
+                                  FROM comments cp
                                   WHERE
                                     cp.postId = post.id
                             )`),

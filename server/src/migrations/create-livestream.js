@@ -24,12 +24,12 @@ module.exports = {
             },
             title: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                type: Sequelize.STRING,
                 defaultValue: 'New Livestream',
             },
             key: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                type: Sequelize.STRING,
                 defaultValue: 'New Livestream',
             },
             views: {

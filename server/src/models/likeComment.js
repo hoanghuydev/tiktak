@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'liker',
                 targetKey: 'id',
             });
-            LikeComment.belongsTo(models.CommentPost, {
+            LikeComment.belongsTo(models.Comment, {
                 foreignKey: 'commentId',
                 targetKey: 'id',
             });
@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         {
             liker: DataTypes.INTEGER,
             commentId: DataTypes.INTEGER,
-            isCommentPost : DataTypes.BOOLEAN
         },
         {
             sequelize,

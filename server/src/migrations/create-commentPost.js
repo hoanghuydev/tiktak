@@ -17,6 +17,14 @@ module.exports = {
                     key: 'id',
                 },
             },
+            parentCommentId: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'Comments',
+                    key: 'id',
+                },
+            },
             postId: {
                 allowNull: false,
                 type: Sequelize.INTEGER,

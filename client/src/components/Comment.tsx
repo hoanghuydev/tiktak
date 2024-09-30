@@ -9,14 +9,13 @@ import CommentService from '@/features/comment/commentService';
 import ReplyCommnet from './ReplyCommnet';
 import { currentUserSelector } from '@/redux/selector';
 import { CommentModel } from '@/models/comment';
-import { ReplyCommentModel } from '@/models/replyComment';
 
 const Comment = ({
   comment,
   isReplyComment = false,
   className,
 }: {
-  comment: CommentModel | ReplyCommentModel;
+  comment: CommentModel;
   isReplyComment?: boolean;
   className?: string;
 }) => {
@@ -28,11 +27,8 @@ const Comment = ({
 
   const handleLikeAndUnlikeComment = (commentId: number) => {
     if (!user) return navigate('/login');
-    const serviceFn = isReplyComment
-      ? CommentService.likeAndUnlikeCommentReply
-      : CommentService.likeAndUnlikeCommentPost;
 
-    serviceFn(commentId, !isLike)
+    CommentService.likeAndUnlikeCommentPost(commentId, !isLike)
       .then(() => {
         setLikes((prev: number) => prev + (isLike ? -1 : 1)); // Explicit type for 'prev'
         setIsLike(!isLike);
@@ -40,9 +36,7 @@ const Comment = ({
       .catch((err) => message.error(err.msg));
   };
 
-  const userData = isReplyComment
-    ? (comment as ReplyCommentModel).responderData
-    : (comment as CommentModel).commenterData;
+  const userData = comment.commenterData;
 
   return (
     <div className={clsx(className)}>
@@ -95,8 +89,8 @@ const Comment = ({
               <p className=" my-auto">{likes}</p>
             </div>
           </div>
-          {!isReplyComment && (comment as CommentModel).replies > 0 && (
-            <ReplyCommnet comment={comment as CommentModel} />
+          {!isReplyComment && comment.replies > 0 && (
+            <ReplyCommnet comment={comment} />
           )}
         </div>
       </div>

@@ -2,8 +2,7 @@ import { Op, where } from 'sequelize';
 import db, { Sequelize } from '../models';
 import bcrypt from 'bcrypt';
 import { formatQueryUser, formatQueryUserWithAtrr } from './user';
-const hashPassword = (password) =>
-    bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+
 export const register = (
     email,
     fullName,
@@ -14,7 +13,6 @@ export const register = (
 ) =>
     new Promise(async (resolve, reject) => {
         try {
-            password = hashPassword(password);
             const resp = await db.User.findOrCreate({
                 where: { [Op.or]: [{ email }, { userName }] },
                 ...formatQueryUserWithAtrr,

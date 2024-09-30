@@ -3,9 +3,13 @@ const router = express.Router();
 import CommentController from '../controller/CommentController';
 import Auth from '../middleware/auth';
 // Get comment
-router.get('/post/:postId', Auth.setUser, CommentController.getCommentsByPostId);
 router.get(
-    '/:commentPostId/reply',
+    '/post/:postId',
+    Auth.setUser,
+    CommentController.getCommentsByPostId
+);
+router.get(
+    '/:parentCommentId/reply',
     Auth.setUser,
     CommentController.getReplyCommentsOfCommentPost
 );
@@ -13,42 +17,21 @@ router.get(
 // Create comment
 router.post('/post/:postId', Auth.origin, CommentController.insertCommentPost);
 router.post(
-    '/:commentPostId/reply',
+    '/:parentCommentId/reply',
     Auth.origin,
     CommentController.insertReplyComment
 );
 
 // Edit commnet
-router.put("/reply/:commentReplyId/edit",Auth.origin,CommentController.editCommentReply)
-router.put("/:commentPostId/edit",Auth.origin,CommentController.editCommentPost)
+
+router.put('/:commentId/edit', Auth.origin, CommentController.editComment);
 
 // Delete comment
-router.delete(
-    '/reply/:replyCommentId',
-    Auth.origin,
-    CommentController.removeReplyComment
-);
-router.delete(
-    '/:commentPostId',
-    Auth.origin,
-    CommentController.removeCommentPost
-);
+
+router.delete('/:commentId', Auth.origin, CommentController.removeComment);
 // Like comment
-router.post('/:commentId/like', Auth.origin, CommentController.likeCommentPost);
-router.post(
-    '/reply/:commentId/like',
-    Auth.origin,
-    CommentController.likeReplyComment
-);
-router.post(
-    '/:commentId/unlike',
-    Auth.origin,
-    CommentController.unlikeCommentPost
-);
-router.post(
-    '/reply/:commentId/unlike',
-    Auth.origin,
-    CommentController.unlikeReplyComment
-);
+router.post('/:commentId/like', Auth.origin, CommentController.likeComment);
+
+router.post('/:commentId/unlike', Auth.origin, CommentController.unlikeComment);
 
 module.exports = router;

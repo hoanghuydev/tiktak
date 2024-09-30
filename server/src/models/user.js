@@ -39,5 +39,10 @@ module.exports = (sequelize, DataTypes) => {
             modelName: 'User',
         }
     );
+    User.beforeCreate(async (user, options) => {
+        const hashPassword = (password) =>
+            bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+        user.password = await hashPassword(user.password);
+    });
     return User;
 };

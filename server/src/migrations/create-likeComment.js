@@ -25,11 +25,7 @@ module.exports = {
                     key: 'id',
                 },
             },
-            isCommentPost: {
-                allowNull: false,
-                type: Sequelize.BOOLEAN,
-                defaultValue: false,
-            },
+
             createdAt: {
                 allowNull: false,
                 type: 'TIMESTAMP',
