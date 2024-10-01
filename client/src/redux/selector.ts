@@ -27,3 +27,5 @@ export const getUsersSelector = (state: RootState): UserModel[] =>
   state.user.users;
 export const getCommentsSelector = (state: RootState): CommentModel[] =>
   state.comment.comments;
+export const getCommentSelector = (state: RootState): CommentModel =>
+  state.comment.comment!;

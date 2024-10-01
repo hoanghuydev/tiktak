@@ -88,6 +88,7 @@ export const getComments = (
             if (content) commentQuery.content = { [Op.substring]: content };
             if (postId) commentQuery.postId = postId;
             if (parentCommentId) commentQuery.parentCommentId = parentCommentId;
+            else commentQuery.parentCommentId = null;
             const commonQuery = {
                 where: commentQuery,
                 include: [

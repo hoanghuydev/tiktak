@@ -102,7 +102,7 @@ const PostSmall = ({
       </div>
       {haveInfo && (
         <div className="p-2">
-          <p className="text-[16px] line-clamp-2">{post.title}</p>
+          <p className="text-[16px] line-clamp-2 text-ellipsis">{post.title}</p>
           <div className="flex justify-between">
             <div className="flex gap-1">
               <img
@@ -110,7 +110,7 @@ const PostSmall = ({
                 src={post.posterData.avatarData.url ?? ''}
                 alt="User Avatar"
               />
-              <p className="text-[16px] line-clamp-1 my-auto max-w-[70px]">
+              <p className="text-[16px] line-clamp-1 block text-ellipsis my-auto max-w-[70px]">
                 {post.posterData.userName}
               </p>
             </div>

@@ -76,8 +76,7 @@ const Post = () => {
             </div>
             <CommentForm
               ref={commentFormRef}
-              post={post}
-              className="min-h-[85px] max-h-[166px] absolute left-0 right-0 bottom-0"
+              className="min-h-[85px] max-h-[166px] shadow-sm absolute left-0 right-0 bottom-0 border-t-[2px] border-[#e9e9ea]"
             />
           </div>
         </div>

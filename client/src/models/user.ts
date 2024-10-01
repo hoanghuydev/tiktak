@@ -15,7 +15,7 @@ export interface UserModel extends AbstractModel {
   followings: number;
   followers: number;
   likes: number;
-  isFollow: boolean;
-  isFriend: boolean;
-  isMe: boolean;
+  isFollow: boolean | number;
+  isFriend: boolean | number;
+  isMe: boolean | number;
 }

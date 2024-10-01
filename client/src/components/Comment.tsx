@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IoHeartOutline, IoHeart } from 'react-icons/io5';
+import { IoHeartOutline, IoHeart, IoClose } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
@@ -9,16 +9,23 @@ import CommentService from '@/features/comment/commentService';
 import ReplyCommnet from './ReplyCommnet';
 import { currentUserSelector } from '@/redux/selector';
 import { CommentModel } from '@/models/comment';
+import CommentForm from '@/site/components/Post/CommentForm';
 
 const Comment = ({
   comment,
   isReplyComment = false,
   className,
+  parentCommentId,
 }: {
   comment: CommentModel;
   isReplyComment?: boolean;
   className?: string;
+  parentCommentId?: number;
 }) => {
+  const [repliesRemaining, setRepliesRemaining] = useState<number>(
+    comment.replies
+  );
+  const [commentReplies, setCommentReplies] = useState<CommentModel[]>([]);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isLike, setIsLike] = useState(comment.isLiked === 1);
   const [likes, setLikes] = useState(comment.likes ?? 0);
@@ -35,13 +42,20 @@ const Comment = ({
       })
       .catch((err) => message.error(err.msg));
   };
+  const handleReply = () => {
+    if (!user) {
+      navigate('login');
+      return;
+    }
+    setShowReplyForm(true);
+  };
 
   const userData = comment.commenterData;
 
   return (
     <div className={clsx(className)}>
       <div className="flex gap-3">
-        <Link to={`/profile/@${userData.userName ?? ''}`}>
+        <Link to={`/profile/@${userData.userName ?? ''}`} className="h-fit">
           <div
             className={clsx(
               'avatar rounded-full overflow-hidden',
@@ -67,7 +81,7 @@ const Comment = ({
               <ReactTimeago date={comment.createdAt} />
               <p
                 className="font-semibold text-[#0000007a] hover:cursor-pointer hover:opacity-90"
-                onClick={() => setShowReplyForm(true)}
+                onClick={handleReply}
               >
                 Reply
               </p>
@@ -89,8 +103,30 @@ const Comment = ({
               <p className=" my-auto">{likes}</p>
             </div>
           </div>
+          {showReplyForm && (
+            <div className="flex">
+              <CommentForm
+                parentCommentId={parentCommentId ?? comment.id!}
+                setCommentReplies={setCommentReplies}
+                setRepliesRemaining={setRepliesRemaining}
+              />
+              <IoClose
+                size={20}
+                className="my-auto hover:cursor-pointer hover:opacity-90"
+                onClick={() => {
+                  setShowReplyForm(false);
+                }}
+              />
+            </div>
+          )}
           {!isReplyComment && comment.replies > 0 && (
-            <ReplyCommnet comment={comment} />
+            <ReplyCommnet
+              comment={comment}
+              repliesRemaining={repliesRemaining}
+              setRepliesRemaining={setRepliesRemaining}
+              commentReplies={commentReplies}
+              setCommentReplies={setCommentReplies}
+            />
           )}
         </div>
       </div>

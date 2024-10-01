@@ -24,12 +24,6 @@ const Header = () => {
     setSearchText(query ?? '');
   }, [searchParams]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    if (!searchText.trim()) {
-      e.preventDefault();
-    }
-  };
-
   return (
     <header className="h-[60px] bg-white justify-between shadow-sm flex items-center ps-4 pe-6 border-b-[1px] border-b-gray-200">
       <div className="logo w-[280px]">
@@ -38,7 +32,7 @@ const Header = () => {
         </a>
       </div>
       <div className="flex-1 me-2 hidden md:flex max-w-[500px] ">
-        <SearchForm isGray />
+        <SearchForm isGray query={searchText} />
       </div>
       <div
         className={clsx(`flex justify-end w-[280px]`, user ? 'gap-8' : 'gap-4')}

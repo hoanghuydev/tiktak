@@ -17,7 +17,7 @@ router.get(
 // Create comment
 router.post('/post/:postId', Auth.origin, CommentController.insertCommentPost);
 router.post(
-    '/:parentCommentId/reply',
+    '/post/:postId/:parentCommentId/reply',
     Auth.origin,
     CommentController.insertReplyComment
 );

@@ -120,79 +120,69 @@ const Video = ({ videoRef, videoUrl, className }: VideoProps) => {
         'video-container bg-black grid place-items-center rounded-lg overflow-hidden relative',
         className
       )}
-      onClick={togglePlayPause}
     >
-      {/* Video Controls */}
-      <div className="video-controls z-20 absolute top-0 left-0 right-0 bottom-0">
-        <div className="w-full h-full relative">
-          <div className="video-controls-center h-full z-10 transition-opacity ease-in-out duration-150 opacity-0 hover:opacity-100">
-            <div className="control-header bg-black-to-transparent absolute top-0 left-0 right-0 p-3 flex justify-between">
-              {/* Volume Controls */}
-              <div className="volume flex gap-2 items-center">
-                {/* Mute/Unmute button */}
-                <div
-                  className="mute-unmute-btn cursor-pointer"
-                  onClick={toggleMute}
-                >
-                  {videoState.isMuted ? (
-                    <FiVolumeX size={24} className="text-white" />
-                  ) : (
-                    <FiVolume2 size={24} className="text-white" />
-                  )}
-                </div>
-                {/* Volume Slider */}
-                <div
-                  className="p-2 rounded-pill bg-black bg-opacity-30 rounded-3xl grid place-items-center"
-                  style={{ background: '#57575a0' }}
-                >
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={Math.max(0, Math.min(100, videoState.volume))}
-                    className="w-[50px] h-[4px] range-white cursor-pointer"
-                    onChange={handleVolumeChange} // Adjust volume when slider changes
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Play/Pause Icon */}
-            <div
-              className={clsx(
-                'play-pause-btn bg-white rounded-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
-                videoState.showIcon
-                  ? 'scale-100 opacity-40'
-                  : 'scale-0 opacity-0',
-                'transition-transform transition-opacity duration-200 ease-in-out'
-              )}
-            >
-              {videoState.isPlaying ? (
-                <FaPauseCircle size={60} className="text-black" />
-              ) : (
-                <FaPlayCircle size={60} className="text-black" />
-              )}
-            </div>
+      <div className="control-header opacity-0 z-20 bg-black-to-transparent absolute top-0 left-0 right-0 p-3 flex justify-between">
+        {/* Volume Controls */}
+        <div className="volume flex gap-2 items-center">
+          {/* Mute/Unmute button */}
+          <div className="mute-unmute-btn cursor-pointer" onClick={toggleMute}>
+            {videoState.isMuted ? (
+              <FiVolumeX size={24} className="text-white" />
+            ) : (
+              <FiVolume2 size={24} className="text-white" />
+            )}
           </div>
-
-          {/* Progress Bar */}
-          <div className="time-duration z-20 absolute bottom-[7.4px] left-[-4px] right-[-4px] h-[10px]">
+          {/* Volume Slider */}
+          <div
+            className="p-2 rounded-pill bg-black bg-opacity-30 rounded-3xl grid place-items-center"
+            style={{ background: '#57575a0' }}
+          >
             <input
               type="range"
               min="0"
               max="100"
-              value={Math.max(0, Math.min(100, videoState.progress))}
-              className="w-full range-primary h-1 bg-primary cursor-pointer"
-              onChange={handleTimelineChange} // Adjust video progress when the slider changes
+              value={Math.max(0, Math.min(100, videoState.volume))}
+              className="w-[50px] h-[4px] range-white cursor-pointer"
+              onChange={handleVolumeChange} // Adjust volume when slider changes
             />
           </div>
         </div>
       </div>
-
+      <div className="z-10 absolute inset-0" onClick={togglePlayPause}>
+        <div className="video-controls-center h-full z-10 transition-opacity ease-in-out duration-150 opacity-0 hover:opacity-100">
+          {/* Play/Pause Icon */}
+          <div
+            className={clsx(
+              'play-pause-btn bg-white rounded-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+              videoState.showIcon
+                ? 'scale-100 opacity-40'
+                : 'scale-0 opacity-0',
+              'transition-transform transition-opacity duration-200 ease-in-out'
+            )}
+          >
+            {videoState.isPlaying ? (
+              <FaPauseCircle size={60} className="text-black" />
+            ) : (
+              <FaPlayCircle size={60} className="text-black" />
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Progress Bar */}
+      <div className="time-duration z-20 absolute bottom-[7.4px] left-[-4px] right-[-4px] h-[10px]">
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={Math.max(0, Math.min(100, videoState.progress))}
+          className="w-full range-primary h-1 bg-primary cursor-pointer"
+          onChange={handleTimelineChange} // Adjust video progress when the slider changes
+        />
+      </div>
       {/* Video Element */}
       <video
         ref={videoRef}
-        className="w-full h-full"
+        className="w-full h-full z-0"
         autoPlay
         loop
         muted={videoState.isMuted} // Set video muted state

@@ -7,13 +7,15 @@ interface SearchFormProps {
   isWhite?: boolean;
   isGray?: boolean;
   placeHolder?: string;
+  query?: string;
 }
 const SearchForm = ({
   isWhite,
   isGray,
   placeHolder = 'Search',
+  query,
 }: SearchFormProps) => {
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>(query ?? '');
   const handleSearchSubmit = (e: React.FormEvent) => {
     if (!searchText.trim()) {
       e.preventDefault();

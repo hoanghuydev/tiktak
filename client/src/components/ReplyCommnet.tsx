@@ -4,11 +4,19 @@ import CommentService from '@/features/comment/commentService';
 import { CommentModel } from '@/models/comment';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 
-const ReplyCommnet = ({ comment }: { comment: CommentModel }) => {
-  const [repliesRemaining, setRepliesRemaining] = useState<number>(
-    comment.replies
-  );
-  const [commentReplies, setCommentReplies] = useState<CommentModel[]>([]);
+const ReplyCommnet = ({
+  comment,
+  repliesRemaining,
+  setRepliesRemaining,
+  commentReplies,
+  setCommentReplies,
+}: {
+  comment: CommentModel;
+  repliesRemaining: number;
+  setRepliesRemaining: React.Dispatch<React.SetStateAction<number>>;
+  commentReplies: CommentModel[];
+  setCommentReplies: React.Dispatch<React.SetStateAction<CommentModel[]>>;
+}) => {
   const [showAllReplies, setShowAllReplies] = useState<boolean>(false);
   const handleShowRepliesComment = async (): Promise<void> => {
     const resp = await CommentService.getRepliesCommentByCommentId(comment.id!);
@@ -22,7 +30,7 @@ const ReplyCommnet = ({ comment }: { comment: CommentModel }) => {
   function handleHideReplies(): void {
     setShowAllReplies(false);
     setCommentReplies([]);
-    setRepliesRemaining((comment as CommentModel).replies);
+    setRepliesRemaining(comment.replies);
   }
   return (
     <div className="mt-3">
@@ -33,6 +41,7 @@ const ReplyCommnet = ({ comment }: { comment: CommentModel }) => {
               key={reply.id}
               isReplyComment={true}
               comment={reply}
+              parentCommentId={comment.id}
               className="mb-2"
             />
           ))}

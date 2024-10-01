@@ -19,6 +19,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
     bio,
     avatarData,
     isMe,
+    isFollow,
+    isFriend,
   } = profileInfo;
   return (
     <div>
@@ -31,24 +33,38 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
             alt={`Avatar user ${userName}`}
           />
         </div>
-        <div className="flex flex-wrap justify-between w-full max-w-[450px]">
+        <div className="flex flex-wrap justify-between w-full max-w-[550px]">
           {/* Text User Info */}
           <div className="user-info">
             <h4 className="text-[26px] font-[500] md:text-[30px]">
               {userName}
             </h4>
             <p className="font-semibold">{fullName}</p>
-            {!isMe && (
+            {(!isMe || isMe == 0) && (
               <div className="flex gap-2 mt-4">
-                <Button outline className="px-2 text-[14px] font-semibold py-1">
+                {(!isFollow || isFollow == 0) && (
+                  <Button
+                    outline
+                    className="px-2 text-[14px] max-w-[100px] font-semibold py-1"
+                  >
+                    Follow
+                  </Button>
+                )}
+                <Button
+                  outline
+                  className="px-2 text-[14px]  max-w-[100px]  font-semibold py-1"
+                >
                   Message
                 </Button>
-                <div className="grid place-items-center my-auto ms-2 rounded-sm border-gray-400 border-[1px] p-2">
-                  <AiOutlineUserSwitch />
-                </div>
+
+                {(isFriend || isFriend == 1) && (
+                  <div className="grid place-items-center my-auto ms-2 rounded-sm border-gray-400 border-[1px] p-2">
+                    <AiOutlineUserSwitch />
+                  </div>
+                )}
               </div>
             )}
-            {isMe && (
+            {(isMe || isMe == 1) && (
               <div className="flex gap-2 mt-4">
                 <Button
                   outlineBlack
@@ -68,7 +84,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
             )}
           </div>
           {/* End text user info */}
-          <div className="flex mt-3 gap-3 sm:mt-0">
+          <div className="flex mt-3 gap-3">
             <RiShareForwardLine size={23} />
             {!isMe && <SlOptions size={23} />}
           </div>

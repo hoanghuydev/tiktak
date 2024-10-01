@@ -82,7 +82,7 @@ class CommentController {
     }
     async insertReplyComment(req, res) {
         try {
-            const parentCommentId = req.params.parentCommentId;
+            const { postId, parentCommentId } = req.params;
             const commentPost = await commentServices.findCommentById(
                 parentCommentId
             );
@@ -90,6 +90,7 @@ class CommentController {
                 return badRequest('Not found comment to reply', res);
             const comment = await commentServices.insertComment({
                 commenter: req.user.id,
+                postId,
                 parentCommentId,
                 content: req.body.content,
             });

@@ -59,3 +59,6 @@ input[type='range'].range-white {
 .snap-start-center {
   scroll-snap-align: start center;
 }
+.video-container:hover > .control-header {
+  opacity: 1;
+}

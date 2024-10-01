@@ -1,8 +1,14 @@
 import EmojiPicker from '@/components/EmoijPicker';
-import { commentPost } from '@/features/comment/commentSlice';
+import { commentPost, replyComment } from '@/features/comment/commentSlice';
 import { setCountCommnent } from '@/features/post/postSlice';
+import { CommentModel } from '@/models/comment';
 import { PostModel } from '@/models/post';
-import { currentUserSelector } from '@/redux/selector';
+import { RootState } from '@/redux/reducer';
+import {
+  currentUserSelector,
+  getCommentSelector,
+  getPostSelector,
+} from '@/redux/selector';
 import { AppDispatch } from '@/redux/store';
 import { message } from 'antd';
 import clsx from 'clsx';
@@ -11,11 +17,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ref } from 'yup';
 interface CommentFormProps {
-  post: PostModel;
+  parentCommentId?: number;
   className?: string;
+  setRepliesRemaining?: React.Dispatch<React.SetStateAction<number>>;
+  setCommentReplies?: React.Dispatch<React.SetStateAction<CommentModel[]>>;
 }
 const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
-  ({ post, className }, ref) => {
+  (
+    { className, parentCommentId, setRepliesRemaining, setCommentReplies },
+    ref
+  ) => {
+    const { isSuccess } = useSelector((state: RootState) => state.comment);
+    const commentSelector = useSelector(getCommentSelector);
+    const post = useSelector(getPostSelector);
     const [commentText, setCommentText] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const commentInputRef = useRef<HTMLParagraphElement | null>(null);
@@ -42,18 +56,34 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
         setCaretToEnd(commentInputRef.current);
       }
     }, [commentText]);
-    const handleCommentSubmit = (e: React.FormEvent) => {
+    const handleCommentSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (commentText.trim() && post) {
-        dispatch(commentPost({ postId: post.id, content: commentText }));
-        // Clear the content of the p tag
-        if (commentInputRef.current) {
-          commentInputRef.current.innerText = '';
+        // Check comment or reply comment
+        if (parentCommentId) {
+          // Reply comment
+          const resp = await dispatch(
+            replyComment({
+              postId: post.id,
+              parentCommentId,
+              content: commentText,
+            })
+          ).unwrap();
+          if (isSuccess && resp) {
+            setRepliesRemaining?.((prev: number) => prev + 1);
+            setCommentReplies?.((prev: CommentModel[]) => [
+              resp.comment,
+              ...prev,
+            ]);
+          }
+        } else {
+          // Comment post
+          dispatch(commentPost({ postId: post.id, content: commentText }));
         }
+        if (commentInputRef.current) commentInputRef.current.innerText = '';
         dispatch(setCountCommnent((post.comments ?? 0) + 1));
         setCommentText('');
         setIsFocused(false);
-        message.success('Commented');
       }
     };
 
@@ -85,10 +115,7 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
     };
 
     return (
-      <div
-        ref={ref}
-        className={` bg-white border-t-[2px] border-[#e9e9ea] shadow-sm  ${className}`}
-      >
+      <div ref={ref} className={` bg-white  ${className}`}>
         {!user && (
           <div className="my-3 mx-5 p-3 bg-[#f1f1f1]">
             <Link to={'/login'}>

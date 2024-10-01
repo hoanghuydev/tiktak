@@ -33,12 +33,15 @@ const CommentService = {
       }
     });
   },
-  async replyComment(commentId: number, content: string) {
+  async replyComment(postId: number, parentCommentId: number, content: string) {
     return new Promise<CommentPayload>(async (resolve, reject) => {
       try {
-        const resp = await axiosToken.post(routePath + `/${commentId}/reply`, {
-          content,
-        });
+        const resp = await axiosToken.post(
+          routePath + `/post/${postId}/${parentCommentId}/reply`,
+          {
+            content,
+          }
+        );
         resolve(resp.data);
       } catch (error) {
         reject(error);
