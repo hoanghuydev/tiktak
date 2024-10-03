@@ -34,7 +34,7 @@ const PostAction = () => {
           );
         },
         (newIsLiked: any) => {
-          dispatch(setIsLike(!post.isLiked ?? true));
+          dispatch(setIsLike(!post.isLiked));
         }
       );
     } else {

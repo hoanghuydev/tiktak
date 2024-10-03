@@ -17,6 +17,8 @@ const ReplyCommnet = ({
   commentReplies: CommentModel[];
   setCommentReplies: React.Dispatch<React.SetStateAction<CommentModel[]>>;
 }) => {
+  console.log(commentReplies);
+
   const [showAllReplies, setShowAllReplies] = useState<boolean>(false);
   const handleShowRepliesComment = async (): Promise<void> => {
     const resp = await CommentService.getRepliesCommentByCommentId(comment.id!);
