@@ -7,6 +7,8 @@ export interface CommentModel extends AbstractModel {
   content: string;
   likes: number;
   replies: number;
+  repliesRemaining: number;
+  commentReplies: CommentModel[];
   isLiked: number;
   commenterData: UserModel;
 }

@@ -1,5 +1,5 @@
 import { PostModel } from '@/models/post';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import CommnentService, {
   CommentPayload,
   CommentsPayload,
@@ -111,9 +111,6 @@ const commentSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    addComment(state, action: { payload: CommentModel; type: string }) {
-      state.comments.push(action.payload);
-    },
     setComment(state, action: { payload: CommentModel; type: string }) {
       state.comment = action.payload;
     },
@@ -123,6 +120,52 @@ const commentSlice = createSlice({
     resetResultStateCommentSlice(state) {
       state.isSuccess = false;
       state.isError = false;
+    },
+    setCommentsRepliesByCommentId(
+      state,
+      action: PayloadAction<{
+        commentId: number;
+        commentReplies: CommentModel[];
+      }>
+    ) {
+      const { commentId, commentReplies } = action.payload;
+      const comment = state.comments.find((c) => c.id === commentId);
+      if (comment) {
+        comment.commentReplies = commentReplies;
+      }
+    },
+    setRepliesRemainingByCommentId(
+      state,
+      action: PayloadAction<{ commentId: number; repliesRemaining: number }>
+    ) {
+      const { commentId, repliesRemaining } = action.payload;
+      const comment = state.comments.find((c) => c.id === commentId);
+      if (comment) {
+        comment.repliesRemaining = repliesRemaining;
+      }
+    },
+    addComment(
+      state,
+      action: PayloadAction<{
+        parentCommentId: number | null;
+        comment: CommentModel;
+      }>
+    ) {
+      const { parentCommentId, comment } = action.payload;
+      if (parentCommentId) {
+        const parentComment: CommentModel | undefined = state.comments.find(
+          (c) => c.id === parentCommentId
+        );
+        if (parentComment) {
+          parentComment.commentReplies = [
+            comment,
+            ...(parentComment.commentReplies || []),
+          ]; // Thêm reply vào comment
+          parentComment.replies += 1;
+        }
+      } else {
+        state.comments.unshift(comment); // Thêm comment mới vào danh sách
+      }
     },
   },
   extraReducers: (builder) =>
@@ -163,6 +206,8 @@ export const {
   addComment,
   setComment,
   setComments,
+  setRepliesRemainingByCommentId,
+  setCommentsRepliesByCommentId,
   resetResultStateCommentSlice,
 } = commentSlice.actions;
 export default commentSlice.reducer;

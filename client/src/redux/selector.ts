@@ -29,3 +29,19 @@ export const getCommentsSelector = (state: RootState): CommentModel[] =>
   state.comment.comments;
 export const getCommentSelector = (state: RootState): CommentModel =>
   state.comment.comment!;
+export const getCommentByIdSelector = (
+  state: RootState,
+  commentId: number
+): CommentModel | undefined => {
+  return state.comment.comments.find(
+    (comment: CommentModel) => comment.id === commentId
+  );
+};
+export const getCommentRepliesByIdSelector = (
+  state: RootState,
+  commentId: number
+): CommentModel | undefined => {
+  return state.comment.comments.find(
+    (comment: CommentModel) => comment.id === commentId
+  );
+};

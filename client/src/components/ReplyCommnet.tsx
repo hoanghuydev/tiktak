@@ -3,36 +3,57 @@ import Comment from './Comment';
 import CommentService from '@/features/comment/commentService';
 import { CommentModel } from '@/models/comment';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import {
+  setCommentsRepliesByCommentId,
+  setRepliesRemainingByCommentId,
+} from '@/features/comment/commentSlice';
 
 const ReplyCommnet = ({
   comment,
   repliesRemaining,
-  setRepliesRemaining,
   commentReplies,
-  setCommentReplies,
 }: {
   comment: CommentModel;
   repliesRemaining: number;
-  setRepliesRemaining: React.Dispatch<React.SetStateAction<number>>;
   commentReplies: CommentModel[];
-  setCommentReplies: React.Dispatch<React.SetStateAction<CommentModel[]>>;
 }) => {
-  console.log(commentReplies);
-
   const [showAllReplies, setShowAllReplies] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
   const handleShowRepliesComment = async (): Promise<void> => {
     const resp = await CommentService.getRepliesCommentByCommentId(comment.id!);
-    setCommentReplies(resp.comments);
+    dispatch(
+      setCommentsRepliesByCommentId({
+        commentId: comment.id,
+        commentReplies: resp.comments,
+      })
+    );
     let repliesCmtRemaining = repliesRemaining - resp.comments.length;
     repliesCmtRemaining = repliesCmtRemaining > 0 ? repliesCmtRemaining : 0;
-    setRepliesRemaining(repliesCmtRemaining);
+    dispatch(
+      setRepliesRemainingByCommentId({
+        commentId: comment.id,
+        repliesRemaining: repliesCmtRemaining,
+      })
+    );
     setShowAllReplies(repliesCmtRemaining == 0);
   };
 
   function handleHideReplies(): void {
     setShowAllReplies(false);
-    setCommentReplies([]);
-    setRepliesRemaining(comment.replies);
+    dispatch(
+      setCommentsRepliesByCommentId({
+        commentId: comment.id,
+        commentReplies: [],
+      })
+    );
+    dispatch(
+      setRepliesRemainingByCommentId({
+        commentId: comment.id,
+        repliesRemaining: comment.replies,
+      })
+    );
   }
   return (
     <div className="mt-3">

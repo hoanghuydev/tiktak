@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoHeartOutline, IoHeart, IoClose } from 'react-icons/io5';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import clsx from 'clsx';
 import ReactTimeago from 'react-timeago';
 import CommentService from '@/features/comment/commentService';
 import ReplyCommnet from './ReplyCommnet';
-import { currentUserSelector } from '@/redux/selector';
+import {
+  currentUserSelector,
+  getCommentByIdSelector,
+  getCommentRepliesByIdSelector,
+} from '@/redux/selector';
 import { CommentModel } from '@/models/comment';
 import CommentForm from '@/site/components/Post/CommentForm';
+import { RootState } from '@/redux/reducer';
+import { AppDispatch } from '@/redux/store';
+import { setRepliesRemainingByCommentId } from '@/features/comment/commentSlice';
 
 const Comment = ({
   comment,
@@ -22,15 +29,30 @@ const Comment = ({
   className?: string;
   parentCommentId?: number;
 }) => {
-  const [repliesRemaining, setRepliesRemaining] = useState<number>(
-    comment.replies
-  );
-  const [commentReplies, setCommentReplies] = useState<CommentModel[]>([]);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isLike, setIsLike] = useState(comment.isLiked === 1);
   const [likes, setLikes] = useState(comment.likes ?? 0);
   const user = useSelector(currentUserSelector);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const repliesRemaining: number = useSelector(
+    (state: RootState) =>
+      getCommentByIdSelector(state, parentCommentId ?? comment.id)
+        ?.repliesRemaining ?? 0
+  );
+  const commentReplies: CommentModel[] = useSelector(
+    (state: RootState) =>
+      getCommentRepliesByIdSelector(state, parentCommentId ?? comment.id)
+        ?.commentReplies ?? []
+  );
+  useEffect(() => {
+    dispatch(
+      setRepliesRemainingByCommentId({
+        commentId: comment.id,
+        repliesRemaining: comment.replies,
+      })
+    );
+  }, [comment.id]);
 
   const handleLikeAndUnlikeComment = (commentId: number) => {
     if (!user) return navigate('/login');
@@ -105,11 +127,7 @@ const Comment = ({
           </div>
           {showReplyForm && (
             <div className="flex">
-              <CommentForm
-                parentCommentId={parentCommentId ?? comment.id!}
-                setCommentReplies={setCommentReplies}
-                setRepliesRemaining={setRepliesRemaining}
-              />
+              <CommentForm parentCommentId={parentCommentId ?? comment.id!} />
               <IoClose
                 size={20}
                 className="my-auto hover:cursor-pointer hover:opacity-90"
@@ -123,9 +141,7 @@ const Comment = ({
             <ReplyCommnet
               comment={comment}
               repliesRemaining={repliesRemaining}
-              setRepliesRemaining={setRepliesRemaining}
               commentReplies={commentReplies}
-              setCommentReplies={setCommentReplies}
             />
           )}
         </div>
