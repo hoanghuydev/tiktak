@@ -46,7 +46,6 @@ const Search = () => {
   }, []);
   useEffect(() => {
     if (!query) return;
-    console.log(query);
     if ((users.length === 0 || posts.length === 0) && miniTab == 'top') {
       dispatch(searchUsersByName(query));
       dispatch(getPosts(query));

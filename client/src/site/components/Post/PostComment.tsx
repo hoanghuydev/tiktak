@@ -28,6 +28,7 @@ const PostComment = () => {
     if (post && miniTab == 'comments' && comments.length == 0) {
       setLoading(true);
       dispatch(getCommentsByPostId(post.id));
+
       setLoading(false);
     } else if (miniTab == 'creator-videos' && posts.length == 0) {
       setLoading(true);
