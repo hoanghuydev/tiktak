@@ -6,6 +6,7 @@ import { PostModel } from '@/models/post';
 import { PostUploadModel } from '@/models/postUpload';
 import { TabState, TabType } from '@/features/tab/tabSlice';
 import { CommentModel } from '@/models/comment';
+import { InitStateUserType } from '@/features/user/userSlice';
 
 export const authSelector = (state: RootState): InitStateAuthType => state.auth;
 export const tabSelector = (state: RootState): TabType => state.tab.tab;
@@ -17,6 +18,8 @@ export const getPostSelector = (state: RootState): PostModel =>
   state.post.post!;
 export const postSliceSelector = (state: RootState): InitStatePostType | null =>
   state.post;
+export const userSliceSelector = (state: RootState): InitStateUserType | null =>
+  state.user;
 export const postUploadSelector = (state: RootState): PostUploadModel | null =>
   state.post.postUpload;
 export const percentLoadingPostSelector = (state: RootState): number =>

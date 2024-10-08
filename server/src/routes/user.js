@@ -4,7 +4,7 @@ import UserController from '../controller/UserController';
 import Auth from '../middleware/auth';
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
-router.get('/find', Auth.origin, UserController.findUser);
+router.get('/find', Auth.setUser, UserController.findUser);
 router.get('/me', Auth.origin, UserController.me);
 router.get('/profile/:username', Auth.setUser, UserController.getProfile);
 router.get('/:userId', UserController.getUser);

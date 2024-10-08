@@ -20,63 +20,47 @@ const Search = () => {
   const q = searchParrams.get('q');
   const [query, setQuery] = useState(q);
   const dispatch = useDispatch<AppDispatch>();
-  const [loading, setLoading] = useState<boolean>();
-  const [loading1, setLoading1] = useState<boolean>();
-
-  const [miniTab, setMiniTab] = useState<'top' | 'posts' | 'users' | 'live'>(
-    'top'
-  );
+  const [miniTab, setMiniTab] = useState<'videos' | 'users' | 'live'>('videos');
   const posts = useSelector(getPostsSelector);
   const users = useSelector(getUsersSelector);
-  console.log(users);
-  console.log(posts);
   useEffect(() => {
-    console.log('Component mounted');
     dispatch(setTab('search'));
-    console.log('dispatch empty');
     dispatch(setPosts([]));
     dispatch(setUsers([]));
     const safeQuery = q ? encodeURIComponent(q) : '';
     setQuery(safeQuery);
     document.title = `Find '${safeQuery}' on TikTok | TikTok Search`;
-
-    return () => {
-      console.log('Component unmounted');
-    };
   }, []);
   useEffect(() => {
     if (!query) return;
-    if ((users.length === 0 || posts.length === 0) && miniTab == 'top') {
-      dispatch(searchUsersByName(query));
-      dispatch(getPosts(query));
-      console.log('dispatch users posts');
-    }
     if (users.length === 0 && miniTab == 'users') {
       dispatch(searchUsersByName(query));
+      return;
     }
-    if (posts.length === 0 && miniTab == 'posts') {
+    if (posts.length === 0 && miniTab == 'videos') {
       dispatch(getPosts(query));
+      return;
     }
   }, [miniTab, query]);
 
   return (
     <div className="w-full ">
       <div className="max-w-[800px] mx-auto">
-        <Tabs animated defaultActiveKey="top">
+        <Tabs animated defaultActiveKey="videos">
           <TabPane
+            className="flex flex-col"
             tab={
               <span
                 className="mx-3 font-semibold"
-                onClick={() => setMiniTab('top')}
+                onClick={() => setMiniTab('videos')}
               >
-                Top
+                Videos
               </span>
             }
-            key="top"
+            key="videos"
           >
-            <TopSearch />
+            <VideoSearch />
           </TabPane>
-
           <TabPane
             className="flex flex-col"
             tab={
@@ -91,20 +75,7 @@ const Search = () => {
           >
             <UserSearch />
           </TabPane>
-          <TabPane
-            className="flex flex-col"
-            tab={
-              <span
-                className="mx-3 font-semibold"
-                onClick={() => setMiniTab('posts')}
-              >
-                Videos
-              </span>
-            }
-            key="videos"
-          >
-            <VideoSearch />
-          </TabPane>
+
           <TabPane
             className="flex flex-col"
             tab={
