@@ -33,6 +33,8 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
     ) {
       const selection = window.getSelection();
       const range = selection?.getRangeAt(0);
+      console.log(range);
+
       if (range) {
         range.deleteContents(); // Remove any selected text
         const emojiNode = document.createTextNode(emoji.native);
@@ -46,7 +48,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
         selection?.addRange(newRange);
         // Update the commentText
       } else {
-        console.log('No range');
+        inputRef.current.innerText += emoji.native;
       }
     }
   };
