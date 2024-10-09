@@ -14,6 +14,7 @@ export interface UserModel extends AbstractModel {
   avatarData: AvatarModel;
   followings: number;
   followers: number;
+  friends: number;
   likes: number;
   isFollow: boolean | number;
   isFriend: boolean | number;
