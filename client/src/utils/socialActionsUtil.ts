@@ -1,4 +1,5 @@
 import { clientURL } from '@/axios';
+import FollowService from '@/features/follow/followService';
 import PostService from '@/features/post/postService';
 import { message } from 'antd';
 
@@ -57,4 +58,19 @@ const sharePost = async (postId: number, setShares: any) => {
       message.error("Can't share video");
     });
 };
-export const PostActions = { likePost, sharePost };
+const followAndUnfollowUser: (
+  userId: number,
+  isFollow: boolean,
+  callback: () => any
+) => void = async (userId, isFollow, callback) => {
+  if (isFollow) {
+    await FollowService.followUser(userId).then(callback);
+  } else {
+    await FollowService.unfollowUser(userId).then(callback);
+  }
+};
+export const SocialActionUtil = {
+  likePost,
+  sharePost,
+  followAndUnfollowUser,
+};

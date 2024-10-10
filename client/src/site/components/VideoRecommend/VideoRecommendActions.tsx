@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { currentUserSelector } from '@/redux/selector';
 import { message } from 'antd';
-import { PostActions } from '@/utils/postActions';
+import { SocialActionUtil } from '@/utils/socialActionsUtil';
 const VideoRecommendActions = ({
   post,
   isFollow,
@@ -66,7 +66,12 @@ const VideoRecommendActions = ({
         iconClassName="min-w-10 mx-auto max-w-10 h-10 md:min-w-12 md:max-w-12 md:h-12"
         onClick={() => {
           user
-            ? PostActions.likePost(post!.id!, isLiked, setLikes, setIsLiked)
+            ? SocialActionUtil.likePost(
+                post!.id!,
+                isLiked,
+                setLikes,
+                setIsLiked
+              )
             : navigate('/login');
         }}
         className="mt-3 flex-col"
@@ -96,7 +101,7 @@ const VideoRecommendActions = ({
         iconClassName="min-w-10 mx-auto max-w-10 h-10 md:min-w-12 md:max-w-12 md:h-12"
         onClick={() => {
           user
-            ? PostActions.sharePost(post!.id!, setShares)
+            ? SocialActionUtil.sharePost(post!.id!, setShares)
             : navigate('/login');
         }}
         className="mt-3  flex-col"

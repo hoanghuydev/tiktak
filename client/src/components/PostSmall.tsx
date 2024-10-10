@@ -8,10 +8,12 @@ const PostSmall = ({
   post,
   className,
   haveInfo,
+  isPlaying,
 }: {
   post: PostModel;
   className?: string;
   haveInfo?: boolean;
+  isPlaying?: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [errorThumbnail, setErrorThumbnail] = useState(false);
@@ -34,7 +36,7 @@ const PostSmall = ({
   return (
     <div
       className={clsx(
-        'hover:cursor-pointer hover:opacity-95 rounded-sm rounded-lg max-w-[370px] min-w-[140px] ',
+        'hover:cursor-pointer hover:opacity-95 rounded-sm rounded-lg max-w-[320px] min-w-[140px] ',
         className
       )}
     >

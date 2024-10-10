@@ -63,10 +63,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
             {(!isMe || isMe == 0) && (
               <div className="flex gap-2 mt-4">
                 {(!isFollow || isFollow == 0) && (
-                  <Button
-                    outline
-                    className="px-2 text-[14px] max-w-[100px] font-semibold py-1"
-                  >
+                  <Button className="px-2 text-[14px] bg-primary max-w-[100px] font-semibold py-1">
                     Follow
                   </Button>
                 )}

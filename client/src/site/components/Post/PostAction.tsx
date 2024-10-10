@@ -3,7 +3,6 @@ import { currentUserSelector, getPostSelector } from '@/redux/selector';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonActionPost from '../VideoRecommend/ButtonActionPost';
-import { PostActions } from '@/utils/postActions';
 import { AppDispatch } from '@/redux/store';
 import {
   setCountLike,
@@ -14,6 +13,7 @@ import clsx from 'clsx';
 import { IoChatbubbleEllipses, IoHeart } from 'react-icons/io5';
 import { FaShare } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
+import { SocialActionUtil } from '@/utils/socialActionsUtil';
 
 const PostAction = () => {
   const user = useSelector(currentUserSelector);
@@ -23,7 +23,7 @@ const PostAction = () => {
 
   const handleLikePost = () => {
     if (user) {
-      PostActions.likePost(
+      SocialActionUtil.likePost(
         post!.id!,
         post.isLiked ?? false,
         (newLikes: any) => {
@@ -44,7 +44,7 @@ const PostAction = () => {
 
   const handleSharePost = () => {
     if (user) {
-      PostActions.sharePost(post!.id!, (newShares: any) => {
+      SocialActionUtil.sharePost(post!.id!, (newShares: any) => {
         dispatch(setCountShare((post.shares ?? 0) + 1));
       });
     } else {

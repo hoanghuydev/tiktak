@@ -24,23 +24,30 @@ const PostComment = () => {
   const post = useSelector(getPostSelector);
   const comments = useSelector(getCommentsSelector);
   const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    if (post && miniTab == 'comments' && comments.length == 0) {
+  const handleChangeMiniTab = (key: string) => {
+    setMiniTab(key as typeof miniTab);
+    if (post && key == 'comments' && comments.length == 0) {
       setLoading(true);
       dispatch(getCommentsByPostId(post.id));
 
       setLoading(false);
-    } else if (miniTab == 'creator-videos' && posts.length == 0) {
+    } else if (key == 'creator-videos' && posts.length == 0) {
       setLoading(true);
       PostService.getPostsByUserId(post.poster!).then((resp) => {
         setPosts(resp.posts);
         setLoading(false);
       });
     }
-  }, [miniTab, post]);
+  };
+
   return (
     <div className="px-1">
-      <Tabs animated defaultActiveKey="comments" className="w-full">
+      <Tabs
+        animated
+        activeKey={miniTab}
+        onChange={handleChangeMiniTab}
+        className="w-full"
+      >
         <TabPane
           className="w-full p-3"
           tab={
@@ -79,13 +86,14 @@ const PostComment = () => {
         >
           {loading && <Loading />}
           {!loading && posts && (
-            <div className="flex mb-5">
-              <div className="flex flex-wrap mx-auto gap-5 px-0 md:px-4 lg:px-6">
-                {posts.map((post, index) => (
+            <div className="mb-5 overflow-y-auto creator-video-container">
+              <div className="grid gap-x-6 gap-y-4 px-2 grid-cols-[repeat(auto-fit,_minmax(180px,_1fr))]">
+                {posts.map((postDetail, index) => (
                   <PostSmall
-                    className="mx-auto flex-grow flex-shrink max-w-[200px]"
+                    className={`max-w-[200px]  creator-videos-${postDetail.id}`}
                     key={index}
-                    post={post}
+                    post={postDetail}
+                    isPlaying={postDetail.id === post.id}
                   />
                 ))}
               </div>

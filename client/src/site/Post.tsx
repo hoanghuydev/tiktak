@@ -66,7 +66,7 @@ const Post = () => {
           {/* Second row: post details */}
           <div className="flex-[100%] h-full overflow-hidden relative bg-white flex-col min-w-[290px]">
             <div
-              className={clsx('overflow-y-auto h-full')}
+              className={clsx('overflow-y-auto h-full post-commnet-side')}
               style={{
                 paddingBottom: `${paddingBottom}px`,
               }}
