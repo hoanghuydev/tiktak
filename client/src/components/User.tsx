@@ -16,19 +16,19 @@ const User = ({ user }: { user: UserModel }) => {
             />
           </div>
           <div>
-            <p className="text-[18px] font-bold overflow-hidden text-ellipsis">
+            <p className="text-[18px] font-bold overflow-hidden text-ellipsis line-clamp-1">
               {user.userName}
             </p>
-            <p className="text-[14px] overflow-hidden font-light text-ellipsis">
+            <p className="text-[14px] overflow-hidden font-light text-ellipsis line-clamp-1">
               {user.fullName} · <strong className="font-bold">0M</strong>{' '}
               Followers
             </p>
-            <p className="text-[14px] overflow-hidden text-ellipsis">
+            <p className="text-[14px] overflow-hidden text-ellipsis line-clamp-1">
               {user.bio}
             </p>
           </div>
         </div>
-        <div>
+        <div className="grid place-items-center">
           <Button className="w-[100px] rounded-md">Follow back</Button>
         </div>
       </div>

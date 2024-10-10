@@ -34,13 +34,25 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
     setMiniTab(key as 'followings' | 'friends' | 'followers');
     switch (key) {
       case 'followers':
-        FollowService.getListFollower(userId).then(setFollowerList);
+        FollowService.getListFollower(userId).then((resp) => {
+          const listFollower = resp.followers.map(
+            (follower) => follower.followerData
+          );
+          setFollowerList(listFollower);
+        });
         break;
       case 'followings':
-        FollowService.getListFollowing(userId).then(setFollowingList);
+        FollowService.getListFollowing(userId).then((resp) => {
+          const listFollowing = resp.followings.map(
+            (follower) => follower.followeeData
+          );
+          setFollowingList(listFollowing);
+        });
         break;
       case 'friends':
-        FollowService.getListFriend(userId).then(setFriendList);
+        FollowService.getListFriend(userId).then((resp) =>
+          setFriendList(resp.friends)
+        );
         break;
       default:
         break;
@@ -60,16 +72,20 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
       className="z-50"
     >
       <Tabs animated activeKey={miniTab} onChange={handleTabChange}>
-        <Tabs.TabPane tab={`Following ${followings}`} key="followings">
+        <Tabs.TabPane tab={`Following ${followings ?? 0}`} key="followings">
           {followingList.map((following) => (
             <User user={following} />
           ))}
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`Followers ${followers}`} key="followers">
-          {/* Render followerList content here */}
+        <Tabs.TabPane tab={`Followers ${followers ?? 0}`} key="followers">
+          {followerList.map((follower) => (
+            <User user={follower} />
+          ))}
         </Tabs.TabPane>
-        <Tabs.TabPane tab={`Friends ${friends}`} key="friends">
-          {/* Render friendList content here */}
+        <Tabs.TabPane tab={`Friends ${friends ?? 0}`} key="friends">
+          {friendList.map((friend) => (
+            <User user={friend} />
+          ))}
         </Tabs.TabPane>
       </Tabs>
     </Modal>

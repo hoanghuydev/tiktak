@@ -1,9 +1,17 @@
 import { axiosToken } from '@/axios';
-import { AbstractModel } from '@/models';
+import { AbstractModel, PaginationModel } from '@/models';
 import { FollowModel } from '@/models/follow';
 import { UserModel } from '@/models/user';
 import AbstractPayload from '@/utils/abtractPayloadType';
-
+interface FollowingListPayload extends PaginationModel {
+  followings: FollowModel[];
+}
+interface FollowerListPayload extends PaginationModel {
+  followers: FollowModel[];
+}
+interface FriendListPayload extends PaginationModel {
+  friends: UserModel[];
+}
 const routePath = '/follow/';
 const FollowService = {
   async followUser(userId: number) {
@@ -27,7 +35,7 @@ const FollowService = {
     });
   },
   async getListFollower(userId: number) {
-    return new Promise<UserModel[]>(async (resolve, reject) => {
+    return new Promise<FollowerListPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(routePath + `followers/${userId}`);
         resolve(resp.data);
@@ -37,7 +45,7 @@ const FollowService = {
     });
   },
   async getListFollowing(userId: number) {
-    return new Promise<UserModel[]>(async (resolve, reject) => {
+    return new Promise<FollowingListPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(routePath + `followings/${userId}`);
         resolve(resp.data);
@@ -47,7 +55,7 @@ const FollowService = {
     });
   },
   async getListFriend(userId: number) {
-    return new Promise<UserModel[]>(async (resolve, reject) => {
+    return new Promise<FriendListPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(routePath + `friends/${userId}`);
         resolve(resp.data);
