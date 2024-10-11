@@ -29,7 +29,6 @@ const PostComment = () => {
     if (post && key == 'comments' && comments.length == 0) {
       setLoading(true);
       dispatch(getCommentsByPostId(post.id));
-
       setLoading(false);
     } else if (key == 'creator-videos' && posts.length == 0) {
       setLoading(true);
@@ -39,6 +38,9 @@ const PostComment = () => {
       });
     }
   };
+  useEffect(() => {
+    handleChangeMiniTab('comments');
+  }, [post]);
 
   return (
     <div className="px-1">

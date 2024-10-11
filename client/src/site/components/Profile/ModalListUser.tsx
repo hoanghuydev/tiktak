@@ -71,7 +71,12 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
       footer={null}
       className="z-50"
     >
-      <Tabs animated activeKey={miniTab} onChange={handleTabChange}>
+      <Tabs
+        animated
+        activeKey={miniTab}
+        onChange={handleTabChange}
+        className="h-[calc(100vh-300px)]"
+      >
         <Tabs.TabPane tab={`Following ${followings ?? 0}`} key="followings">
           {followingList.map((following) => (
             <User user={following} />

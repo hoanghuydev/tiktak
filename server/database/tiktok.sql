@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2024 at 03:59 PM
+-- Generation Time: Oct 11, 2024 at 05:29 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -108,7 +108,42 @@ CREATE TABLE `comments` (
 --
 
 INSERT INTO `comments` (`id`, `commenter`, `postId`, `content`, `createdAt`, `updatedAt`, `parentCommentId`) VALUES
-(76, 1, 34, 'check comment', '2024-10-01 13:59:43', '2024-10-01 13:59:43', NULL);
+(76, 1, 34, 'check comment', '2024-10-01 13:59:43', '2024-10-01 13:59:43', NULL),
+(77, 1, 34, 'ok', '2024-10-02 08:03:58', '2024-10-02 08:03:58', 76),
+(78, 1, 34, 'check comment', '2024-10-02 08:05:55', '2024-10-02 08:05:55', 76),
+(79, 1, 34, 'okkk', '2024-10-02 08:06:08', '2024-10-02 08:06:08', 76),
+(80, 1, 34, '306', '2024-10-02 08:06:57', '2024-10-02 08:06:57', 76),
+(81, 1, 34, 'nice', '2024-10-02 08:07:45', '2024-10-02 08:07:45', 76),
+(82, 1, 34, 'hello there', '2024-10-02 08:08:00', '2024-10-02 08:08:00', 76),
+(83, 1, 34, 'nice', '2024-10-02 08:08:10', '2024-10-02 08:08:10', 76),
+(84, 1, 34, 'hello there', '2024-10-02 08:08:14', '2024-10-02 08:08:14', 76),
+(85, 1, 34, 'check comment', '2024-10-02 08:09:55', '2024-10-02 08:09:55', 76),
+(86, 1, 34, 'check ', '2024-10-02 08:10:33', '2024-10-02 08:10:33', 76),
+(87, 1, 34, 'comment', '2024-10-02 08:12:38', '2024-10-02 08:12:38', 76),
+(88, 1, 34, 'comment 2', '2024-10-02 08:12:44', '2024-10-02 08:12:44', 76),
+(89, 1, 34, 'fuck', '2024-10-02 08:16:34', '2024-10-02 08:16:34', 76),
+(90, 1, 34, '@@@', '2024-10-02 08:17:10', '2024-10-02 08:17:10', 76),
+(91, 1, 34, 'coment 319', '2024-10-02 08:19:10', '2024-10-02 08:19:10', 76),
+(92, 1, 35, 'omment', '2024-10-02 08:20:42', '2024-10-02 08:20:42', NULL),
+(93, 1, 35, 'a', '2024-10-02 08:20:44', '2024-10-02 08:20:44', 92),
+(94, 1, 35, 'comment', '2024-10-02 08:24:05', '2024-10-02 08:24:05', NULL),
+(95, 1, 35, 'okkkk', '2024-10-02 08:24:10', '2024-10-02 08:24:10', 94),
+(96, 1, 35, 'comment', '2024-10-02 08:24:18', '2024-10-02 08:24:18', 94),
+(97, 1, 35, 'comment', '2024-10-02 08:24:23', '2024-10-02 08:24:23', 94),
+(98, 1, 35, 'comment', '2024-10-02 08:24:29', '2024-10-02 08:24:29', NULL),
+(99, 1, 35, 'comment', '2024-10-02 08:24:32', '2024-10-02 08:24:32', 98),
+(100, 1, 35, 'Ok im think that good', '2024-10-03 02:04:40', '2024-10-03 02:04:40', 94),
+(101, 1, 35, 'is that so', '2024-10-03 02:04:51', '2024-10-03 02:04:51', 94),
+(102, 1, 35, 'Hi', '2024-10-04 10:00:21', '2024-10-04 10:00:21', 94),
+(103, 1, 35, 'Reply HI', '2024-10-04 10:01:28', '2024-10-04 10:01:28', 94),
+(104, 1, 35, 'Is that so?', '2024-10-04 10:02:10', '2024-10-04 10:02:10', 94),
+(105, 1, 35, 'Hi there', '2024-10-04 10:03:15', '2024-10-04 10:03:15', 98),
+(106, 1, 35, 'Ok nice', '2024-10-04 10:06:41', '2024-10-04 10:06:41', 98),
+(107, 1, 35, 'Hello thre', '2024-10-04 10:06:55', '2024-10-04 10:06:55', 98),
+(108, 1, 35, 'good', '2024-10-04 10:07:02', '2024-10-04 10:07:02', 98),
+(109, 1, 34, 'nah', '2024-10-08 09:39:03', '2024-10-08 09:39:03', 76),
+(110, 1, 33, 'comment', '2024-10-10 03:43:25', '2024-10-10 03:43:25', NULL),
+(111, 1, 33, 'check', '2024-10-10 04:04:43', '2024-10-10 04:04:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -181,16 +216,14 @@ INSERT INTO `likespost` (`id`, `liker`, `postId`, `createdAt`, `updatedAt`) VALU
 (22, 4, 28, '2024-05-28 20:11:39', '2024-05-28 20:11:39'),
 (23, 4, 26, '2024-05-28 20:11:52', '2024-05-28 20:11:52'),
 (29, 1, 8, '2024-06-17 18:59:37', '2024-06-17 18:59:37'),
-(31, 1, 29, '2024-07-05 13:05:34', '2024-07-05 13:05:34'),
 (33, 1, 31, '2024-09-19 03:51:36', '2024-09-19 03:51:36'),
 (34, 1, 33, '2024-09-21 22:13:11', '2024-09-21 22:13:11'),
 (35, 7, 9, '2024-09-27 10:08:56', '2024-09-27 10:08:56'),
 (41, 8, 34, '2024-09-29 05:10:12', '2024-09-29 05:10:12'),
 (42, 4, 34, '2024-09-29 05:12:13', '2024-09-29 05:12:13'),
-(43, 1, 34, '2024-09-29 05:42:41', '2024-09-29 05:42:41'),
 (44, 7, 34, '2024-09-29 05:43:11', '2024-09-29 05:43:11'),
 (45, 7, 11, '2024-09-29 05:47:58', '2024-09-29 05:47:58'),
-(46, 1, 35, '2024-10-01 08:58:11', '2024-10-01 08:58:11');
+(50, 1, 35, '2024-10-10 03:32:18', '2024-10-10 03:32:18');
 
 -- --------------------------------------------------------
 
@@ -280,21 +313,21 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `views`, `comments`, `shares`, `poster`, `title`, `thumnailUrl`, `videoUrl`, `thumnailId`, `videoId`, `visibility`, `createdAt`, `updatedAt`) VALUES
-(7, 3, 0, 0, 3, 'How to marketing for Facebook', 'https://drive.google.com/uc?export=view&id=1svKID1G6V2T7iRnnRasbq7wTnuqc30kj', 'http://res.cloudinary.com/da5wewzih/video/upload/v1709014619/tiktok_video/xzzgbdzlxuo51eu9qz9q.mp4', '1svKID1G6V2T7iRnnRasbq7wTnuqc30kj', 'tiktok_video/xzzgbdzlxuo51eu9qz9q', 1, '2024-02-27 06:16:42', '2024-10-01 08:59:51'),
-(8, 3, 0, 7, 1, 'Talking kittens cat', 'https://drive.usercontent.google.com/download?id=1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220712/tiktok_video/qkfwangsiwkmaszsem1v.mp4', '1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ', 'tiktok_video/qkfwangsiwkmaszsem1v', 1, '2024-05-20 15:58:20', '2024-10-01 08:59:50'),
+(7, 4, 0, 0, 3, 'How to marketing for Facebook', 'https://drive.google.com/uc?export=view&id=1svKID1G6V2T7iRnnRasbq7wTnuqc30kj', 'http://res.cloudinary.com/da5wewzih/video/upload/v1709014619/tiktok_video/xzzgbdzlxuo51eu9qz9q.mp4', '1svKID1G6V2T7iRnnRasbq7wTnuqc30kj', 'tiktok_video/xzzgbdzlxuo51eu9qz9q', 1, '2024-02-27 06:16:42', '2024-10-08 09:42:47'),
+(8, 7, 0, 7, 1, 'Talking kittens cat', 'https://drive.usercontent.google.com/download?id=1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220712/tiktok_video/qkfwangsiwkmaszsem1v.mp4', '1dE-aHNOzHX5UXfF56UrHGMgWDlVJfunZ', 'tiktok_video/qkfwangsiwkmaszsem1v', 1, '2024-05-20 15:58:20', '2024-10-10 03:53:07'),
 (9, 6, 0, 1, 2, 'Cat: Don’t talk to me any more', 'https://drive.usercontent.google.com/download?id=16RRP_Cm2gXBctSwIQVIH_EDMsRGO_1lX&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220837/tiktok_video/gqsyudrlwcbxdlp68vd2.mp4', '16RRP_Cm2gXBctSwIQVIH_EDMsRGO_1lX', 'tiktok_video/gqsyudrlwcbxdlp68vd2', 1, '2024-05-20 16:00:26', '2024-10-01 08:59:44'),
-(10, 7, 0, 2, 1, 'I wanna love u', 'https://drive.usercontent.google.com/download?id=1wAewUcySxGtzMH-aLzj1sRqvzaoGjMv4&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220942/tiktok_video/qatbetefbw0bdzuvnl7o.mp4', '1wAewUcySxGtzMH-aLzj1sRqvzaoGjMv4', 'tiktok_video/qatbetefbw0bdzuvnl7o', 1, '2024-05-20 16:02:11', '2024-10-01 08:59:43'),
+(10, 8, 0, 2, 1, 'I wanna love u', 'https://drive.usercontent.google.com/download?id=1wAewUcySxGtzMH-aLzj1sRqvzaoGjMv4&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716220942/tiktok_video/qatbetefbw0bdzuvnl7o.mp4', '1wAewUcySxGtzMH-aLzj1sRqvzaoGjMv4', 'tiktok_video/qatbetefbw0bdzuvnl7o', 1, '2024-05-20 16:02:11', '2024-10-10 03:43:11'),
 (11, 20, 0, 7, 4, 'Một video dễ thương ghi lại khoảnh khắc bạn đang vuốt ve một chú mèo mập đáng yêu đang nằm thư giãn. Chú mèo mập, với bộ lông mềm mượt và ánh mắt lười biếng, tận hưởng từng giây phút được cưng nựng. Những cái vuốt ve nhẹ nhàng khiến chú mèo trông hạnh phúc và thoải mái, làm tan chảy trái tim bất cứ ai xem video này. ', 'https://drive.usercontent.google.com/download?id=1GjNmRcJ3rOHVAH5hzxT4_GekPyq4Go_Y&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716226746/tiktok_video/ut2zoqvl9xfuwkzalw1l.mp4', '1GjNmRcJ3rOHVAH5hzxT4_GekPyq4Go_Y', 'tiktok_video/ut2zoqvl9xfuwkzalw1l', 1, '2024-05-20 17:38:55', '2024-10-01 08:59:43'),
 (26, 0, 0, 0, 1, 'Lý do tại sao bạn nên sỡ hữu một chú mèo', 'https://drive.usercontent.google.com/download?id=1Nu8S88uR0Sa_yh3AgmvlurK-X1KhTL2x&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716358440/tiktok_video/l8r2ue2zvcd8pr8tch6b.mp4', '1Nu8S88uR0Sa_yh3AgmvlurK-X1KhTL2x', 'tiktok_video/l8r2ue2zvcd8pr8tch6b', 0, '2024-05-22 06:13:40', '2024-05-22 06:13:51'),
-(27, 2, 0, 0, 1, 'Hướng dẫn cách đánh bọt cho meo meo', 'https://drive.usercontent.google.com/download?id=1uDOyEae47s3p3B3Pa3Y1fWMLdGnZz6AC&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716359820/tiktok_video/ial9tepmkryolwr10kdp.mp4', '1uDOyEae47s3p3B3Pa3Y1fWMLdGnZz6AC', 'tiktok_video/ial9tepmkryolwr10kdp', -1, '2024-05-22 06:36:34', '2024-10-01 08:59:42'),
-(28, 12, 0, 0, 1, 'They\'re angry, grrr', 'https://drive.usercontent.google.com/download?id=19knlEVnnOA0eQ_M_idUPrloOpiGOIxsM&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716921203/tiktok_video/lcchomyfk4pkt3t1yihf.mp4', '19knlEVnnOA0eQ_M_idUPrloOpiGOIxsM', 'tiktok_video/lcchomyfk4pkt3t1yihf', 1, '2024-05-28 18:32:50', '2024-10-01 08:59:41'),
-(29, 9, 0, 0, 3, 'Let\' dance', 'https://drive.usercontent.google.com/download?id=10q6pKRhJPb2wD1y-z7HX47joxHJSZMff&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716923645/tiktok_video/iu9ydxvlextz9xgatzxr.mp4', '10q6pKRhJPb2wD1y-z7HX47joxHJSZMff', 'tiktok_video/iu9ydxvlextz9xgatzxr', 1, '2024-05-28 19:13:52', '2024-10-01 08:59:40'),
-(30, 8, 0, 1, 1, 'Meo meo', 'https://drive.usercontent.google.com/download?id=1M_LCWLbfe2TT0YQelKpjk2LWkapJCoc2&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716999804/tiktok_video/m1t82t8npeh9p26nibb5.mp4', '1M_LCWLbfe2TT0YQelKpjk2LWkapJCoc2', 'tiktok_video/m1t82t8npeh9p26nibb5', 1, '2024-05-29 16:23:03', '2024-10-01 08:59:39'),
-(31, 16, 0, 1, 4, 'Tieu de 1', 'https://drive.usercontent.google.com/download?id=1gf6IO_kU-UeMbEflyiYvsygc-qyppbXu&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1717000643/tiktok_video/gkwhcpq3stbuxr5bkk9j.mp4', '1gf6IO_kU-UeMbEflyiYvsygc-qyppbXu', 'tiktok_video/gkwhcpq3stbuxr5bkk9j', 1, '2024-05-29 16:37:17', '2024-10-01 08:59:39'),
-(32, 13, 0, 1, 1, '<script>alert(\'Huy\')</script>', 'https://drive.usercontent.google.com/download?id=1MoKwmk4HnJ0hm_5ClwTwV9EHBFIixy5A&export=view&authuser=1', 'http://res.cloudinary.com/dwuypueso/video/upload/v1719968365/tiktok_video/hciaged5lv3xvjirzr4k.mp4', '1MoKwmk4HnJ0hm_5ClwTwV9EHBFIixy5A', 'tiktok_video/hciaged5lv3xvjirzr4k', 1, '2024-07-03 00:59:28', '2024-10-01 12:33:04'),
-(33, 29, 0, 1, 1, 'Xin chao', 'https://drive.usercontent.google.com/download?id=1reb1jfUhnzn57hoD43wyePMS16z6SpSF&export=view&authuser=1', 'http://res.cloudinary.com/dwuypueso/video/upload/v1720184921/tiktok_video/xryqsr2ma3hlh7hfzxbx.mp4', '1reb1jfUhnzn57hoD43wyePMS16z6SpSF', 'tiktok_video/xryqsr2ma3hlh7hfzxbx', 1, '2024-07-05 13:08:53', '2024-10-01 12:33:01'),
-(34, 115, 0, 3, 8, 'Trend xé giấy biến hình. Chọn ai xinh hơn nào?', 'https://drive.usercontent.google.com/download?id=1Yea50mnltdLAV3KWQxgmUqDLSbNz985o&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1727585566/tiktok_video/nsfmkq1kb7cgnd9whd26.mp4', '1Yea50mnltdLAV3KWQxgmUqDLSbNz985o', 'tiktok_video/nsfmkq1kb7cgnd9whd26', 1, '2024-09-29 04:52:26', '2024-10-01 13:59:40'),
-(35, 23, 0, 0, 7, '=))', 'https://drive.usercontent.google.com/download?id=1xuVIlBZ1uecSMZBu9P1qqP3FMXWOu5YZ&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1727589849/tiktok_video/woj8lan23lqraufpwtde.mp4', '1xuVIlBZ1uecSMZBu9P1qqP3FMXWOu5YZ', 'tiktok_video/woj8lan23lqraufpwtde', 1, '2024-09-29 06:03:48', '2024-10-01 12:44:37');
+(27, 4, 0, 0, 1, 'Hướng dẫn cách đánh bọt cho meo meo', 'https://drive.usercontent.google.com/download?id=1uDOyEae47s3p3B3Pa3Y1fWMLdGnZz6AC&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716359820/tiktok_video/ial9tepmkryolwr10kdp.mp4', '1uDOyEae47s3p3B3Pa3Y1fWMLdGnZz6AC', 'tiktok_video/ial9tepmkryolwr10kdp', -1, '2024-05-22 06:36:34', '2024-10-10 03:52:42'),
+(28, 13, 0, 0, 1, 'They\'re angry, grrr', 'https://drive.usercontent.google.com/download?id=19knlEVnnOA0eQ_M_idUPrloOpiGOIxsM&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716921203/tiktok_video/lcchomyfk4pkt3t1yihf.mp4', '19knlEVnnOA0eQ_M_idUPrloOpiGOIxsM', 'tiktok_video/lcchomyfk4pkt3t1yihf', 1, '2024-05-28 18:32:50', '2024-10-10 03:06:56'),
+(29, 11, 0, 0, 3, 'Let\' dance', 'https://drive.usercontent.google.com/download?id=10q6pKRhJPb2wD1y-z7HX47joxHJSZMff&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716923645/tiktok_video/iu9ydxvlextz9xgatzxr.mp4', '10q6pKRhJPb2wD1y-z7HX47joxHJSZMff', 'tiktok_video/iu9ydxvlextz9xgatzxr', 1, '2024-05-28 19:13:52', '2024-10-08 09:43:23'),
+(30, 10, 0, 1, 1, 'Meo meo', 'https://drive.usercontent.google.com/download?id=1M_LCWLbfe2TT0YQelKpjk2LWkapJCoc2&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1716999804/tiktok_video/m1t82t8npeh9p26nibb5.mp4', '1M_LCWLbfe2TT0YQelKpjk2LWkapJCoc2', 'tiktok_video/m1t82t8npeh9p26nibb5', 1, '2024-05-29 16:23:03', '2024-10-10 03:43:06'),
+(31, 19, 0, 1, 4, 'Tieu de 1', 'https://drive.usercontent.google.com/download?id=1gf6IO_kU-UeMbEflyiYvsygc-qyppbXu&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1717000643/tiktok_video/gkwhcpq3stbuxr5bkk9j.mp4', '1gf6IO_kU-UeMbEflyiYvsygc-qyppbXu', 'tiktok_video/gkwhcpq3stbuxr5bkk9j', 1, '2024-05-29 16:37:17', '2024-10-10 04:09:19'),
+(32, 20, 0, 1, 1, '<script>alert(\'Huy\')</script>', 'https://drive.usercontent.google.com/download?id=1MoKwmk4HnJ0hm_5ClwTwV9EHBFIixy5A&export=view&authuser=1', 'http://res.cloudinary.com/dwuypueso/video/upload/v1719968365/tiktok_video/hciaged5lv3xvjirzr4k.mp4', '1MoKwmk4HnJ0hm_5ClwTwV9EHBFIixy5A', 'tiktok_video/hciaged5lv3xvjirzr4k', 1, '2024-07-03 00:59:28', '2024-10-11 03:10:02'),
+(33, 41, 0, 1, 1, 'Xin chao', 'https://drive.usercontent.google.com/download?id=1reb1jfUhnzn57hoD43wyePMS16z6SpSF&export=view&authuser=1', 'http://res.cloudinary.com/dwuypueso/video/upload/v1720184921/tiktok_video/xryqsr2ma3hlh7hfzxbx.mp4', '1reb1jfUhnzn57hoD43wyePMS16z6SpSF', 'tiktok_video/xryqsr2ma3hlh7hfzxbx', 1, '2024-07-05 13:08:53', '2024-10-11 03:10:01'),
+(34, 138, 0, 5, 8, 'Trend xé giấy biến hình. Chọn ai xinh hơn nào?', 'https://drive.usercontent.google.com/download?id=1Yea50mnltdLAV3KWQxgmUqDLSbNz985o&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1727585566/tiktok_video/nsfmkq1kb7cgnd9whd26.mp4', '1Yea50mnltdLAV3KWQxgmUqDLSbNz985o', 'tiktok_video/nsfmkq1kb7cgnd9whd26', 1, '2024-09-29 04:52:26', '2024-10-11 03:10:00'),
+(35, 113, 0, 2, 7, '=))', 'https://drive.usercontent.google.com/download?id=1xuVIlBZ1uecSMZBu9P1qqP3FMXWOu5YZ&export=view&authuser=1', 'http://res.cloudinary.com/da5wewzih/video/upload/v1727589849/tiktok_video/woj8lan23lqraufpwtde.mp4', '1xuVIlBZ1uecSMZBu9P1qqP3FMXWOu5YZ', 'tiktok_video/woj8lan23lqraufpwtde', 1, '2024-09-29 06:03:48', '2024-10-11 03:09:58');
 
 -- --------------------------------------------------------
 
@@ -395,9 +428,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `fullName`, `userName`, `email`, `password`, `association`, `avatarPublicId`, `isVertified`, `roleCode`, `createdAt`, `updatedAt`, `peerId`, `bio`) VALUES
-(1, 'Hoàng Huy', 'hoanghuydev', 'hoanghuydev@gmail.com', '$2b$10$E1mmN84Cvmr2urQYPcXcMO0GCmHfSZOCivONt1szhhasrhuhmD7zW', '', 'tiktok_avatar/vb3lsu3tj5l2isahmfi7', 1, 'R3', '2024-02-24 06:39:20', '2024-07-03 00:57:38', '', ''),
-(2, 'Trần Võ Hoàng Huy', 'google111635119529567317993', '21130386@st.hcmuaf.edu.vn', '$2b$10$pFcC1YtLAaY3jh4wbozFROIXFDZDWqdn1ysZJHP6b5gQNwBlS0J4O', 'google', 'tiktok_avatar/qrabjbofeuu20wpg28o0', 1, 'R3', '2024-05-19 06:11:50', '2024-05-19 06:11:50', '', ''),
-(3, 'HACK GAME MOBILE', 'google113126273317362616172', 'ngaogaming113@gmail.com', '$2b$10$Jhlime7lexSh9jU3FdGcaurcqipQxCNBBCVtepUGDXYTp5qYN.Qf.', 'google', 'tiktok_avatar/c0rpvv5dkrx8xvadspjp', 1, 'R3', '2024-05-19 06:58:06', '2024-05-28 19:53:04', '', ''),
+(1, 'Hoàng Huy', 'hoanghuydev', 'hoanghuydev@gmail.com', '$2b$10$E1mmN84Cvmr2urQYPcXcMO0GCmHfSZOCivONt1szhhasrhuhmD7zW', '', 'tiktok_avatar/vb3lsu3tj5l2isahmfi7', 1, 'R3', '2024-02-24 06:39:20', '2024-07-03 00:57:38', '', 'ig : only.hanhnt  📨 CONTACT WORK : 0866.673.314'),
+(2, 'Trần Võ Hoàng Huy', 'google111635119529567317993', '21130386@st.hcmuaf.edu.vn', '$2b$10$pFcC1YtLAaY3jh4wbozFROIXFDZDWqdn1ysZJHP6b5gQNwBlS0J4O', 'google', 'tiktok_avatar/qrabjbofeuu20wpg28o0', 1, 'R3', '2024-05-19 06:11:50', '2024-05-19 06:11:50', '', 'Snapchat - CCC Don’t release this username under any circumstances Underground'),
+(3, 'HACK GAME MOBILE', 'google113126273317362616172', 'ngaogaming113@gmail.com', '$2b$10$Jhlime7lexSh9jU3FdGcaurcqipQxCNBBCVtepUGDXYTp5qYN.Qf.', 'google', 'tiktok_avatar/c0rpvv5dkrx8xvadspjp', 1, 'R3', '2024-05-19 06:58:06', '2024-05-28 19:53:04', '', 'Snapchat - CCC Don’t release this username under any circumstances Underground'),
 (4, 'github161137978', 'github161137978', 'github161137978@gmail.com', '$2b$10$2Kkp0bS2WG.QAGwuFtEiVevIYezv0.7UTUTSUycIXeF0no/jIp6va', 'github', 'tiktok_avatar/tvfmylnammlzck3w3abg', 1, 'R3', '2024-05-19 07:27:46', '2024-05-22 06:29:00', '', ''),
 (6, 'Nguyễn Van Huy', 'vanhuy', 'vanhuy@gmail.com', '$2b$10$c9DVOskcIKnEIELCDVHgf.CaAK9KRwyLtM3QMAcI.XT9ihZiB0N2e', '', 'tiktok_avatar/qrabjbofeuu20wpg28o0', 0, 'R3', '2024-06-17 18:44:20', '2024-06-17 18:44:20', '', ''),
 (7, 'Huy Hoàng', 'google102478269810804561785', 'tranvohoanghuy12ab@gmail.com', '$2b$10$bgT6b9IdYgzbcvK3MOBUb.QyRDUIZUwSq4xIzmlKp2DwmZCiEzT06', 'google', 'tiktok_avatar/qrabjbofeuu20wpg28o0', 1, 'R3', '2024-09-27 08:06:51', '2024-09-27 08:06:51', '', ''),
@@ -415,6 +448,24 @@ CREATE TABLE `usersinchatroom` (
   `chatroomId` int(11) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_privacy_settings`
+--
+
+CREATE TABLE `user_privacy_settings` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `account_privacy` enum('public','private') DEFAULT 'public',
+  `who_can_send_messages` enum('everyone','friends_only','no_one') DEFAULT 'friends_only',
+  `who_can_duet` enum('everyone','friends_only','no_one') DEFAULT 'everyone',
+  `who_can_stitch` enum('everyone','friends_only','no_one') DEFAULT 'everyone',
+  `who_can_comment` enum('everyone','friends_only','no_one') DEFAULT 'everyone',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -558,6 +609,13 @@ ALTER TABLE `usersinchatroom`
   ADD KEY `chatroomId` (`chatroomId`);
 
 --
+-- Indexes for table `user_privacy_settings`
+--
+ALTER TABLE `user_privacy_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -589,13 +647,13 @@ ALTER TABLE `chatrooms`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 
 --
 -- AUTO_INCREMENT for table `followers`
 --
 ALTER TABLE `followers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `likescomment`
@@ -607,7 +665,7 @@ ALTER TABLE `likescomment`
 -- AUTO_INCREMENT for table `likespost`
 --
 ALTER TABLE `likespost`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `livestreams`
@@ -662,6 +720,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `usersinchatroom`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `user_privacy_settings`
+--
+ALTER TABLE `user_privacy_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -747,6 +811,12 @@ ALTER TABLE `users`
 ALTER TABLE `usersinchatroom`
   ADD CONSTRAINT `usersinchatroom_ibfk_1` FOREIGN KEY (`member`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `usersinchatroom_ibfk_2` FOREIGN KEY (`chatroomId`) REFERENCES `chatrooms` (`id`);
+
+--
+-- Constraints for table `user_privacy_settings`
+--
+ALTER TABLE `user_privacy_settings`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

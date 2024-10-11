@@ -60,10 +60,10 @@ const sharePost = async (postId: number, setShares: any) => {
 };
 const followAndUnfollowUser: (
   userId: number,
-  isFollow: boolean,
+  isCurrentFollowing: boolean,
   callback: () => any
-) => void = async (userId, isFollow, callback) => {
-  if (isFollow) {
+) => void = async (userId, isCurrentFollowing, callback) => {
+  if (!isCurrentFollowing) {
     await FollowService.followUser(userId).then(callback);
   } else {
     await FollowService.unfollowUser(userId).then(callback);

@@ -35,16 +35,8 @@ const Comment = ({
   const user = useSelector(currentUserSelector);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const repliesRemaining: number = useSelector(
-    (state: RootState) =>
-      getCommentByIdSelector(state, parentCommentId ?? comment.id)
-        ?.repliesRemaining ?? 0
-  );
-  const commentReplies: CommentModel[] = useSelector(
-    (state: RootState) =>
-      getCommentRepliesByIdSelector(state, parentCommentId ?? comment.id)
-        ?.commentReplies ?? []
-  );
+  const repliesRemaining: number = comment.replies;
+  const commentReplies: CommentModel[] = comment.commentReplies ?? [];
   useEffect(() => {
     dispatch(
       setRepliesRemainingByCommentId({

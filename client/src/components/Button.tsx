@@ -19,6 +19,7 @@ interface ButtonProps {
   setWidth?: boolean;
   outlineBlack?: boolean;
   style?: CSSProperties;
+  bgGray?: boolean;
 }
 const Button: React.FC<ButtonProps> = ({
   text,
@@ -37,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
   setWidth,
   outlineBlack,
   style,
+  bgGray,
 }) => {
   const navigate = useNavigate();
   return (
@@ -59,7 +61,7 @@ const Button: React.FC<ButtonProps> = ({
         !setWidth && 'w-full',
         disabled && 'opacity-70 cursor-default',
         fullWitdth && 'w-full',
-        secondary && 'text-color bg-white border-[1px] border-[#1618231f]',
+        secondary && 'text-color border-[1px] border-[#1618231f]',
         outline &&
           'text-primary bg-transparent border-[1px] border-[#f42750] hover:bg-[#f4275013]',
         outlineBlack &&
@@ -69,6 +71,7 @@ const Button: React.FC<ButtonProps> = ({
           !danger &&
           !outline &&
           'hover:bg-[#f42750] bg-[#FE2C55] hover:hover:bg-gradient-to-r hover:from-transparent hover:via-transparent hover:to-transparent hover:to-red-500 text-white',
+        bgGray && 'bg-[#0000000d]',
         className
       )}
     >

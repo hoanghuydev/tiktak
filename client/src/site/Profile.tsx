@@ -6,23 +6,27 @@ import ProfileInfo from './components/Profile/ProfileInfo';
 import { PiUser } from 'react-icons/pi';
 import clsx from 'clsx';
 import ProfileTabs from './components/Profile/ProfileTabs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { setTab } from '@/features/tab/tabSlice';
 import { Spin } from 'antd';
 import Loading from '@/components/Loading';
+import { setUser } from '@/features/user/userSlice';
+import { getUserSelector } from '@/redux/selector';
 
 const Profile = () => {
   const { usernamehaveCuff } = useParams();
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [profileInfo, setProfileInfo] = useState<UserModel>();
   const dispatch = useDispatch<AppDispatch>();
+  const profileInfo = useSelector(getUserSelector);
   useEffect(() => {
     dispatch(setTab('profile'));
   }, []);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(setUser({} as UserModel));
+  }, []);
   // Get username
   useEffect(() => {
     // Check if username starts with '@'
@@ -38,10 +42,10 @@ const Profile = () => {
       if (username) {
         try {
           const profileInfo = await UserService.getProfile(username);
-          setProfileInfo(profileInfo.user);
           document.title = profileInfo.user.userName
             ? `${profileInfo.user.userName} (@${profileInfo.user.fullName}) `
             : 'Profile';
+          dispatch(setUser(profileInfo.user));
         } catch (err) {
           console.error(err);
         }
@@ -55,7 +59,7 @@ const Profile = () => {
       {loading && <Loading />}
       {profileInfo && !loading && (
         <div className="p-5">
-          <ProfileInfo profileInfo={profileInfo} />
+          <ProfileInfo />
           <ProfileTabs userId={profileInfo.id!} />
         </div>
       )}

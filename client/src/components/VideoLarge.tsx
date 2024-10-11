@@ -135,7 +135,7 @@ const VideoLarge = ({
           >
             <IoMdClose className="text-white" />
           </div>
-          <div className="flex-grow my-auto max-w-[60%]">
+          <div className="flex-grow my-auto max-w-[60%] hidden md:flex">
             <SearchForm isWhite placeHolder="Find related content" />
           </div>
           <div className=" rounded-full my-auto relative grid place-items-center hover:cursor-pointer min-w-10 max-w-10 h-10 hover:opacity-85 bg-[#54545480]">

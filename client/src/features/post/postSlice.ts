@@ -152,7 +152,7 @@ const postSlice = createSlice({
       state.post!.isLiked = action.payload;
     },
     setIsFollow(state, action: { payload: boolean; type: string }) {
-      state.post!.isLiked = action.payload;
+      state.post!.isFollow = action.payload;
     },
     setPostLoading(state, action: { payload: boolean; type: string }) {
       state.isLoading = action.payload;

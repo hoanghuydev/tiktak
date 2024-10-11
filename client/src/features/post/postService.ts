@@ -68,7 +68,16 @@ const PostService = {
     return new Promise<PostPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(routePath + `/${postId}`);
-        resolve(resp.data);
+        const data = resp.data;
+        const transformedPost = {
+          ...data.post,
+          isMe: Boolean(data.post.isMe),
+          isFollow: Boolean(data.post.isFollow),
+          isFriend: Boolean(data.post.isFriend),
+          isLiked: Boolean(data.post.isLiked),
+        };
+
+        resolve({ ...data, post: transformedPost });
       } catch (error) {
         reject(error);
       }

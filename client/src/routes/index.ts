@@ -17,6 +17,8 @@ import UserSearch from '@/site/UserSearch';
 import EmptyLayout from '@/components/Layout/EmptyLayout';
 import Post from '@/site/Post';
 import TopSearch from '@/site/TopSearch';
+import NoSidebarLayout from '@/components/Layout/NoSidebarLayout';
+import Message from '@/site/components/Message';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -82,6 +84,12 @@ export const privateRoutes: RouteType[] = [
     path: '/following',
     element: Following,
     layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: '/messages',
+    element: Message,
+    layout: NoSidebarLayout,
     fullScreen: true,
   },
   {

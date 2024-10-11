@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import UserService, { GetUserParams } from './userService';
 import { UserModel } from '@/models/user';
 import { message } from 'antd';
-import postSlice from '../post/postSlice';
+import postSlice, { setIsFollow } from '../post/postSlice';
 import AbstractPayload from '@/utils/abtractPayloadType';
 import { PaginationModel } from '@/models';
 
@@ -62,6 +62,9 @@ const userSlice = createSlice({
     setUser(state, action: { payload: UserModel; type: string }) {
       state.user = action.payload;
     },
+    setIsFollowUser(state, action: PayloadAction<boolean>) {
+      state.user.isFollow = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -95,5 +98,5 @@ const userSlice = createSlice({
       );
   },
 });
-export const { setUser, setUsers } = userSlice.actions;
+export const { setUser, setUsers, setIsFollowUser } = userSlice.actions;
 export default userSlice.reducer;

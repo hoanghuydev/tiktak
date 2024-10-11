@@ -10,7 +10,6 @@ import Loading from '@/components/Loading';
 const ProfileTabs = ({ userId }: { userId: number }) => {
   const [posts, setPosts] = useState<PostModel[]>([]);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     PostService.getPostsByUserId(userId).then((resp) => setPosts(resp.posts));
   }, [userId]);

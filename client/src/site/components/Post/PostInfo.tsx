@@ -4,13 +4,16 @@ import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import ButtonActionPost from '../VideoRecommend/ButtonActionPost';
 import { IoChatbubbleEllipses, IoHeart } from 'react-icons/io5';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelector, getPostSelector } from '@/redux/selector';
 import { FaShare } from 'react-icons/fa6';
 import PostAction from './PostAction';
 import { clientURL } from '@/axios';
 import { message } from 'antd';
 import { Link } from 'react-router-dom';
+import { SocialActionUtil } from '@/utils/socialActionsUtil';
+import { AppDispatch } from '@/redux/store';
+import { setIsFollow } from '@/features/post/postSlice';
 
 const PostInfo = () => {
   const titleRef = useRef<HTMLParagraphElement>(null);
@@ -18,6 +21,7 @@ const PostInfo = () => {
   const post = useSelector(getPostSelector);
   const [showMore, setShowMore] = useState(false);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     if (titleRef.current) {
       const lineHeight = parseInt(
@@ -28,13 +32,23 @@ const PostInfo = () => {
       lines > 1 ? setIsTitleOverflowing(true) : setIsTitleOverflowing(false);
     }
   }, [post.title]);
-  function handleCopyLink(): void {
+  const handleCopyLink = (): void => {
     navigator.clipboard
       .writeText(`${clientURL}post/${post.id}`)
       .then(async () => {
         message.info('Copied link to clipboard');
       });
-  }
+  };
+  const handleFollowUser: () => void = () => {
+    if (post.poster)
+      SocialActionUtil.followAndUnfollowUser(
+        post.poster,
+        post.isFollow ?? false,
+        () => {
+          dispatch(setIsFollow(!post.isFollow));
+        }
+      );
+  };
 
   return (
     <div className="p-2 md:p-5">
@@ -61,10 +75,15 @@ const PostInfo = () => {
             </div>
           </Link>
           <Button
-            className="px-6 py-2 h-fit rounded-sm"
-            style={{ width: '80px' }}
+            className={clsx(
+              'px-6 py-2 h-fit rounded-sm',
+              post.isMe && 'hidden'
+            )}
+            secondary={!post.isMe && post.isFollow ? true : false}
+            style={{ width: '90px' }}
+            onClick={handleFollowUser}
           >
-            Follow
+            {post.isFriend ? 'Friend' : post.isFollow ? 'Following' : 'Follow'}
           </Button>
         </div>
         {/* Video Title */}

@@ -28,6 +28,7 @@ export const getPostLoadingSelector = (state: RootState): boolean =>
   state.post.isLoading;
 export const getUsersSelector = (state: RootState): UserModel[] =>
   state.user.users;
+export const getUserSelector = (state: RootState): UserModel => state.user.user;
 export const getCommentsSelector = (state: RootState): CommentModel[] =>
   state.comment.comments;
 export const getCommentSelector = (state: RootState): CommentModel =>
@@ -40,6 +41,7 @@ export const getCommentByIdSelector = (
     (comment: CommentModel) => comment.id === commentId
   );
 };
+
 export const getCommentRepliesByIdSelector = (
   state: RootState,
   commentId: number

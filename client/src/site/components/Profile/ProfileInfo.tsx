@@ -1,16 +1,19 @@
 import Button from '@/components/Button';
-import { UserModel } from '@/models/user';
 import React, { useState } from 'react';
 import { AiOutlineEdit, AiOutlineUserSwitch } from 'react-icons/ai';
 import { RiShareForwardLine } from 'react-icons/ri';
 import { SlFire, SlOptions } from 'react-icons/sl';
 import ModalListUser from './ModalListUser';
+import clsx from 'clsx';
+import { SocialActionUtil } from '@/utils/socialActionsUtil';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { getUserSelector } from '@/redux/selector';
+import { setIsFollowUser } from '@/features/user/userSlice';
+import ModalEditProfile from './ModalEditProfile';
 
-interface ProfileInfoProps {
-  profileInfo: UserModel;
-}
-
-const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
+const ProfileInfo = () => {
+  const profileInfo = useSelector(getUserSelector);
   const {
     fullName,
     userName,
@@ -25,24 +28,44 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
     friends,
     id,
   } = profileInfo;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenModalListUser, setIsOpenModalListUser] = useState(false);
+  const [isOpenModalEditProfile, setIsOpenModalEditProfile] = useState(false);
   const [activeKey, setActiveKey] = useState<
     'followings' | 'friends' | 'followers'
   >('followings');
-  const handleCloseModal = () => {
-    setIsOpen(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const handleCloseModalListUser = () => {
+    setIsOpenModalListUser(false);
+  };
+  const handleCloseModalEditProfile = () => {
+    if (Boolean(isMe)) setIsOpenModalEditProfile(false);
+  };
+  const handleFollowUser: () => void = () => {
+    if (id)
+      SocialActionUtil.followAndUnfollowUser(
+        id,
+        Boolean(isFollow) ?? false,
+        () => {
+          dispatch(setIsFollowUser(!Boolean(isFollow)));
+        }
+      );
   };
   return (
     <div>
       <ModalListUser
         userId={id}
-        onClose={handleCloseModal}
+        onClose={handleCloseModalListUser}
         title={userName}
-        isOpen={isOpen}
+        isOpen={isOpenModalListUser}
         followers={followers}
         followings={followings}
         friends={friends}
         activeKey={activeKey}
+      />
+      <ModalEditProfile
+        title="Edit profile"
+        isOpen={isOpenModalEditProfile}
+        onClose={handleCloseModalEditProfile}
       />
       {/* Profile Header Info */}
       <div className="flex gap-4 md:gap-4 w-full">
@@ -62,14 +85,22 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
             <p className="font-semibold">{fullName}</p>
             {(!isMe || isMe == 0) && (
               <div className="flex gap-2 mt-4">
-                {(!isFollow || isFollow == 0) && (
-                  <Button className="px-2 text-[14px] bg-primary max-w-[100px] font-semibold py-1">
-                    Follow
-                  </Button>
-                )}
                 <Button
-                  outline
-                  className="px-2 text-[14px]  max-w-[100px]  font-semibold py-1"
+                  className={clsx(
+                    ' text-[14px] border-none font-semibold',
+                    isMe && 'hidden'
+                  )}
+                  secondary={!isMe && isFollow ? true : false}
+                  style={{ width: '90px' }}
+                  onClick={handleFollowUser}
+                  bgGray={!isMe && isFollow ? true : false}
+                >
+                  {isFriend ? 'Friend' : isFollow ? 'Following' : 'Follow'}
+                </Button>
+                <Button
+                  secondary
+                  className="px-2 border-none font-bold grid place-items-center text-[14px] font-semibold  max-w-[100px] font-semibold py-1"
+                  bgGray
                 >
                   Message
                 </Button>
@@ -84,18 +115,18 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
             {(isMe || isMe == 1) && (
               <div className="flex gap-2 mt-4">
                 <Button
-                  outlineBlack
                   icon={<AiOutlineEdit className="my-auto" size={20} />}
                   className="p-[5px] font-semibold"
+                  onClick={() => setIsOpenModalEditProfile(true)}
                 >
-                  <p className="text-[14px]">Edit Profile</p>
+                  <p className="text-[14px] text-white">Edit Profile</p>
                 </Button>
                 <Button
                   outlineBlack
                   icon={<SlFire className="my-auto" size={20} />}
                   className="p-[5px]  font-semibold whitespace-nowrap"
                 >
-                  <div className="text-[14px]">Promote Post</div>
+                  <div className="text-[14px] ">Promote Post</div>
                 </Button>
               </div>
             )}
@@ -112,7 +143,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
         <span
           className=" text-[15px] hover:cursor-pointer hover:underline"
           onClick={() => {
-            setIsOpen(true);
+            setIsOpenModalListUser(true);
             setActiveKey('followings');
           }}
         >
@@ -121,7 +152,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ profileInfo }) => {
         <span
           className=" text-[15px] hover:cursor-pointer hover:underline"
           onClick={() => {
-            setIsOpen(true);
+            setIsOpenModalListUser(true);
             setActiveKey('followers');
           }}
         >
