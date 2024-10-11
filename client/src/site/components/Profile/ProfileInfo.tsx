@@ -1,5 +1,5 @@
 import Button from '@/components/Button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineEdit, AiOutlineUserSwitch } from 'react-icons/ai';
 import { RiShareForwardLine } from 'react-icons/ri';
 import { SlFire, SlOptions } from 'react-icons/sl';
@@ -50,6 +50,10 @@ const ProfileInfo = () => {
         }
       );
   };
+  useEffect(() => {
+    setIsOpenModalEditProfile(false);
+    setIsOpenModalListUser(false);
+  }, [userName]);
   return (
     <div>
       <ModalListUser

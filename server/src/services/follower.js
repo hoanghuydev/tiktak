@@ -18,10 +18,17 @@ export const getListFollower = (
             const query = {};
             if (userName) query.userName = { [Op.substring]: userName };
             if (fullName) query.fullName = { [Op.substring]: fullName };
-            const attributes= {
-                exclude: ['followerId', 'followeeId'],
-                include : []
-            }
+            const attributes = {
+                exclude: [
+                    'password',
+                    'createdAt',
+                    'updatedAt',
+                    'roleCode',
+                    'association',
+                    'peerId',
+                ],
+                include: [],
+            };
             if (myId) {
                 attributes.include.push(
                     [
@@ -74,51 +81,19 @@ export const getListFollower = (
                 where: {
                     followee: userId,
                 },
-               attributes,
                 ...queries,
                 include: [
                     {
                         model: db.User,
                         as: 'followerData',
-                        attributes: {
-                            exclude: [
-                                'password',
-                                'createdAt',
-                                'updatedAt',
-                                'roleCode',
-                                'association',
-                                'peerId',
-                            ],
-                        },
+                        attributes,
                         include: [
                             {
                                 model: db.Avatar,
                                 as: 'avatarData',
                                 attributes: ['publicId', 'url'],
-                            }
+                            },
                         ],
-                    },
-                    {
-                        model: db.User,
-                        as: 'followeeData',
-                        attributes: {
-                            exclude: [
-                                'password',
-                                'createdAt',
-                                'updatedAt',
-                                'roleCode',
-                                'association',
-                                'peerId',
-                            ],
-                        },
-                        include: [
-                            {
-                                model: db.Avatar,
-                                as: 'avatarData',
-                                attributes: ['publicId', 'url'],
-                            }
-                        ],
-                        where: query,
                     },
                 ],
             });
@@ -127,8 +102,11 @@ export const getListFollower = (
                 totalItems / pageSize >= 1
                     ? Math.ceil(totalItems / pageSize)
                     : 1;
+            const processedFollowers = rows.map((item) => ({
+                ...item.followerData,
+            }));
             resolve({
-                followers: rows,
+                users: processedFollowers,
                 pagination: {
                     orderBy: queries.orderBy,
                     page: queries.offset + 1,
@@ -156,10 +134,17 @@ export const getListFollowing = (
                 orderDirection
             );
             const query = {};
-            const attributes =  {
-                exclude: ['followerId', 'followeeId'],
-                include : []
-            }
+            const attributes = {
+                exclude: [
+                    'password',
+                    'createdAt',
+                    'updatedAt',
+                    'roleCode',
+                    'association',
+                    'peerId',
+                ],
+                include: [],
+            };
             if (myId) {
                 attributes.include.push(
                     [
@@ -213,49 +198,18 @@ export const getListFollowing = (
                 where: {
                     follower: userId,
                 },
-                attributes,
                 ...queries,
                 include: [
                     {
                         model: db.User,
-                        as: 'followerData',
-                        attributes: {
-                            exclude: [
-                                'password',
-                                'createdAt',
-                                'updatedAt',
-                                'roleCode',
-                                'association',
-                                'peerId',
-                            ],
-                        },
-                        include: [
-                            {
-                                model: db.Avatar,
-                                as: 'avatarData',
-                                attributes: ['publicId', 'url'],
-                            }
-                        ],
-                    },
-                    {
-                        model: db.User,
                         as: 'followeeData',
-                        attributes: {
-                            exclude: [
-                                'password',
-                                'createdAt',
-                                'updatedAt',
-                                'roleCode',
-                                'association',
-                                'peerId',
-                            ],
-                        },
+                        attributes,
                         include: [
                             {
                                 model: db.Avatar,
                                 as: 'avatarData',
                                 attributes: ['publicId', 'url'],
-                            }
+                            },
                         ],
                         where: query,
                     },
@@ -266,8 +220,11 @@ export const getListFollowing = (
                 totalItems / pageSize >= 1
                     ? Math.ceil(totalItems / pageSize)
                     : 1;
+            const processedFollowings = rows.map((item) => ({
+                ...item.followeeData,
+            }));
             resolve({
-                followings: rows,
+                users: processedFollowings,
                 pagination: {
                     orderBy: queries.orderBy,
                     page: queries.offset + 1,

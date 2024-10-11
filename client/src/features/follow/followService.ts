@@ -4,13 +4,13 @@ import { FollowModel } from '@/models/follow';
 import { UserModel } from '@/models/user';
 import AbstractPayload from '@/utils/abtractPayloadType';
 interface FollowingListPayload extends PaginationModel {
-  followings: FollowModel[];
+  users: UserModel[];
 }
 interface FollowerListPayload extends PaginationModel {
-  followers: FollowModel[];
+  users: UserModel[];
 }
 interface FriendListPayload extends PaginationModel {
-  friends: UserModel[];
+  users: UserModel[];
 }
 const routePath = '/follow/';
 const FollowService = {

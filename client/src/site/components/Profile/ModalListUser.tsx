@@ -29,29 +29,27 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
   const [friendList, setFriendList] = useState<UserModel[]>([]);
   const [followingList, setFollowingList] = useState<UserModel[]>([]);
   const [miniTab, setMiniTab] = useState(activeKey);
-
+  useEffect(() => {
+    setFollowerList([]);
+    setFollowingList([]);
+    setFriendList([]);
+  }, [userId]);
   const handleTabChange = (key: string) => {
     setMiniTab(key as 'followings' | 'friends' | 'followers');
     switch (key) {
       case 'followers':
         FollowService.getListFollower(userId).then((resp) => {
-          const listFollower = resp.followers.map(
-            (follower) => follower.followerData
-          );
-          setFollowerList(listFollower);
+          setFollowerList(resp.users);
         });
         break;
       case 'followings':
         FollowService.getListFollowing(userId).then((resp) => {
-          const listFollowing = resp.followings.map(
-            (follower) => follower.followeeData
-          );
-          setFollowingList(listFollowing);
+          setFollowingList(resp.users);
         });
         break;
       case 'friends':
         FollowService.getListFriend(userId).then((resp) =>
-          setFriendList(resp.friends)
+          setFriendList(resp.users)
         );
         break;
       default:
@@ -83,13 +81,13 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
           ))}
         </Tabs.TabPane>
         <Tabs.TabPane tab={`Followers ${followers ?? 0}`} key="followers">
-          {followerList.map((follower) => (
-            <User user={follower} />
+          {followerList.map((follower, index) => (
+            <User user={follower} key={index} />
           ))}
         </Tabs.TabPane>
         <Tabs.TabPane tab={`Friends ${friends ?? 0}`} key="friends">
-          {friendList.map((friend) => (
-            <User user={friend} />
+          {friendList.map((friend, index) => (
+            <User user={friend} key={index} />
           ))}
         </Tabs.TabPane>
       </Tabs>
