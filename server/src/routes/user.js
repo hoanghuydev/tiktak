@@ -11,8 +11,8 @@ router.get('/:userId', UserController.getUser);
 router.put('/peer/id', Auth.isSeftUser, UserController.getUser);
 router.post(
     '/avatar/:userId',
-    upload.single('avatar'),
     Auth.isSeftUser,
+    upload.single('avatar'),
     UserController.updateAvatar
 );
 router.delete('/avatar/:userId', Auth.isSeftUser, UserController.removeAvatar);

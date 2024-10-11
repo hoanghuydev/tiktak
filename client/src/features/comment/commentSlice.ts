@@ -10,6 +10,11 @@ import { PostUploadModel } from '@/models/postUpload';
 import AbstractPayload from '@/utils/abtractPayloadType';
 import { CommentModel } from '@/models/comment';
 import { RootState } from '@/redux/reducer';
+import {
+  handleFulfilled,
+  handlePending,
+  handleRejected,
+} from '@/utils/handleSliceState';
 
 // Async Thunks
 export const getCommentsByPostId = createAsyncThunk(
@@ -80,30 +85,6 @@ const initialState: InitStateCommentType = {
   isSuccess: false,
   isLoading: false,
   message: '',
-};
-
-// Utility functions
-const handlePending = (state: InitStateCommentType) => {
-  state.isLoading = true;
-};
-
-const handleFulfilled = (state: InitStateCommentType, action: any) => {
-  state.isError = false;
-  state.isLoading = false;
-  state.isSuccess = true;
-  if (action.payload) {
-    state.message = action.payload.mes;
-  }
-};
-
-const handleRejected = (state: InitStateCommentType, action: any) => {
-  state.isLoading = false;
-  state.isError = true;
-  state.isSuccess = false;
-  if (action.payload) {
-    state.message = action.payload.mes;
-    message.error(action.payload.mes);
-  }
 };
 
 // Slice

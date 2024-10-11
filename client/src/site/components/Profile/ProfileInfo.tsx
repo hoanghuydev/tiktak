@@ -116,15 +116,19 @@ const ProfileInfo = () => {
               <div className="flex gap-2 mt-4">
                 <Button
                   icon={<AiOutlineEdit className="my-auto" size={20} />}
-                  className="p-[5px] font-semibold"
+                  className="p-[5px] font-semibold px-3"
+                  style={{ width: 'fit-content' }}
                   onClick={() => setIsOpenModalEditProfile(true)}
                 >
-                  <p className="text-[14px] text-white">Edit Profile</p>
+                  <p className="text-[14px] text-white whitespace-nowrap">
+                    Edit Profile
+                  </p>
                 </Button>
                 <Button
                   outlineBlack
+                  style={{ width: 'fit-content' }}
                   icon={<SlFire className="my-auto" size={20} />}
-                  className="p-[5px]  font-semibold whitespace-nowrap"
+                  className="p-[5px] px-3 font-semibold whitespace-nowrap"
                 >
                   <div className="text-[14px] ">Promote Post</div>
                 </Button>

@@ -5,6 +5,11 @@ import { message } from 'antd';
 import postSlice, { setIsFollow } from '../post/postSlice';
 import AbstractPayload from '@/utils/abtractPayloadType';
 import { PaginationModel } from '@/models';
+import {
+  handleFulfilled,
+  handlePending,
+  handleRejected,
+} from '@/utils/handleSliceState';
 
 export const getUser = createAsyncThunk(
   'auth/register',
@@ -29,6 +34,7 @@ export const searchUsersByName = createAsyncThunk(
     }
   }
 );
+
 export interface UsersPayload extends AbstractPayload {
   users: UserModel[];
   pagination: PaginationModel;
@@ -49,9 +55,6 @@ const initialState: InitStateUserType = {
   isLoading: false,
   message: '',
 };
-const handlePending = (state: InitStateUserType) => {
-  state.isLoading = true;
-};
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -62,6 +65,9 @@ const userSlice = createSlice({
     setUser(state, action: { payload: UserModel; type: string }) {
       state.user = action.payload;
     },
+    setUserAvatar(state, action: { payload: string; type: string }) {
+      state.user.avatarData.url = action.payload;
+    },
     setIsFollowUser(state, action: PayloadAction<boolean>) {
       state.user.isFollow = action.payload;
     },
@@ -71,32 +77,23 @@ const userSlice = createSlice({
       .addCase(
         searchUsersByName.rejected,
         (state: InitStateUserType, action) => {
-          state.isLoading = false;
-          state.isError = true;
-          state.isSuccess = false;
-          const payload = action.payload as UsersPayload;
-          if (payload) {
-            state.message = payload.mes;
-            state.users = [];
-            message.error(payload.mes);
-          } else {
-            message.error('Unknown error occurred');
-          }
+          state.users = [];
+          handleRejected(state, action);
         }
       )
-      .addCase(searchUsersByName.pending, handlePending)
-
+      .addCase(searchUsersByName.pending, (state) => {
+        handlePending(state);
+      })
       .addCase(
         searchUsersByName.fulfilled,
         (state: InitStateUserType, action) => {
-          state.isError = false;
           const payload = action.payload as UsersPayload;
           state.users = payload.users;
-          state.isLoading = false;
-          state.isSuccess = true;
+          handleFulfilled(state, action);
         }
       );
   },
 });
-export const { setUser, setUsers, setIsFollowUser } = userSlice.actions;
+export const { setUser, setUsers, setIsFollowUser, setUserAvatar } =
+  userSlice.actions;
 export default userSlice.reducer;

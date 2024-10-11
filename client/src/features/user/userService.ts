@@ -51,5 +51,34 @@ const UserService = {
       }
     });
   },
+  async updateFullNameAndUserName(
+    userId: number,
+    updateInfo: { userName?: string; fullName?: string; bio: string }
+  ) {
+    return new Promise<UserPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.put(routePath + '/' + userId, updateInfo);
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  async updateAvatar(userId: number, avatarFile: File) {
+    return new Promise<UserPayload>(async (resolve, reject) => {
+      try {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+        const resp = await axiosToken.post(`/user/avatar/${userId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
 };
 export default UserService;

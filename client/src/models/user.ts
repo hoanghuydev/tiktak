@@ -11,7 +11,7 @@ export interface UserModel extends AbstractModel {
   association: string;
   isVertified: boolean;
   roleData: RoleModel;
-  avatarData: AvatarModel;
+  avatarData: Partial<AvatarModel>;
   followings: number;
   followers: number;
   friends: number;

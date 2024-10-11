@@ -1,5 +1,10 @@
 import * as userServices from '../services/user';
-import { badRequest, internalServerError, notFound } from '../utils/handleResp';
+import {
+    alreadyExistRow,
+    badRequest,
+    internalServerError,
+    notFound,
+} from '../utils/handleResp';
 import UploadFile from '../utils/uploadFile';
 import * as avatarServices from '../services/avatar';
 class UserController {
@@ -93,9 +98,8 @@ class UserController {
     }
     async updateAvatar(req, res) {
         try {
-            const avatarImage = req.file.buffer;
-
             if (!req.file) return badRequest('Please choose avatar', res);
+            const avatarImage = req.file.buffer;
             const { userId } = req.params;
 
             const user = await userServices.findOne({
@@ -169,13 +173,20 @@ class UserController {
     }
     async updateUser(req, res) {
         try {
-            const { userName, fullName } = req.body;
+            const { userName, fullName, bio } = req.body;
             if (!userName && !fullName)
                 return badRequest('Missing payload', res);
             const updateData = {};
             const { userId } = req.params;
-            if (userName) updateData.userName = userName;
+            if (userName) {
+                const existUser = await userServices.findOne({ userName });
+                if (existUser)
+                    return alreadyExistRow('Username already exists', res);
+                updateData.userName = userName;
+            }
             if (fullName) updateData.fullName = fullName;
+            if (bio) updateData.bio = bio;
+
             const user = await userServices.updateUser(updateData, userId);
             if (user)
                 return res.status(200).json({

@@ -78,8 +78,8 @@ const ModalListUser: React.FC<ModalListUserProps> = ({
         className="h-[calc(100vh-300px)]"
       >
         <Tabs.TabPane tab={`Following ${followings ?? 0}`} key="followings">
-          {followingList.map((following) => (
-            <User user={following} />
+          {followingList.map((following, index) => (
+            <User user={following} key={index} />
           ))}
         </Tabs.TabPane>
         <Tabs.TabPane tab={`Followers ${followers ?? 0}`} key="followers">
