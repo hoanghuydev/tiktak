@@ -11,9 +11,11 @@ import { FiSend } from 'react-icons/fi';
 import { RiMessageLine } from 'react-icons/ri';
 import clsx from 'clsx';
 import SearchForm from '@/components/SearchForm';
+import HeaderPopupSetting from './HeaderPopupSetting';
 
 const Header = () => {
   const [searchText, setSearchText] = useState<string>('');
+  const [isHovered, setIsHovered] = useState(false);
   const user = useSelector(currentUserSelector);
   const currentTab = useSelector(tabSelector);
   const [searchParams] = useSearchParams();
@@ -59,10 +61,14 @@ const Header = () => {
         )}
 
         {user && (
-          <div className="flex gap-5">
+          <div className="flex gap-5 ">
             <FiSend fontSize={28} className="my-auto" />
             <RiMessageLine fontSize={28} className="my-auto" />
-            <div className="min-w-8 max-w-8 h-8 ">
+            <div
+              className="min-w-8 max-w-8 h-8 relative "
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               <Link to={`/profile/@${user.userName}`}>
                 <img
                   src={user.avatarData.url || ''}
@@ -70,6 +76,7 @@ const Header = () => {
                   className="object-cover w-full h-full rounded-full"
                 />
               </Link>
+              {isHovered && <HeaderPopupSetting />}
             </div>
           </div>
         )}

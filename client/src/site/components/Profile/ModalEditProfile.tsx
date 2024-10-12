@@ -68,22 +68,44 @@ const ModalEditProfile: React.FC<ModalEditProfileProps> = ({
       if (userInfo) {
         const { userName, fullName, bio } = userInfo;
 
-        // Check if the name or username has changed
-        if (
-          userName !== currentUserData!.userName ||
-          fullName !== currentUserData!.fullName ||
-          bio !== currentUserData!.bio
-        ) {
+        interface UserInfo {
+          id: number;
+          userName: string;
+          fullName: string;
+          bio: string;
+        }
+
+        interface UpdateUserFields {
+          userId: number;
+          userName?: string;
+          fullName?: string;
+          bio?: string;
+        }
+
+        // Giả sử currentUserData và userInfo đã được định nghĩa và có kiểu UserInfo
+        const updatedFields: Partial<UpdateUserFields> = {};
+
+        if (userName !== currentUserData!.userName) {
+          updatedFields.userName = userName;
+        }
+        if (fullName !== currentUserData!.fullName) {
+          updatedFields.fullName = fullName;
+        }
+        if (bio !== currentUserData!.bio) {
+          updatedFields.bio = bio;
+        }
+        if (Object.keys(updatedFields).length > 0) {
           const resp = await dispatch(
             updateFullNameAndUserName({
               userId: userInfo.id!,
-              userName: userName!,
-              fullName: fullName!,
-              bio: bio!,
-            })
+              ...updatedFields,
+            } as UpdateUserFields)
           ).unwrap();
-          if (resp.err == 0) {
-            navigate(`/profile/@${userName}`);
+
+          if (resp.err === 0) {
+            navigate(
+              `/profile/@${updatedFields.userName || currentUserData!.userName}`
+            );
           }
         }
 

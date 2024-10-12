@@ -22,7 +22,7 @@ export interface AuthPayload {
 }
 const AuthService = {
   async login({ emailOrUsername, password }: LoginParams) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<AuthPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosNoToken.post(routePath + '/login', {
           emailOrUsername,

@@ -66,7 +66,7 @@ export const updateFullNameAndUserName = createAsyncThunk(
       userName,
       fullName,
       bio,
-    }: { userId: number; userName: string; fullName: string; bio: string },
+    }: { userId: number; userName?: string; fullName?: string; bio?: string },
     thunkAPI
   ) => {
     try {

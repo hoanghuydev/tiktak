@@ -53,7 +53,7 @@ const UserService = {
   },
   async updateFullNameAndUserName(
     userId: number,
-    updateInfo: { userName?: string; fullName?: string; bio: string }
+    updateInfo: { userName?: string; fullName?: string; bio?: string }
   ) {
     return new Promise<UserPayload>(async (resolve, reject) => {
       try {

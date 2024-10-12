@@ -174,7 +174,7 @@ class UserController {
     async updateUser(req, res) {
         try {
             const { userName, fullName, bio } = req.body;
-            if (!userName && !fullName)
+            if (!userName && !fullName && !bio)
                 return badRequest('Missing payload', res);
             const updateData = {};
             const { userId } = req.params;
