@@ -19,6 +19,15 @@ module.exports = (sequelize, DataTypes) => {
                 targetKey: 'publicId',
                 as: 'avatarData',
             });
+            User.hasMany(models.Follower, {
+                foreignKey: 'follower',
+                as: 'followingData',
+            });
+
+            User.hasMany(models.Follower, {
+                foreignKey: 'followee',
+                as: 'followerData',
+            });
         }
     }
     User.init(

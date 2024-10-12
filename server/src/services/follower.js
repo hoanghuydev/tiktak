@@ -2,125 +2,139 @@ import { Op, literal } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
-export const getListFollower = (
-    userId,
-    myId,
-    { page, pageSize, orderBy, orderDirection, userName, fullName }
-) =>
-    new Promise(async (resolve, reject) => {
-        try {
-            const queries = pagingConfig(
-                page,
-                pageSize,
-                orderBy,
-                orderDirection
-            );
-            const query = {};
-            if (userName) query.userName = { [Op.substring]: userName };
-            if (fullName) query.fullName = { [Op.substring]: fullName };
-            const attributes = {
-                exclude: [
-                    'password',
-                    'createdAt',
-                    'updatedAt',
-                    'roleCode',
-                    'association',
-                    'peerId',
-                ],
-                include: [],
-            };
-            if (myId) {
-                attributes.include.push(
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.followee = ${myId} 
-                                    AND f.follower = \`Follower\`.follower
-                                    AND f.id = \`Follower\`.id
-                            )
-                        )`),
-                        'isFollowee',
-                    ],
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.follower = ${myId} 
-                                    AND f.followee = \`Follower\`.follower
-                            )
-                        )`),
-                        'isFollow',
-                    ],
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.follower = ${myId} 
-                                    AND f.followee = \`Follower\`.follower
-                            ) AND EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.followee = ${myId} 
-                                    AND f.follower = \`Follower\`.follower
-                            )
-                        )`),
-                        'isFriend',
-                    ]
-                );
-            }
 
-            const { count, rows } = await db.Follower.findAndCountAll({
-                where: {
-                    followee: userId,
-                },
-                ...queries,
+// Helper to build attributes for user related queries
+const buildUserAttributes = (myId, isFollowee) => ({
+    exclude: [
+        'password',
+        'createdAt',
+        'updatedAt',
+        'roleCode',
+        'association',
+        'peerId',
+    ],
+    include: myId
+        ? [
+              [
+                  literal(
+                      `EXISTS (SELECT 1 FROM followers WHERE followee=${myId} AND follower=Follower.${
+                          isFollowee ? 'followee' : 'follower'
+                      })`
+                  ),
+                  'isFollowee',
+              ],
+              [
+                  literal(
+                      `EXISTS (SELECT 1 FROM followers WHERE follower=${myId} AND followee=Follower.${
+                          isFollowee ? 'followee' : 'follower'
+                      })`
+                  ),
+                  'isFollow',
+              ],
+              [
+                  literal(
+                      `EXISTS (SELECT 1 FROM followers WHERE follower=${myId} AND followee=Follower.${
+                          isFollowee ? 'followee' : 'follower'
+                      }) AND EXISTS (SELECT 1 FROM followers WHERE followee=${myId} AND follower=Follower.${
+                          isFollowee ? 'followee' : 'follower'
+                      })`
+                  ),
+                  'isFriend',
+              ],
+          ]
+        : [],
+});
+
+// Helper to build filters based on user input
+const buildQueryFilter = (userName, fullName) => ({
+    ...(userName && { userName: { [Op.substring]: userName } }),
+    ...(fullName && { fullName: { [Op.substring]: fullName } }),
+});
+
+// Function to get list of followers
+export async function getListFollower(
+    userId,
+    myId,
+    { page, pageSize, orderBy, orderDirection, userName, fullName }
+) {
+    const queries = pagingConfig(page, pageSize, orderBy, orderDirection);
+    const filter = buildQueryFilter(userName, fullName);
+    const attributes = buildUserAttributes(myId, false);
+
+    const { count, rows } = await db.Follower.findAndCountAll({
+        where: { followee: userId, ...filter },
+        ...queries,
+        include: [
+            {
+                model: db.User,
+                as: 'followerData',
+                attributes,
                 include: [
                     {
-                        model: db.User,
-                        as: 'followerData',
-                        attributes,
-                        include: [
-                            {
-                                model: db.Avatar,
-                                as: 'avatarData',
-                                attributes: ['publicId', 'url'],
-                            },
-                        ],
+                        model: db.Avatar,
+                        as: 'avatarData',
+                        attributes: ['publicId', 'url'],
                     },
                 ],
-            });
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
-            const processedFollowers = rows.map((item) => ({
-                ...item.followerData,
-            }));
-            resolve({
-                users: processedFollowers,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
-            });
-        } catch (error) {
-            reject(error);
-        }
+            },
+        ],
     });
-export const getListFollowing = (
+
+    return {
+        users: rows.map((row) => row.followerData),
+        pagination: {
+            orderBy,
+            page,
+            pageSize,
+            orderDirection,
+            totalItems: count,
+            totalPages: Math.ceil(count / pageSize),
+        },
+    };
+}
+
+// Function to get list of following
+export async function getListFollowing(
+    userId,
+    myId,
+    { page, pageSize, orderBy, orderDirection, userName, fullName }
+) {
+    const queries = pagingConfig(page, pageSize, orderBy, orderDirection);
+    const filter = buildQueryFilter(userName, fullName);
+    const attributes = buildUserAttributes(myId, true);
+
+    const { count, rows } = await db.Follower.findAndCountAll({
+        where: { follower: userId, ...filter },
+        ...queries,
+        include: [
+            {
+                model: db.User,
+                as: 'followeeData',
+                attributes,
+                include: [
+                    {
+                        model: db.Avatar,
+                        as: 'avatarData',
+                        attributes: ['publicId', 'url'],
+                    },
+                ],
+            },
+        ],
+    });
+
+    return {
+        users: rows.map((row) => row.followeeData),
+        pagination: {
+            orderBy,
+            page,
+            pageSize,
+            orderDirection,
+            totalItems: count,
+            totalPages: Math.ceil(count / pageSize),
+        },
+    };
+}
+export const getListFriend = (
     userId,
     myId,
     { page, pageSize, orderBy, orderDirection, userName, fullName }
@@ -134,10 +148,12 @@ export const getListFollowing = (
                 orderDirection
             );
             const query = {};
+            if (userName) query.userName = { [Op.substring]: userName };
+            if (fullName) query.fullName = { [Op.substring]: fullName };
+
             const attributes = {
                 exclude: [
                     'password',
-                    'createdAt',
                     'updatedAt',
                     'roleCode',
                     'association',
@@ -145,86 +161,50 @@ export const getListFollowing = (
                 ],
                 include: [],
             };
-            if (myId) {
-                attributes.include.push(
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.followee = ${myId} 
-                                    AND f.follower = \`Follower\`.followee
-                            )
-                        )`),
-                        'isFollowee',
-                    ],
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.follower = ${myId} 
-                                    AND f.followee = \`Follower\`.followee
-                            )
-                        )`),
-                        'isFollow',
-                    ],
-                    [
-                        literal(`(
-                            SELECT EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.follower = ${myId} 
-                                    AND f.followee = \`Follower\`.followee
-                                    AND f.id = \`Follower\`.id
-                            ) AND EXISTS (
-                                SELECT 1
-                                FROM followers f
-                                WHERE 
-                                    f.followee = ${myId} 
-                                    AND f.follower = \`Follower\`.followee
-                            )
-                        )`),
-                        'isFriend',
-                    ]
-                );
-            }
-            if (userName) query.userName = { [Op.substring]: userName };
-            if (fullName) query.fullName = { [Op.substring]: fullName };
-            const { count, rows } = await db.Follower.findAndCountAll({
-                where: {
-                    follower: userId,
-                },
+
+            const { count, rows } = await db.User.findAndCountAll({
                 ...queries,
+                where: query,
+                attributes,
                 include: [
                     {
-                        model: db.User,
-                        as: 'followeeData',
-                        attributes,
-                        include: [
-                            {
-                                model: db.Avatar,
-                                as: 'avatarData',
-                                attributes: ['publicId', 'url'],
-                            },
-                        ],
-                        where: query,
+                        model: db.Follower,
+                        as: 'followingData',
+                        required: true,
+                        where: {
+                            followee: userId,
+                        },
+                        attributes: [],
+                    },
+                    {
+                        model: db.Follower,
+                        as: 'followerData',
+                        required: true,
+                        where: {
+                            follower: userId,
+                        },
+                        attributes: [],
+                    },
+                    {
+                        model: db.Avatar,
+                        as: 'avatarData',
+                        attributes: ['publicId', 'url'],
                     },
                 ],
             });
+
             const totalItems = count;
             const totalPages =
                 totalItems / pageSize >= 1
                     ? Math.ceil(totalItems / pageSize)
                     : 1;
-            const processedFollowings = rows.map((item) => ({
-                ...item.followeeData,
+
+            const processedFriends = rows.map((item) => ({
+                ...item.dataValues,
             }));
+
             resolve({
-                users: processedFollowings,
+                users: rows,
                 pagination: {
                     orderBy: queries.orderBy,
                     page: queries.offset + 1,

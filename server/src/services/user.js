@@ -148,6 +148,15 @@ export const getProfile = (partnerUsername, myId) =>
                         )`),
                         'likes',
                     ],
+                    [
+                        literal(`(
+                            SELECT COUNT(*)
+                            FROM followers f1
+                            INNER JOIN followers f2 ON f1.follower = f2.followee
+                            WHERE f1.followee = User.id AND f2.follower = User.id
+                        )`),
+                        'friends',
+                    ],
                 ],
             };
             if (myId) {

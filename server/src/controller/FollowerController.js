@@ -9,7 +9,7 @@ class FollowController {
             const followings = await followerServices.getListFollower(
                 userId,
                 req.user?.id,
-                req.query,
+                req.query
             );
             return res.status(200).json({ ...followings });
         } catch (error) {
@@ -26,6 +26,20 @@ class FollowController {
                 req.query
             );
             return res.status(200).json({ ...followings });
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res);
+        }
+    }
+    async getListFriend(req, res) {
+        try {
+            const { userId } = req.params;
+            const friends = await followerServices.getListFriend(
+                userId,
+                req.user?.id,
+                req.query
+            );
+            return res.status(200).json({ ...friends });
         } catch (error) {
             console.log(error);
             return internalServerError(res);
