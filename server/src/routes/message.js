@@ -5,7 +5,7 @@ import MessageController from '../controller/MessageController';
 const multer = require('multer');
 const upload = multer();
 router.get(
-    '/:chatroomId',
+    '/chatroom/:chatroomId',
     Auth.isInChatroom,
     MessageController.getMessagesOfChatroom
 );
@@ -15,10 +15,10 @@ router.get(
     Auth.origin,
     MessageController.uploadImage
 );
-router.post('/:chatroomId', Auth.isInChatroom, MessageController.sendMessage);
-router.delete(
-    '/:messageId/user/:userId',
-    Auth.isSeftUser,
-    MessageController.recallMessage
+router.post(
+    '/chatroom/:chatroomId',
+    Auth.isInChatroom,
+    MessageController.sendMessage
 );
+router.delete('/:messageId', Auth.origin, MessageController.recallMessage);
 module.exports = router;

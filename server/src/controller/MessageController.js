@@ -1,5 +1,11 @@
-import { badRequest, internalServerError } from '../utils/handleResp';
+import {
+    badRequest,
+    forBidden,
+    internalServerError,
+} from '../utils/handleResp';
 import * as messageServices from '../services/message';
+import * as chatroomServices from '../services/chatroom';
+
 import { v4 as uuidv4 } from 'uuid';
 class MessageController {
     async getMessagesOfChatroom(req, res) {
@@ -64,15 +70,24 @@ class MessageController {
         try {
             const { chatroomId } = req.params;
             const { content } = req.body;
-            const resp = await messageServices.sendMessage(
+            const io = res.io;
+
+            const message = await messageServices.sendMessage(
                 req.user.id,
                 chatroomId,
-                content
+                content.trim()
             );
-            return res.status(200).json({
-                err: 0,
-                mes: 'Sent message to chatroom ' + chatroomId,
-            });
+            if (message) {
+                io.to(chatroomId).emit(
+                    process.env.GET_NEW_MESSAGE_ACTION_SOCKET,
+                    message
+                );
+                return res.status(200).json({
+                    err: 0,
+                    mes: 'Sent message to chatroom ' + chatroomId,
+                    message,
+                });
+            } else return badRequest("Couldn't send message", res);
         } catch (error) {
             console.log(error);
             return internalServerError(res);
@@ -80,14 +95,27 @@ class MessageController {
     }
     async recallMessage(req, res) {
         try {
-            const { messageId, userId } = req.params;
-            const resp = await messageServices.recallMessage(messageId, userId);
-            if (resp)
+            const { messageId } = req.params;
+            const message = await messageServices.findOne({ id: messageId });
+            if (!message) return badRequest('Not found message', res);
+            if (message.sender != req.user.id)
+                return forBidden(
+                    'You are not allowed to recall this message',
+                    res
+                );
+            const resp = await messageServices.recallMessage(messageId);
+            if (resp) {
+                const io = res.io;
+                io.to(parseInt(message.chatroomId)).emit(
+                    process.env.RECALL_MESSAGE_ACTION_SOCKET,
+                    message
+                );
                 return res.status(200).json({
                     err: 0,
                     mes: 'Recalled message',
+                    message,
                 });
-            else return badRequest('Not found message ' + messageId, res);
+            } else return badRequest('Not found message ' + messageId, res);
         } catch (error) {
             console.log(error);
             return internalServerError(res);

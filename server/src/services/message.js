@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { Op, where } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
@@ -65,15 +65,24 @@ export const sendMessage = (sender, chatroomId, content) =>
             reject(error);
         }
     });
-export const recallMessage = (id, sender) =>
+export const recallMessage = (id) =>
     new Promise(async (resolve, reject) => {
         try {
             const resp = await db.Message.destroy({
                 where: {
-                    sender,
                     id,
                 },
             });
+            if (resp) resolve(resp);
+            else resolve(null);
+        } catch (error) {
+            reject(error);
+        }
+    });
+export const findOne = (messageModel) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            const resp = await db.Message.findOne({ where: messageModel });
             if (resp) resolve(resp);
             else resolve(null);
         } catch (error) {

@@ -23,8 +23,8 @@ app.use(
         credentials: true,
     })
 );
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const server = app.listen(port, function () {
     console.log('Server listening on port ' + port);
@@ -37,6 +37,10 @@ const io = new Server(server, {
         methods: ['GET', 'POST'],
         credentials: true,
     },
+});
+app.use((req, res, next) => {
+    res.io = io;
+    next();
 });
 
 route(app);
