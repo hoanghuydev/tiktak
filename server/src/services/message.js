@@ -19,14 +19,11 @@ export const getListMessageOfChatroom = async (
             if (chatroomId) query.chatroomId = chatroomId;
             const { count, rows } = await db.Message.findAndCountAll({
                 where: query,
-                attributes: {
-                    exclude: ['sender'],
-                },
                 include: [
                     {
                         model: db.User,
                         as: 'senderData',
-                        attributes: ['id', 'userName', 'fullName', 'avatar'],
+                        attributes: ['id', 'userName', 'fullName'],
                         ...formatQueryUser,
                     },
                 ],

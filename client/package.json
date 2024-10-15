@@ -23,6 +23,7 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "emoji-mart": "^5.6.0",
     "fabric": "^5.3.0",
     "formik": "^2.4.6",

@@ -1,6 +1,6 @@
 import './App.css';
 import Auth from './site/Login';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RouteType, privateRoutes, publicRoutes } from './routes';
@@ -12,15 +12,17 @@ import { useEffect, useState } from 'react';
 import { AppDispatch } from './redux/store';
 import UserService, { UserPayload } from './features/user/userService';
 import { setCurrentUser } from './features/auth/authSlice';
-import { UserModel } from './models/user';
-import { axiosNoToken, axiosToken } from './axios';
-import { jwtDecode } from 'jwt-decode';
+
 import { ConfigProvider } from 'antd';
+import { startConnecting } from './features/socket/socketSlice';
 function App() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('accessToken') || '';
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector(currentUserSelector);
+  useEffect(() => {
+    if (user) dispatch(startConnecting());
+  }, [user]);
   useEffect(() => {
     const setMyInfo = async () => {
       setLoading(true);

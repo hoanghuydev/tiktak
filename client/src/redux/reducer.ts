@@ -1,4 +1,3 @@
-// src/redux/reducer.ts
 import { Reducer } from '@reduxjs/toolkit';
 import authSlice, { InitStateAuthType } from '../features/auth/authSlice';
 import postSlice, { InitStatePostType } from '@/features/post/postSlice';
@@ -7,6 +6,9 @@ import userSlice, { InitStateUserType } from '@/features/user/userSlice';
 import commentSlice, {
   InitStateCommentType,
 } from '@/features/comment/commentSlice';
+import socketSlice, {
+  InitStateSocketType,
+} from '@/features/socket/socketSlice';
 
 export interface RootReducerType {
   auth: Reducer<InitStateAuthType>;
@@ -14,6 +16,7 @@ export interface RootReducerType {
   tab: Reducer<TabState>;
   user: Reducer<InitStateUserType>;
   comment: Reducer<InitStateCommentType>;
+  socket: Reducer<InitStateSocketType>;
 }
 
 export interface RootState {
@@ -22,6 +25,7 @@ export interface RootState {
   tab: TabState;
   user: InitStateUserType;
   comment: InitStateCommentType;
+  socket: InitStateSocketType;
 }
 
 const rootReducer: RootReducerType = {
@@ -30,6 +34,7 @@ const rootReducer: RootReducerType = {
   tab: tabSlice,
   user: userSlice,
   comment: commentSlice,
+  socket: socketSlice,
 };
 
 export default rootReducer;

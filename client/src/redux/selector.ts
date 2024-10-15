@@ -7,6 +7,7 @@ import { PostUploadModel } from '@/models/postUpload';
 import { TabState, TabType } from '@/features/tab/tabSlice';
 import { CommentModel } from '@/models/comment';
 import { InitStateUserType } from '@/features/user/userSlice';
+import { Socket } from 'socket.io-client';
 
 export const authSelector = (state: RootState): InitStateAuthType => state.auth;
 export const tabSelector = (state: RootState): TabType => state.tab.tab;

@@ -1,6 +1,7 @@
 import axios from 'axios';
-export const baseURL: string = 'http://localhost:8000/api/v1/';
-export const clientURL: string = 'http://localhost:5173/';
+import { SERVER_URL, URL_CLIENT } from './utils/constants';
+export const baseURL: string = SERVER_URL + '/api/v1/';
+export const clientURL: string = URL_CLIENT;
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from './redux/store';
