@@ -5,7 +5,14 @@ import { query } from 'express';
 import { formatQueryUser } from './user';
 export const getUsersInChatroom = (
     chatroomId,
-    { page, pageSize, orderBy, orderDirection, userName, fullName }
+    {
+        page = 1,
+        pageSize = 30,
+        orderBy = 'createdAt',
+        orderDirection = 'DESC',
+        userName = '',
+        fullName = '',
+    }
 ) =>
     new Promise(async (resolve, reject) => {
         try {
@@ -26,14 +33,17 @@ export const getUsersInChatroom = (
                 include: [
                     {
                         model: db.User,
-                        attributes: ['id', 'userName', 'fullName', 'avatar'],
+                        as: 'memberData',
+                        attributes: ['id', 'userName', 'fullName'],
                         ...formatQueryUser,
                         where: query,
                     },
                 ],
                 ...queries,
             });
-            const users = rows.map((userInChatroom) => userInChatroom['User']);
+            const users = rows.map(
+                (userInChatroom) => userInChatroom['memberData']
+            );
             const totalItems = count;
             const totalPages =
                 totalItems / pageSize >= 1

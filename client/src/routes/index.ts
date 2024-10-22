@@ -18,7 +18,7 @@ import EmptyLayout from '@/components/Layout/EmptyLayout';
 import Post from '@/site/Post';
 import TopSearch from '@/site/TopSearch';
 import NoSidebarLayout from '@/components/Layout/NoSidebarLayout';
-import Message from '@/site/components/Message';
+import Message from '@/site/Message';
 export interface RouteType {
   path: string;
   element: React.ComponentType;

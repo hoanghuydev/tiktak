@@ -19,7 +19,7 @@ const HeaderPopupSetting = () => {
   };
   return (
     <div>
-      <div className="popup-top-arrow w-8 h-[8px] absolute top-full right-0"></div>
+      <div className="popup-top-arrow w-0 h-0 absolute top-full right-[8px] border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white"></div>
       <ul className="shadow-md rounded-md z-30 bg-white list-none absolute right-0 top-[calc(100%+8px)]">
         <li className="text-black flex hover:cursor-pointer hover:bg-[#16182308]">
           <a

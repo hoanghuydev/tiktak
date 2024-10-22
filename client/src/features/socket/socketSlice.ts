@@ -3,14 +3,20 @@ import { MessageModel } from '@/models/message';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { io, Socket } from 'socket.io-client';
 
-interface SocketState {
+interface ChatroomModel {
+  id: number;
+  name: string;
   messages: MessageModel[];
+}
+
+interface SocketState {
+  chatrooms: ChatroomModel[];
   isEstablishingConnection: boolean;
   isConnected: boolean;
 }
 
 const initialState: SocketState = {
-  messages: [],
+  chatrooms: [],
   isEstablishingConnection: false,
   isConnected: false,
 };
@@ -24,40 +30,53 @@ const socketSlice = createSlice({
     },
     connectionEstablished: (state) => {
       state.isConnected = true;
-      state.isEstablishingConnection = true;
+      state.isEstablishingConnection = false;
     },
-    receiveAllMessages: (
-      state,
-      action: PayloadAction<{
-        messages: MessageModel[];
-      }>
-    ) => {
-      state.messages = action.payload.messages;
+    receiveAllChatrooms: (state, action: PayloadAction<ChatroomModel[]>) => {
+      state.chatrooms = action.payload;
     },
     receiveMessage: (
       state,
-      action: PayloadAction<{
-        message: MessageModel;
-      }>
+      action: PayloadAction<{ chatroomId: number; message: MessageModel }>
     ) => {
-      state.messages.push(action.payload.message);
+      const chatroom = state.chatrooms.find(
+        (room) => room.id === action.payload.chatroomId
+      );
+      if (chatroom) {
+        chatroom.messages.push(action.payload.message);
+      }
     },
     submitMessage: (
       state,
-      action: PayloadAction<{
-        content: string;
-      }>
+      action: PayloadAction<{ chatroomId: number; message: string }>
     ) => {
+      // Logic to submit message to server will be handled by a middleware or saga.
       return;
     },
+    // joinChatroom: (state, action: PayloadAction<ChatroomModel>) => {
+    //   const exists = state.chatrooms.find(
+    //     (room) => room.id === action.payload.id
+    //   );
+    //   if (!exists) {
+    //     state.chatrooms.push(action.payload);
+    //   }
+    // },
+    // leaveChatroom: (state, action: PayloadAction<number>) => {
+    //   state.chatrooms = state.chatrooms.filter(
+    //     (room) => room.id !== action.payload
+    //   );
+    // },
   },
 });
+
 export const {
   startConnecting,
   connectionEstablished,
+  receiveAllChatrooms,
   submitMessage,
   receiveMessage,
-  receiveAllMessages,
+  // joinChatroom,
+  // leaveChatroom,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

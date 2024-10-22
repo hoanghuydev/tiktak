@@ -21,7 +21,9 @@ function App() {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector(currentUserSelector);
   useEffect(() => {
-    if (user) dispatch(startConnecting());
+    if (user) {
+      dispatch(startConnecting());
+    }
   }, [user]);
   useEffect(() => {
     const setMyInfo = async () => {

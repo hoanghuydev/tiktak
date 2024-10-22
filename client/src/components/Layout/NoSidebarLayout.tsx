@@ -12,7 +12,7 @@ const NoSidebarLayout = ({ children, fullScreen }: LayoutProps) => {
     <div className={clsx(fullScreen ? 'h-dvh overflow-hidden' : 'h-full')}>
       <Header />
       <div className="flex h-full">
-        <div className="w-full mt-4 mb-16 overflow-y-auto">{children}</div>
+        <div className="w-full">{children}</div>
       </div>
     </div>
   );

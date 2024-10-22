@@ -62,8 +62,12 @@ const Header = () => {
 
         {user && (
           <div className="flex gap-5 ">
-            <FiSend fontSize={28} className="my-auto" />
-            <RiMessageLine fontSize={28} className="my-auto" />
+            <Link to={'/messages'}>
+              <FiSend fontSize={28} className="my-auto" />
+            </Link>
+            <Link to={'/notify'}>
+              <RiMessageLine fontSize={28} className="my-auto" />
+            </Link>
             <div
               className="min-w-8 max-w-8 h-8 relative "
               onMouseEnter={() => setIsHovered(true)}

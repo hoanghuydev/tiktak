@@ -70,24 +70,43 @@ class MessageController {
         try {
             const { chatroomId } = req.params;
             const { content } = req.body;
+            const resp = await chatroomServices.getUsersInChatroom(
+                chatroomId,
+                req.query
+            );
+            const usersInChatroom = resp.users;
+            if (!usersInChatroom.some((user) => user.id === req.user.id))
+                return forBidden('You are not allowed to send messages', res);
             const io = res.io;
-
             const message = await messageServices.sendMessage(
                 req.user.id,
                 chatroomId,
                 content.trim()
             );
-            if (message) {
-                io.to(chatroomId).emit(
-                    process.env.GET_NEW_MESSAGE_ACTION_SOCKET,
-                    message
-                );
-                return res.status(200).json({
-                    err: 0,
-                    mes: 'Sent message to chatroom ' + chatroomId,
-                    message,
+
+            if (!message || !io)
+                return badRequest("Couldn't send message", res);
+            const promisesSendMsg = usersInChatroom.map((user) => {
+                return io
+                    .to(`user_${user.id}`)
+                    .emit(process.env.GET_NEW_MESSAGE_ACTION_SOCKET, {
+                        chatroomId,
+                        message,
+                    });
+            });
+
+            Promise.all(promisesSendMsg)
+                .then(() => {
+                    console.log('All notifications sent successfully');
+                })
+                .catch((error) => {
+                    console.error('Error sending notifications:', error);
                 });
-            } else return badRequest("Couldn't send message", res);
+            return res.status(200).json({
+                err: 0,
+                mes: 'Sent message successfully',
+                message,
+            });
         } catch (error) {
             console.log(error);
             return internalServerError(res);
