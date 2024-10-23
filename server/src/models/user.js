@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'followee',
                 as: 'followerData',
             });
+            User.hasMany(models.UserInChatroom, {
+                foreignKey: 'member',
+                as: 'chatrooms',
+            });
         }
     }
     User.init(

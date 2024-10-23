@@ -79,23 +79,45 @@ export const getChatroomsOfUser = (
             );
             const query = {};
             if (name) query.name = { [Op.substring]: name };
-            const { count, rows } = await db.UserInChatroom.findAndCountAll({
-                attributes: [],
-                where: {
-                    member,
+            const { count, rows } = await db.Chatroom.findAndCountAll({
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt'],
                 },
                 include: [
                     {
-                        model: db.Chatroom,
-                        attributes: ['id', 'name'],
+                        model: db.UserInChatroom,
+                        as: 'members',
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                        include: [
+                            {
+                                model: db.User,
+                                as: 'memberData',
+                                attributes: ['id', 'userName', 'fullName'],
+                                ...formatQueryUser,
+                                // where: {
+                                //     id: { [Op.ne]: member },
+                                // },
+                            },
+                        ],
                     },
                 ],
-
-                ...queries,
+                // order: [[orderBy, orderDirection]],
+                // limit: pageSize,
+                // offset: (page - 1) * pageSize,
             });
-            const chatrooms = rows.map(
-                (userInChatroom) => userInChatroom['Chatroom']
-            );
+
+            // const chatrooms = rows.map((chatroom) => ({
+            //     id: chatroom.id,
+            //     name: chatroom.name,
+            //     members: chatroom.members.map((member) => ({
+            //         id: member.memberData.id,
+            //         userName: member.memberData.userName,
+            //         fullName: member.memberData.fullName,
+            //     })),
+            // }));
+            const chatrooms = rows;
             const totalItems = count;
 
             const totalPages =

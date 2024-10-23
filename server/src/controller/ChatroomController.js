@@ -38,6 +38,7 @@ class ChatroomController {
                 ...chatrooms,
             });
         } catch (error) {
+            console.log(error);
             return internalServerError(res);
         }
     }
