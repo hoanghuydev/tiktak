@@ -1,48 +1,24 @@
+import * as jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 function handleSocket(io) {
-    // io.use(async (socket, next) => {
-    //     try {
-    //         const token = socket.handshake.query.token;
-    //         const payload = await jwt.verify(
-    //             token,
-    //             process.env.ACCESS_TOKEN_KEY
-    //         );
+    io.use(async (socket, next) => {
+        try {
+            const accessToken = socket.handshake.query.token.split(' ')[1];
+            const payload = await jwt.verify(
+                accessToken,
+                fs.readFileSync(
+                    path.join(__dirname, '..', 'key', 'publickey.crt')
+                ),
+                { algorithm: 'RS256' }
+            );
+            socket.userId = payload.id;
+            next();
+        } catch (error) {
+            console.log(error);
+        }
+    });
 
-    //         socket.userId = payload.id;
-    //         next();
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // });
-    // io.on('connection', (socket) => {
-    //     console.log('A user connected');
-    //     socket.on('disconnect', () => {
-    //         console.log('A user disconnected');
-    //     });
-    //     socket.on('joinRoom', ({ chatroomId }) => {
-    //         socket.join(chatroomId);
-    //         console.log('A user joined chat room: ' + chatroomId);
-    //     });
-    //     socket.on('leaveRoom', ({ chatroomId }) => {
-    //         socket.leave(chatroomId);
-    //         console.log('A user left chat room: ' + chatroomId);
-    //     });
-    //     socket.on('chatMessage', async ({ chatroomId, message }) => {
-    //         if (message.trim().length > 0) {
-    //             const user = await User.findOne({ _id: socket.userId });
-    //             const message = await new Message({
-    //                 chatroomId: chatRoomId,
-    //                 userId: socket.userId,
-    //                 text: message.trim(),
-    //             });
-    //             io.to(chatroomId).emit('newMessage', {
-    //                 message,
-    //                 name: user.username,
-    //                 userId: socket.userId,
-    //             });
-    //             await message.save();
-    //         }
-    //     });
-    // });
     let onlineUsers = [];
     const addUser = (userId, socketId) => {
         !onlineUsers.some((user) => user.userId === userId) &&
@@ -53,18 +29,7 @@ function handleSocket(io) {
     };
 
     io.on('connection', (socket) => {
-        const loginUserSession = onlineUsers.filter(
-            (user) => user.userId === socket.request.session.user.id
-        );
-        if (loginUserSession.userId) {
-            removeUser(loginUserSession.socketId);
-            io.to(loginUserSession.socketId).emit('logout', {
-                message: 'The account was logged in from somewhere else!',
-            });
-            io.sockets.sockets[loginUserSession.socketId].disconnect();
-        }
-        console.log(`User connected to socket`);
-
+        console.log(`User ${socket.userId} connected to socket`);
         socket.on(process.env.JOIN_CHATROOM_ACTION_SOCKET, (chatroomId) => {
             socket.join(chatroomId);
             console.log('A user joined chat room: ' + chatroomId);
@@ -74,10 +39,18 @@ function handleSocket(io) {
             console.log('A user left chat room: ' + chatroomId);
         });
         socket.on(process.env.ADD_USER_ONLINE_ACTION_SOCKET, (userId) => {
-            addUser(userId, socket.id);
-            console.log(onlineUsers);
-
-            // console.log(socket.handshake.sessionID);
+            const loginUserSession = onlineUsers.filter(
+                (user) => user.userId === userId
+            );
+            if (loginUserSession.userId) {
+                removeUser(loginUserSession.socketId);
+                io.to(loginUserSession.socketId).emit('logout', {
+                    message: 'The account was logged in from somewhere else!',
+                });
+                io.sockets.sockets[loginUserSession.socketId].disconnect();
+            }
+            addUser(socket.userId, socket.id);
+            socket.join(`user_${socket.userId}`);
             io.emit(process.env.GET_USER_ONLINE_ACTION_SOCKET, onlineUsers);
         });
         // socket.on('sendMessage', async ({ sender, chatroomId, text }) => {
@@ -91,7 +64,7 @@ function handleSocket(io) {
         //     }
         // });
         socket.on('disconnect', () => {
-            console.log('A user disconnected ' + socket.id);
+            console.log(`User ${socket.userId} disconnected`);
             removeUser(socket.id);
             io.emit('getUsers', onlineUsers);
         });

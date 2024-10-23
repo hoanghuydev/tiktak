@@ -5,7 +5,14 @@ import { query } from 'express';
 import { formatQueryUser } from './user';
 export const getUsersInChatroom = (
     chatroomId,
-    { page, pageSize, orderBy, orderDirection, userName, fullName }
+    {
+        page = 1,
+        pageSize = 30,
+        orderBy = 'createdAt',
+        orderDirection = 'DESC',
+        userName = '',
+        fullName = '',
+    }
 ) =>
     new Promise(async (resolve, reject) => {
         try {
@@ -26,14 +33,17 @@ export const getUsersInChatroom = (
                 include: [
                     {
                         model: db.User,
-                        attributes: ['id', 'userName', 'fullName', 'avatar'],
+                        as: 'memberData',
+                        attributes: ['id', 'userName', 'fullName'],
                         ...formatQueryUser,
                         where: query,
                     },
                 ],
                 ...queries,
             });
-            const users = rows.map((userInChatroom) => userInChatroom['User']);
+            const users = rows.map(
+                (userInChatroom) => userInChatroom['memberData']
+            );
             const totalItems = count;
             const totalPages =
                 totalItems / pageSize >= 1
@@ -69,23 +79,45 @@ export const getChatroomsOfUser = (
             );
             const query = {};
             if (name) query.name = { [Op.substring]: name };
-            const { count, rows } = await db.UserInChatroom.findAndCountAll({
-                attributes: [],
-                where: {
-                    member,
+            const { count, rows } = await db.Chatroom.findAndCountAll({
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt'],
                 },
                 include: [
                     {
-                        model: db.Chatroom,
-                        attributes: ['id', 'name'],
+                        model: db.UserInChatroom,
+                        as: 'members',
+                        attributes: {
+                            exclude: ['createdAt', 'updatedAt'],
+                        },
+                        include: [
+                            {
+                                model: db.User,
+                                as: 'memberData',
+                                attributes: ['id', 'userName', 'fullName'],
+                                ...formatQueryUser,
+                                // where: {
+                                //     id: { [Op.ne]: member },
+                                // },
+                            },
+                        ],
                     },
                 ],
-
-                ...queries,
+                // order: [[orderBy, orderDirection]],
+                // limit: pageSize,
+                // offset: (page - 1) * pageSize,
             });
-            const chatrooms = rows.map(
-                (userInChatroom) => userInChatroom['Chatroom']
-            );
+
+            // const chatrooms = rows.map((chatroom) => ({
+            //     id: chatroom.id,
+            //     name: chatroom.name,
+            //     members: chatroom.members.map((member) => ({
+            //         id: member.memberData.id,
+            //         userName: member.memberData.userName,
+            //         fullName: member.memberData.fullName,
+            //     })),
+            // }));
+            const chatrooms = rows;
             const totalItems = count;
 
             const totalPages =

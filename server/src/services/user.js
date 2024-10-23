@@ -9,7 +9,9 @@ export const formatQueryUserWithAtrr = {
         {
             model: db.Avatar,
             as: 'avatarData',
-            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt', 'id', 'publicId', 'code'],
+            },
         },
         {
             model: db.Role,
