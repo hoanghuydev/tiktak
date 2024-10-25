@@ -1,11 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SlOptions } from 'react-icons/sl';
 import ModalOptionMessage from './ModalOptionMessage';
+import { ChatroomModel } from '@/models/chatroom';
+import { useSelector } from 'react-redux';
+import { currentUserSelector } from '@/redux/selector';
+import ReactTimeago from 'react-timeago';
+import { MessageModel } from '@/models/message';
 
-const MessageItem: React.FC = () => {
+const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   const [isShowOptionsMenu, setIsShowOptionsMenu] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
+  const [chatroomName, setChatroomName] = useState<string>(chatroom.name);
+  const [avatarChatroom, setAvatarChatroom] = useState<(string | undefined)[]>(
+    []
+  );
+  const currentUser = useSelector(currentUserSelector);
+  // Get chatroom name and avatar chatroom
+  useEffect(() => {
+    const otherMembers = chatroom.members.filter(
+      (member) => member.memberData.id !== currentUser?.id
+    );
+
+    const name =
+      otherMembers.length > 1
+        ? otherMembers.map((member) => member.memberData.fullName).join(', ')
+        : otherMembers.length === 1
+        ? otherMembers[0].memberData.fullName
+        : '';
+    setChatroomName(name);
+
+    const avatarUrls = otherMembers.map(
+      (member) => member.memberData.avatarData.url
+    );
+
+    setAvatarChatroom(avatarUrls);
+  }, [chatroom, currentUser]);
 
   // Function to handle click events outside the modal
   useEffect(() => {
@@ -45,21 +75,29 @@ const MessageItem: React.FC = () => {
       }}
     >
       <div className="min-w-14 max-w-14 h-14">
-        <img
-          src="http://res.cloudinary.com/dwuypueso/image/upload/v1719968242/tiktok_avatar/vb3lsu3tj5l2isahmfi7.jpg"
-          className="w-full h-full object-cover object-center rounded-full"
-          alt="User Avatar"
-        />
+        {avatarChatroom.map((avatar) => (
+          <img
+            src={avatar}
+            className="w-full h-full object-cover object-center rounded-full"
+            alt="Avatar"
+          />
+        ))}
       </div>
-      <div className="pl-3">
+      <div className="pl-3 w-full">
         <p className="text-[16px] font-semibold text-ellipsis overflow-hidden line-clamp-1">
-          nhỏ khó ở
+          {chatroomName}
         </p>
-        <p className="flex flex-nowrap">
+        <p className="flex flex-nowrap justify-between w-full">
           <span className="text-ellipsis text-[14px] text-[#161823bf] overflow-hidden line-clamp-1">
-            Mình gửi bạn bản tham khảo về giá nha
+            {(JSON.parse(chatroom.lastMessage) as MessageModel).content}
           </span>
-          <span className="text-[14px] font-thin">10/5/2024</span>
+          <span className="text-[14px] font-thin">
+            <ReactTimeago
+              date={
+                (JSON.parse(chatroom.lastMessage) as MessageModel).createdAt
+              }
+            />
+          </span>
         </p>
       </div>
       <div className="absolute w-6 h-6 top-6 right-4" ref={modalRef}>

@@ -89,7 +89,7 @@ const initialState: InitStateCommentType = {
 
 // Slice
 const commentSlice = createSlice({
-  name: 'post',
+  name: 'comment',
   initialState,
   reducers: {
     setComment(state, action: { payload: CommentModel; type: string }) {

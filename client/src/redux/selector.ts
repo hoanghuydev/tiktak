@@ -8,6 +8,7 @@ import { TabState, TabType } from '@/features/tab/tabSlice';
 import { CommentModel } from '@/models/comment';
 import { InitStateUserType } from '@/features/user/userSlice';
 import { Socket } from 'socket.io-client';
+import { ChatroomModel } from '@/models/chatroom';
 
 export const authSelector = (state: RootState): InitStateAuthType => state.auth;
 export const tabSelector = (state: RootState): TabType => state.tab.tab;
@@ -34,6 +35,8 @@ export const getCommentsSelector = (state: RootState): CommentModel[] =>
   state.comment.comments;
 export const getCommentSelector = (state: RootState): CommentModel =>
   state.comment.comment!;
+export const getChatroomsSelector = (state: RootState): ChatroomModel[] =>
+  state.chatroom.chatrooms;
 export const getCommentByIdSelector = (
   state: RootState,
   commentId: number

@@ -4,13 +4,13 @@ import { ChatroomModel } from '@/models/chatroom';
 import AbstractPayload from '@/utils/abtractPayloadType';
 const routePath = '/chatroom';
 export interface ChatroomsPayload extends AbstractPayload {
-  comments: ChatroomModel[];
+  chatrooms: ChatroomModel[];
   pagination: PaginationModel;
 }
-export interface CommentPayload extends AbstractPayload {
-  comment: ChatroomModel;
+export interface ChatroomPayload extends AbstractPayload {
+  chatroom: ChatroomModel;
 }
-const CommentService = {
+const ChatroomService = {
   async getChatroomsByUserId(userId: number) {
     return new Promise<ChatroomsPayload>(async (resolve, reject) => {
       try {
@@ -22,4 +22,4 @@ const CommentService = {
     });
   },
 };
-export default CommentService;
+export default ChatroomService;
