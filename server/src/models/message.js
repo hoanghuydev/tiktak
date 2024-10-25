@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
                 targetKey: 'id',
                 as: 'senderData',
             });
+            Message.belongsTo(models.Chatroom, {
+                foreignKey: 'chatroomId',
+                as: 'chatroomData',
+            });
         }
     }
     Message.init(

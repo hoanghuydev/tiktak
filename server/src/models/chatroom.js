@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'chatroomId',
                 as: 'members',
             });
+            Chatroom.hasMany(models.Message, {
+                foreignKey: 'chatroomId',
+                as: 'messages',
+            });
         }
     }
     Chatroom.init(
