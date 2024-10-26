@@ -6,3 +6,8 @@ export const PRIVACY_SETTING = Object.freeze({
     FRIENDS_ONLY: 'friends_only',
     NO_ONE: 'no_one',
 });
+export const MESSAGE_TYPE = Object.freeze({
+    VIDEO: 'video',
+    IMAGE: 'image',
+    TEXT: 'text',
+});

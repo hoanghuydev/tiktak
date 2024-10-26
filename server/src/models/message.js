@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const { MESSAGE_TYPE } = require('../../constant');
 module.exports = (sequelize, DataTypes) => {
     class Message extends Model {
         /**
@@ -25,6 +26,15 @@ module.exports = (sequelize, DataTypes) => {
             sender: DataTypes.INTEGER,
             chatroomId: DataTypes.INTEGER,
             content: DataTypes.STRING,
+            type: {
+                type: DataTypes.ENUM(
+                    MESSAGE_TYPE.VIDEO,
+                    MESSAGE_TYPE.IMAGE,
+                    MESSAGE_TYPE.TEXT
+                ),
+                defaultValue: MESSAGE_TYPE.TEXT,
+                allowNull: false,
+            },
         },
         {
             sequelize,

@@ -22,6 +22,7 @@ const handleFulfilled = <T>(
   state.isSuccess = true;
   if (action.payload && isShowMessage) {
     state.message = action.payload.mes;
+    message.success(action.payload.mes);
   }
 };
 

@@ -7,6 +7,7 @@ import * as messageServices from '../services/message';
 import * as chatroomServices from '../services/chatroom';
 
 import { v4 as uuidv4 } from 'uuid';
+import { MESSAGE_TYPE } from '../../constant';
 class MessageController {
     async getMessagesOfChatroom(req, res) {
         try {
@@ -69,7 +70,9 @@ class MessageController {
     async sendMessage(req, res) {
         try {
             const { chatroomId } = req.params;
-            const { content } = req.body;
+            const { content, type } = req.body;
+            if (!Object.values(MESSAGE_TYPE).includes(type) || !content)
+                return badRequest('Please enter valid content and type', res);
             const resp = await chatroomServices.getUsersInChatroom(
                 chatroomId,
                 req.query
@@ -81,7 +84,8 @@ class MessageController {
             const message = await messageServices.sendMessage(
                 req.user.id,
                 chatroomId,
-                content.trim()
+                content.trim(),
+                type
             );
 
             if (!message || !io)
@@ -95,13 +99,7 @@ class MessageController {
                     });
             });
 
-            Promise.all(promisesSendMsg)
-                .then(() => {
-                    console.log('All notifications sent successfully');
-                })
-                .catch((error) => {
-                    console.error('Error sending notifications:', error);
-                });
+            await Promise.all(promisesSendMsg);
             return res.status(200).json({
                 err: 0,
                 mes: 'Sent message successfully',
@@ -122,19 +120,41 @@ class MessageController {
                     'You are not allowed to recall this message',
                     res
                 );
+            const getUsers = await chatroomServices.getUsersInChatroom(
+                message.chatroomId,
+                req.query
+            );
+            const usersInChatroom = getUsers.users;
+            if (!usersInChatroom.some((user) => user.id === req.user.id))
+                return forBidden(
+                    'You are not allowed to recall messages in this chatroom',
+                    res
+                );
+
             const resp = await messageServices.recallMessage(messageId);
             if (resp) {
                 const io = res.io;
-                io.to(parseInt(message.chatroomId)).emit(
-                    process.env.RECALL_MESSAGE_ACTION_SOCKET,
-                    message
-                );
+                if (!io)
+                    return badRequest(
+                        "Couldn't recall message due to server issues",
+                        res
+                    );
+                const promisesSendRecall = usersInChatroom.map((user) => {
+                    return io
+                        .to(`user_${user.id}`)
+                        .emit(process.env.RECALL_MESSAGE_ACTION_SOCKET, {
+                            chatroomId,
+                            message: recalledMessage,
+                        });
+                });
+
+                await Promise.all(promisesSendRecall);
                 return res.status(200).json({
                     err: 0,
-                    mes: 'Recalled message',
-                    message,
+                    mes: 'Message recalled successfully',
+                    message: message,
                 });
-            } else return badRequest('Not found message ' + messageId, res);
+            } else return badRequest('Message recall failed', res);
         } catch (error) {
             console.log(error);
             return internalServerError(res);

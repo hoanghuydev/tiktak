@@ -9,6 +9,8 @@ import ChatroomService, {
   ChatroomPayload,
   ChatroomsPayload,
 } from './chatroomServices';
+import { RootState } from '@/redux/reducer';
+import socketSlice, { setChatrooms } from '@/features/socket/socketSlice';
 
 // Async Thunks
 export const getChatroomByUserId = createAsyncThunk(
@@ -16,6 +18,8 @@ export const getChatroomByUserId = createAsyncThunk(
   async (userId: number, thunkAPI) => {
     try {
       const resp = await ChatroomService.getChatroomsByUserId(userId);
+      const rootState = thunkAPI.getState() as RootState; // Get the root state
+      thunkAPI.dispatch(setChatrooms(resp.chatrooms));
       return resp;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -46,30 +50,15 @@ const chatroomSlice = createSlice({
   name: 'chatroom',
   initialState,
   reducers: {
-    setComment(state, action: { payload: ChatroomModel; type: string }) {
+    setChatroom(state, action: { payload: ChatroomModel; type: string }) {
       state.chatroom = action.payload;
     },
-    setComments(state, action: { payload: ChatroomModel[]; type: string }) {
+    setChatrooms(state, action: { payload: ChatroomModel[]; type: string }) {
       state.chatrooms = action.payload;
     },
   },
-  extraReducers: (builder) =>
-    builder
-      .addCase(getChatroomByUserId.pending, handlePending)
-      .addCase(getChatroomByUserId.fulfilled, (state, action) => {
-        const payload = action.payload as ChatroomsPayload;
-        state.chatrooms = payload.chatrooms;
-        handleFulfilled(state, action);
-      })
-      .addCase(getChatroomByUserId.rejected, (state, action) => {
-        const payload = action.payload as ChatroomsPayload;
-        if (payload) {
-          state.message = payload.mes;
-          state.chatrooms = [];
-        }
-        handleRejected(state, action);
-      }),
+  extraReducers: (builder) => builder,
 });
 
-// export const {} = chatroomSlice.actions;
+export const { setChatroom } = chatroomSlice.actions;
 export default chatroomSlice.reducer;

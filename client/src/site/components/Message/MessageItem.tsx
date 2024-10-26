@@ -2,10 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SlOptions } from 'react-icons/sl';
 import ModalOptionMessage from './ModalOptionMessage';
 import { ChatroomModel } from '@/models/chatroom';
-import { useSelector } from 'react-redux';
-import { currentUserSelector } from '@/redux/selector';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  currentUserSelector,
+  getMessagesByChatroomIdSelector,
+} from '@/redux/selector';
 import ReactTimeago from 'react-timeago';
 import { MessageModel } from '@/models/message';
+import { AppDispatch } from '@/redux/store';
+import { fetchMessagesByChatroomId } from '@/features/socket/socketSlice';
+import { setChatroom } from '@/features/chatroom/chatroomSlice';
 
 const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   const [isShowOptionsMenu, setIsShowOptionsMenu] = useState<boolean>(false);
@@ -15,7 +21,13 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   const [avatarChatroom, setAvatarChatroom] = useState<(string | undefined)[]>(
     []
   );
+  const dispatch = useDispatch<AppDispatch>();
   const currentUser = useSelector(currentUserSelector);
+  const messages = useSelector(getMessagesByChatroomIdSelector(chatroom.id));
+  const handleGetMessages = () => {
+    setChatroom(chatroom);
+    if (messages.length === 0) dispatch(fetchMessagesByChatroomId(chatroom.id));
+  };
   // Get chatroom name and avatar chatroom
   useEffect(() => {
     const otherMembers = chatroom.members.filter(
@@ -65,9 +77,9 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
     if (!isShowOptionsMenu) setIsHovered(true);
     setIsShowOptionsMenu((prev) => !prev);
   };
-
   return (
     <div
+      onClick={handleGetMessages}
       className="parent-div flex items-center h-[76px] relative hover:bg-[#16182308] px-6 hover:cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {

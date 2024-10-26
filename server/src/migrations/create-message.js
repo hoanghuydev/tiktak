@@ -29,6 +29,11 @@ module.exports = {
                     key: 'id',
                 },
             },
+            type: {
+                type: Sequelize.ENUM('video', 'image', 'text'),
+                allowNull: false,
+                defaultValue: 'text',
+            },
             createdAt: {
                 allowNull: false,
                 type: 'TIMESTAMP',

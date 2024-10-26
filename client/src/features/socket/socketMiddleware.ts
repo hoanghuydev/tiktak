@@ -35,6 +35,12 @@ const socketMiddleware: Middleware = (store) => {
             store.dispatch(receiveMessage(data));
           }
         );
+        socket.on(
+          ChatEvent.RECALL_MESSAGE_ACTION_SOCKET,
+          (data: { message: MessageModel; chatroomId: number }) => {
+            store.dispatch(receiveMessage(data));
+          }
+        );
 
         socket.on(
           ChatEvent.GET_USER_ONLINE_ACTION_SOCKET,

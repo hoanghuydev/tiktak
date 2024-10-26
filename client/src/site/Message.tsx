@@ -35,8 +35,8 @@ const Message = () => {
             <AiOutlineSetting size={24} />
           </div>
           <div className="overflow-y-auto h-full">
-            {chatrooms.map((chatroom) => (
-              <MessageItem chatroom={chatroom} />
+            {chatrooms.map((chatroom, index) => (
+              <MessageItem key={index} chatroom={chatroom} />
             ))}
           </div>
         </div>
