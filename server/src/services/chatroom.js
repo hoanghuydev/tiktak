@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { query } from 'express';
@@ -80,25 +80,34 @@ export const getChatroomsOfUser = (
             const query = {};
             if (name) query.name = { [Op.substring]: name };
             const { count, rows } = await db.Chatroom.findAndCountAll({
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt'],
-                },
+                attributes: [
+                    'createdAt',
+                    'id',
+                    'name',
+                    [
+                        db.sequelize.literal(`(
+                        SELECT JSON_OBJECT(
+                            'content', content, 
+                            'createdAt', createdAt
+                        ) FROM Messages
+                        WHERE Messages.chatroomId = Chatroom.id
+                        ORDER BY createdAt DESC
+                        LIMIT 1
+                    )`),
+                        'lastMessage',
+                    ],
+                ],
                 include: [
                     {
                         model: db.UserInChatroom,
                         as: 'members',
-                        attributes: {
-                            exclude: ['createdAt', 'updatedAt'],
-                        },
+                        attributes: ['member'],
                         include: [
                             {
                                 model: db.User,
                                 as: 'memberData',
                                 attributes: ['id', 'userName', 'fullName'],
                                 ...formatQueryUser,
-                                // where: {
-                                //     id: { [Op.ne]: member },
-                                // },
                             },
                         ],
                     },
@@ -107,16 +116,6 @@ export const getChatroomsOfUser = (
                 // limit: pageSize,
                 // offset: (page - 1) * pageSize,
             });
-
-            // const chatrooms = rows.map((chatroom) => ({
-            //     id: chatroom.id,
-            //     name: chatroom.name,
-            //     members: chatroom.members.map((member) => ({
-            //         id: member.memberData.id,
-            //         userName: member.memberData.userName,
-            //         fullName: member.memberData.fullName,
-            //     })),
-            // }));
             const chatrooms = rows;
             const totalItems = count;
 

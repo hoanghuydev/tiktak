@@ -49,7 +49,7 @@ export const getListMessageOfChatroom = async (
             reject(error);
         }
     });
-export const sendMessage = (sender, chatroomId, content) =>
+export const sendMessage = (sender, chatroomId, content, type) =>
     new Promise(async (resolve, reject) => {
         try {
             const resp = await db.Message.create({

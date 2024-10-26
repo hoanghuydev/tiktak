@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { GoArrowLeft } from 'react-icons/go';
 import { Link, useNavigate } from 'react-router-dom';
 import MessageItem from './components/Message/MessageItem';
 import Chat from './components/Message/Chat';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { currentUserSelector, getChatroomsSelector } from '@/redux/selector';
+import { getChatroomByUserId } from '@/features/chatroom/chatroomSlice';
 
 const Message = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentUser = useSelector(currentUserSelector);
+  const chatrooms = useSelector(getChatroomsSelector);
+  useEffect(() => {
+    if (currentUser && currentUser.id) {
+      dispatch(getChatroomByUserId(currentUser.id));
+    }
+  }, [currentUser]);
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#f8f8f8]">
@@ -23,8 +35,8 @@ const Message = () => {
             <AiOutlineSetting size={24} />
           </div>
           <div className="overflow-y-auto h-full">
-            {Array.from({ length: 10 }, (_, index) => (
-              <MessageItem key={index} />
+            {chatrooms.map((chatroom, index) => (
+              <MessageItem key={index} chatroom={chatroom} />
             ))}
           </div>
         </div>
