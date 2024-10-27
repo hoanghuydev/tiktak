@@ -21,7 +21,7 @@ const initialState: SocketState = {
 
 export const fetchMessagesByChatroomId = createAsyncThunk(
   'socket/fetchMessagesByChatroomId',
-  async (chatroomId: number, { rejectWithValue }) => {
+  async (chatroomId: number, { rejectWithValue, dispatch }) => {
     try {
       const response = await MessageService.getMessagesByChatroomId(chatroomId);
       return { chatroomId, messages: response.messages };
@@ -48,11 +48,17 @@ const socketSlice = createSlice({
       state,
       action: PayloadAction<{ chatroomId: number; message: MessageModel }>
     ) => {
-      const chatroom = state.chatrooms.find(
-        (room) => room.id === action.payload.chatroomId
-      );
+      const { chatroomId, message } = action.payload;
+      const chatroom = state.chatrooms.find((room) => room.id == chatroomId);
       if (chatroom) {
-        chatroom.messages.push(action.payload.message);
+        chatroom.lastMessage = JSON.stringify({
+          content: message.content,
+          createdAt: message.createdAt,
+        });
+        if (!chatroom.messages) {
+          chatroom.messages = [];
+        }
+        chatroom.messages.unshift(message);
       }
     },
     recallMessage: (
@@ -63,12 +69,21 @@ const socketSlice = createSlice({
         (room) => room.id === action.payload.chatroomId
       );
       if (chatroom) {
-        // Filter out the recalled message from the messages array
         chatroom.messages = chatroom.messages.filter(
           (msg: MessageModel) => msg.id !== action.payload.message.id
         );
+        const lastIndex = chatroom.messages.length - 1;
+        const lastMessage =
+          lastIndex >= 0
+            ? {
+                content: chatroom.messages[lastIndex].content || '',
+                createdAt: chatroom.messages[lastIndex].createdAt || '',
+              }
+            : { content: '', createdAt: '' };
+        chatroom.lastMessage = JSON.stringify(lastMessage);
       }
     },
+
     submitMessage: (
       state,
       action: PayloadAction<{ chatroomId: number; message: string }>
@@ -83,7 +98,7 @@ const socketSlice = createSlice({
     //     (room) => room.id === action.payload.id
     //   );
     //   if (!exists) {
-    //     state.chatrooms.push(action.payload);
+    //     state.chatrooms.unshift(action.payload);
     //   }
     // },
     // leaveChatroom: (state, action: PayloadAction<number>) => {
@@ -111,7 +126,7 @@ const socketSlice = createSlice({
             if (!chatroom.messages) {
               chatroom.messages = [];
             }
-            chatroom.messages.push(...messages);
+            chatroom.messages.unshift(...messages);
           }
         }
       )

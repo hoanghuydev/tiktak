@@ -6,5 +6,10 @@ export enum ChatEvent {
   JOIN_CHATROOM_ACTION_SOCKET = 'joinChatroom',
   LEAVE_CHATROOM_ACTION_SOCKET = 'leaveChatroom',
 }
+export enum MessageType {
+  VIDEO = 'video',
+  IMAGE = 'image',
+  TEXT = 'text',
+}
 export const SERVER_URL = 'http://localhost:8000';
 export const URL_CLIENT = 'http://localhost:5173';

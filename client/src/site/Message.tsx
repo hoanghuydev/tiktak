@@ -2,12 +2,16 @@ import React, { useEffect } from 'react';
 import { AiOutlineSetting } from 'react-icons/ai';
 import { GoArrowLeft } from 'react-icons/go';
 import { Link, useNavigate } from 'react-router-dom';
-import MessageItem from './components/Message/MessageItem';
 import Chat from './components/Message/Chat';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { currentUserSelector, getChatroomsSelector } from '@/redux/selector';
-import { getChatroomByUserId } from '@/features/chatroom/chatroomSlice';
+import {
+  getChatroomsByUserId,
+  setChatroom,
+} from '@/features/chatroom/chatroomSlice';
+import { ChatroomModel } from '@/models/chatroom';
+import ChatroomItem from './components/Message/ChatroomItem';
 
 const Message = () => {
   const navigate = useNavigate();
@@ -16,13 +20,14 @@ const Message = () => {
   const chatrooms = useSelector(getChatroomsSelector);
   useEffect(() => {
     if (currentUser && currentUser.id) {
-      dispatch(getChatroomByUserId(currentUser.id));
+      dispatch(getChatroomsByUserId(currentUser.id));
+      dispatch(setChatroom(null));
     }
   }, [currentUser]);
 
   return (
-    <div className="w-full h-full overflow-hidden bg-[#f8f8f8]">
-      <div className="w-screen max-w-[100%] flex justify-center gap-3 pt-4 pr-6 pb-[10px] pl-5 h-full">
+    <div className="w-full h-[calc(100vh-60px)] overflow-hidden bg-[#f8f8f8]">
+      <div className="w-screen max-w-[100%]  flex justify-center gap-3 pt-4 pr-6 pb-[10px] pl-5 h-full">
         <div className="bg-white h-full relative rounded-lg shadow-md w-[365px]">
           <div
             onClick={() => navigate(-1)}
@@ -36,7 +41,7 @@ const Message = () => {
           </div>
           <div className="overflow-y-auto h-full">
             {chatrooms.map((chatroom, index) => (
-              <MessageItem key={index} chatroom={chatroom} />
+              <ChatroomItem key={index} chatroom={chatroom} />
             ))}
           </div>
         </div>

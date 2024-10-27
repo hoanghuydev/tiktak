@@ -38,6 +38,15 @@ export const getCommentSelector = (state: RootState): CommentModel =>
   state.comment.comment!;
 export const getChatroomsSelector = (state: RootState): ChatroomModel[] =>
   state.socket.chatrooms;
+export const getChatroomSelector = () => {
+  return (state: RootState): ChatroomModel | null => {
+    return (
+      state.socket.chatrooms.find(
+        (chatroom) => chatroom.id === state.chatroom.chatroom?.id
+      ) ?? null
+    );
+  };
+};
 export const getMessagesByChatroomIdSelector = (chatroomId: number) => {
   return (state: RootState): MessageModel[] => {
     return (
