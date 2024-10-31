@@ -81,16 +81,18 @@ class MessageController {
             if (!usersInChatroom.some((user) => user.id === req.user.id))
                 return forBidden('You are not allowed to send messages', res);
             const io = res.io;
-            const message = await messageServices.sendMessage(
+            const sendMsg = await messageServices.sendMessage(
                 req.user.id,
                 chatroomId,
                 content.trim(),
                 type
             );
 
-            if (!message || !io)
+            if (!sendMsg || !io)
                 return badRequest("Couldn't send message", res);
+            const message = await messageServices.findById(sendMsg.id);
             const promisesSendMsg = usersInChatroom.map((user) => {
+                console.log(`Đã gửi tin nhắn cho user: ${user.id}`);
                 return io
                     .to(`user_${user.id}`)
                     .emit(process.env.GET_NEW_MESSAGE_ACTION_SOCKET, {

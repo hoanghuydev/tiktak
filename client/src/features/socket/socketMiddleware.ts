@@ -26,12 +26,10 @@ const socketMiddleware: Middleware = (store) => {
 
       socket.on('connect', () => {
         store.dispatch(connectionEstablished());
-
-        socket.emit(ChatEvent.ADD_USER_ONLINE_ACTION_SOCKET, user.id);
-
         socket.on(
           ChatEvent.GET_NEW_MESSAGE_ACTION_SOCKET,
           (data: { message: MessageModel; chatroomId: number }) => {
+            console.log(data);
             store.dispatch(receiveMessage(data));
           }
         );

@@ -11,12 +11,19 @@ import {
   currentUserSelector,
   getCommentByIdSelector,
   getCommentRepliesByIdSelector,
+  getPostSelector,
 } from '@/redux/selector';
 import { CommentModel } from '@/models/comment';
 import CommentForm from '@/site/components/Post/CommentForm';
 import { RootState } from '@/redux/reducer';
 import { AppDispatch } from '@/redux/store';
-import { setRepliesRemainingByCommentId } from '@/features/comment/commentSlice';
+import {
+  addComment,
+  commentPost,
+  replyComment,
+  setRepliesRemainingByCommentId,
+} from '@/features/comment/commentSlice';
+import InputFormEditable from './InputFormEditable';
 
 const Comment = ({
   comment,
@@ -33,6 +40,7 @@ const Comment = ({
   const [isLike, setIsLike] = useState(comment.isLiked === 1);
   const [likes, setLikes] = useState(comment.likes ?? 0);
   const user = useSelector(currentUserSelector);
+  const post = useSelector(getPostSelector);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const repliesRemaining: number = comment.replies;
@@ -62,6 +70,39 @@ const Comment = ({
       return;
     }
     setShowReplyForm(true);
+  };
+  const handleSubmitComment = async (commentText: string) => {
+    if (!commentText.trim()) return; // Ensure non-empty input
+    let parentCommentId2 = parentCommentId ?? comment.id!;
+    if (parentCommentId2) {
+      // Handling reply to a comment
+      try {
+        const resp = await dispatch(
+          replyComment({
+            postId: post.id,
+            parentCommentId: parentCommentId2,
+            content: commentText,
+          })
+        ).unwrap();
+        if (resp) {
+          dispatch(
+            addComment({
+              parentCommentId: parentCommentId2,
+              comment: resp.comment,
+            })
+          );
+        }
+      } catch (error) {
+        message.error('Failed to add reply');
+      }
+    } else {
+      // Posting a new comment
+      try {
+        await dispatch(commentPost({ postId: post.id, content: commentText }));
+      } catch (error) {
+        message.error('Failed to post comment');
+      }
+    }
   };
 
   const userData = comment.commenterData;
@@ -119,7 +160,11 @@ const Comment = ({
           </div>
           {showReplyForm && (
             <div className="flex">
-              <CommentForm parentCommentId={parentCommentId ?? comment.id!} />
+              <InputFormEditable
+                placeholder="Add comment..."
+                handleSubmit={handleSubmitComment}
+                maxCharacters={150}
+              />
               <IoClose
                 size={20}
                 className="my-auto hover:cursor-pointer hover:opacity-90"

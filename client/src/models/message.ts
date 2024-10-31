@@ -1,3 +1,4 @@
+import { MessageType } from '@/utils/constants';
 import { AbstractModel } from '.';
 import { AvatarModel } from './avatar';
 import { UserModel } from './user';
@@ -7,4 +8,5 @@ export interface MessageModel extends AbstractModel {
   chatroomId: number;
   content: string;
   senderData: UserModel;
+  type: MessageType;
 }

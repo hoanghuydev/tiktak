@@ -110,7 +110,7 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     suppressContentEditableWarning={true}
-                    className="my-3 border-none min-w-[180px] flex-1 whitespace-pre-wrap select-text break-words break-all text-wrap outline-none h-fit max-h-[80px] overflow-y-auto bg-transparent text-[14px] text-[#161823e2]"
+                    className="py-3 border-none min-w-[180px] flex-1 whitespace-pre-wrap select-text break-words break-all text-wrap outline-none h-fit max-h-[80px] overflow-y-auto bg-transparent text-[14px] text-[#161823e2]"
                   >
                     {isFocused || commentTextRef.current
                       ? commentTextRef.current
@@ -118,9 +118,8 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
                   </p>
                   <EmojiPicker
                     inputRef={commentInputRef}
-                    commentText={commentTextRef.current}
-                    setCommentText={(text: string) => {
-                      commentTextRef.current = text; // Update the text with the emoji inserted
+                    setText={(text: string) => {
+                      commentTextRef.current = text;
                     }}
                     maxCharacters={maxCharacters}
                   />

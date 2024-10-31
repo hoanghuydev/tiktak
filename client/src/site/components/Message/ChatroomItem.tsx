@@ -13,7 +13,7 @@ import { AppDispatch } from '@/redux/store';
 import { fetchMessagesByChatroomId } from '@/features/socket/socketSlice';
 import { setChatroom } from '@/features/chatroom/chatroomSlice';
 
-const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
+const ChatroomItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   const [isShowOptionsMenu, setIsShowOptionsMenu] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -24,9 +24,8 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   const dispatch = useDispatch<AppDispatch>();
   const currentUser = useSelector(currentUserSelector);
   const messages = useSelector(getMessagesByChatroomIdSelector(chatroom.id));
-  const handleGetMessages = () => {
-    setChatroom(chatroom);
-    if (messages.length === 0) dispatch(fetchMessagesByChatroomId(chatroom.id));
+  const handleSetChatroom = () => {
+    dispatch(setChatroom(chatroom));
   };
   // Get chatroom name and avatar chatroom
   useEffect(() => {
@@ -79,7 +78,7 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   };
   return (
     <div
-      onClick={handleGetMessages}
+      onClick={handleSetChatroom}
       className="parent-div flex items-center h-[76px] relative hover:bg-[#16182308] px-6 hover:cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -89,6 +88,7 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
       <div className="min-w-14 max-w-14 h-14">
         {avatarChatroom.map((avatar) => (
           <img
+            key={avatar}
             src={avatar}
             className="w-full h-full object-cover object-center rounded-full"
             alt="Avatar"
@@ -100,10 +100,10 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
           {chatroomName}
         </p>
         <p className="flex flex-nowrap justify-between w-full">
-          <span className="text-ellipsis text-[14px] text-[#161823bf] overflow-hidden line-clamp-1">
+          <span className="text-ellipsis text-[14px] text-[#161823bf] max-h-[21px] line-clamp-1">
             {(JSON.parse(chatroom.lastMessage) as MessageModel).content}
           </span>
-          <span className="text-[14px] font-thin">
+          <span className="text-[14px] font-thin whitespace-nowrap">
             <ReactTimeago
               date={
                 (JSON.parse(chatroom.lastMessage) as MessageModel).createdAt
@@ -128,4 +128,4 @@ const MessageItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
   );
 };
 
-export default MessageItem;
+export default ChatroomItem;

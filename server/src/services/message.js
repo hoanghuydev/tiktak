@@ -2,6 +2,24 @@ import { Op, where } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
+export const findById = async (id) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            const message = await db.Message.findByPk(id, {
+                include: [
+                    {
+                        model: db.User,
+                        as: 'senderData',
+                        attributes: ['id', 'userName', 'fullName'],
+                        ...formatQueryUser,
+                    },
+                ],
+            });
+            resolve(message);
+        } catch (err) {
+            reject(err);
+        }
+    });
 export const getListMessageOfChatroom = async (
     chatroomId,
     { page, pageSize, orderBy, orderDirection, content }

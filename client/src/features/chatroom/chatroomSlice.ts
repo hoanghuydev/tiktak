@@ -13,12 +13,11 @@ import { RootState } from '@/redux/reducer';
 import socketSlice, { setChatrooms } from '@/features/socket/socketSlice';
 
 // Async Thunks
-export const getChatroomByUserId = createAsyncThunk(
-  'post/getChatroomByUserId',
+export const getChatroomsByUserId = createAsyncThunk(
+  'post/getChatroomsByUserId',
   async (userId: number, thunkAPI) => {
     try {
       const resp = await ChatroomService.getChatroomsByUserId(userId);
-      const rootState = thunkAPI.getState() as RootState; // Get the root state
       thunkAPI.dispatch(setChatrooms(resp.chatrooms));
       return resp;
     } catch (error: any) {
@@ -50,10 +49,10 @@ const chatroomSlice = createSlice({
   name: 'chatroom',
   initialState,
   reducers: {
-    setChatroom(state, action: { payload: ChatroomModel; type: string }) {
+    setChatroom(state, action: PayloadAction<ChatroomModel | null>) {
       state.chatroom = action.payload;
     },
-    setChatrooms(state, action: { payload: ChatroomModel[]; type: string }) {
+    setChatrooms(state, action: PayloadAction<ChatroomModel[]>) {
       state.chatrooms = action.payload;
     },
   },
