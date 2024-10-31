@@ -13,7 +13,6 @@ const Chat = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [chatroomHeaderInfo, setChatroomHeaderInfo] =
     useState<ChatroomHeaderInfo>({ name: '', subName: '', avatarUrls: [''] });
-
   useEffect(() => {
     if (chatroom && chatroom.id) {
       if (!chatroom.messages || chatroom.messages.length === 0) {
@@ -46,7 +45,7 @@ const Chat = () => {
             messages={chatroom.messages || []}
             currentUser={currentUser!}
           />
-          <ChatInput />
+          <ChatInput chatroomId={chatroom.id} />
         </div>
       )}
     </div>

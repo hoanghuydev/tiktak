@@ -6,13 +6,13 @@ import data from '@emoji-mart/data';
 interface EmojiPickerProps {
   inputRef: React.RefObject<HTMLParagraphElement>;
   maxCharacters: number;
-  setCommentText: (text: string) => void;
+  setText: (text: string) => void;
   isOpen?: boolean;
 }
 
 const EmojiPicker: React.FC<EmojiPickerProps> = ({
   inputRef,
-  setCommentText,
+  setText,
   maxCharacters,
   isOpen = false,
 }) => {
@@ -34,7 +34,6 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
           start: range?.startOffset ?? 0,
           end: range?.endOffset ?? 0,
         };
-        console.log('Selection saved:', savedOffsets.current);
       }
     }
   };

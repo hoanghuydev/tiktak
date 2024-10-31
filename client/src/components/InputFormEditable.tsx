@@ -3,6 +3,7 @@ import EmojiPicker from '@/components/EmojiPicker';
 import { useSelector } from 'react-redux';
 import { currentUserSelector } from '@/redux/selector';
 import { Link } from 'react-router-dom';
+import clsx from 'clsx';
 
 interface InputFormEditableProps {
   placeholder: string;
@@ -19,31 +20,31 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
 }) => {
   const user = useSelector(currentUserSelector);
   const inputRef = useRef<HTMLParagraphElement | null>(null);
-  const textRef = useRef('');
+  const [text, setText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-
   const handleInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (textRef.current.trim()) {
-      handleSubmit(textRef.current);
+    if (text.trim()) {
+      handleSubmit(text);
       if (inputRef.current) inputRef.current.innerText = '';
-      textRef.current = '';
+      setText('');
       setIsFocused(false);
     }
   };
 
   const handleInputChange = () => {
+    console.log(1);
     if (inputRef.current) {
-      const text = inputRef.current.innerText;
-      if (text.length <= maxCharacters) {
-        textRef.current = text;
+      const currentText = inputRef.current.innerText;
+      if (currentText.length <= maxCharacters) {
+        setText(currentText);
       } else {
-        const truncatedText = text.substring(0, maxCharacters);
+        const truncatedText = currentText.substring(0, maxCharacters);
         inputRef.current.innerText = truncatedText;
+        setText(truncatedText);
       }
     }
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLParagraphElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -83,31 +84,32 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
                   suppressContentEditableWarning={true}
                   className="py-3 border-none min-w-[180px] flex-1 whitespace-pre-wrap select-text break-words break-all text-wrap outline-none h-fit max-h-[80px] overflow-y-auto bg-transparent text-[14px] text-[#161823e2]"
                 >
-                  {isFocused || textRef.current ? textRef.current : placeholder}
+                  {isFocused || (!text && placeholder)}
                 </p>
                 <EmojiPicker
                   inputRef={inputRef}
-                  setCommentText={(text: string) => {
-                    textRef.current = text;
-                  }}
+                  setText={setText}
                   maxCharacters={maxCharacters}
                 />
               </div>
-              {textRef.current.length > 0 && (
+              {text.length > 0 && (
                 <div
                   className={`text-[12px] mt-1 ${
-                    textRef.current.length === maxCharacters
+                    text.length === maxCharacters
                       ? 'text-primary'
                       : 'text-gray-500'
                   }`}
                 >
-                  {textRef.current.length}/{maxCharacters}
+                  {text.length}/{maxCharacters}
                 </div>
               )}
             </div>
             <div className="my-auto">
               <button
-                className="text-[#16182357] p-2 font-semibold"
+                className={clsx('p-2 font-semibold', {
+                  'text-primary': text.length > 0,
+                  'text-[#16182357]': !text.length,
+                })}
                 type="submit"
               >
                 Post

@@ -118,8 +118,8 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
                   </p>
                   <EmojiPicker
                     inputRef={commentInputRef}
-                    setCommentText={(text: string) => {
-                      commentTextRef.current = text; // Update the text with the emoji inserted
+                    setText={(text: string) => {
+                      commentTextRef.current = text;
                     }}
                     maxCharacters={maxCharacters}
                   />
