@@ -4,24 +4,30 @@ import { useSelector } from 'react-redux';
 import { currentUserSelector } from '@/redux/selector';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-
+import ImageInput from './ImageInput';
 interface InputFormEditableProps {
   placeholder: string;
   maxCharacters: number;
+  maxCharToShowCountText: number;
   handleSubmit: (text: string) => void;
+  handleSubmitImage?: (imageUrl: string) => void;
   className?: string;
+  hasImage?: boolean;
 }
 
 const InputFormEditable: React.FC<InputFormEditableProps> = ({
   placeholder,
   maxCharacters,
+  maxCharToShowCountText,
   handleSubmit,
   className,
+  hasImage,
 }) => {
   const user = useSelector(currentUserSelector);
   const inputRef = useRef<HTMLParagraphElement | null>(null);
   const [text, setText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+
   const handleInputSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
@@ -33,9 +39,8 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
   };
 
   const handleInputChange = () => {
-    console.log(1);
     if (inputRef.current) {
-      const currentText = inputRef.current.innerText;
+      const currentText = inputRef.current.innerText.trim();
       if (currentText.length <= maxCharacters) {
         setText(currentText);
       } else {
@@ -43,6 +48,7 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
         inputRef.current.innerText = truncatedText;
         setText(truncatedText);
       }
+      console.log(currentText);
     }
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLParagraphElement>) => {
@@ -71,7 +77,7 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
       )}
       {user && (
         <form method="POST" onSubmit={handleInputSubmit}>
-          <div className="flex py-3 px-5 md:py-5 md:px-8">
+          <div className="flex py-3 px-5">
             <div className="bg-[#f1f1f2] flex-1 rounded-md px-2 flex-grow">
               <div className="flex gap-3 relative">
                 <p
@@ -86,13 +92,15 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
                 >
                   {isFocused || (!text && placeholder)}
                 </p>
+                {hasImage && <ImageInput />}
                 <EmojiPicker
                   inputRef={inputRef}
                   setText={setText}
+                  text={text}
                   maxCharacters={maxCharacters}
                 />
               </div>
-              {text.length > 0 && (
+              {text.length > maxCharToShowCountText && (
                 <div
                   className={`text-[12px] mt-1 ${
                     text.length === maxCharacters
@@ -106,10 +114,11 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
             </div>
             <div className="my-auto">
               <button
-                className={clsx('p-2 font-semibold', {
-                  'text-primary': text.length > 0,
-                  'text-[#16182357]': !text.length,
-                })}
+                className={clsx(
+                  'p-2 font-semibold',
+                  text.length > 0 && 'text-primary',
+                  text.length == 0 && 'text-[#16182357]'
+                )}
                 type="submit"
               >
                 Post

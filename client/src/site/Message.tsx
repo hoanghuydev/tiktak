@@ -28,7 +28,7 @@ const Message = () => {
   return (
     <div className="w-full h-[calc(100vh-60px)] overflow-hidden bg-[#f8f8f8]">
       <div className="w-screen max-w-[100%]  flex justify-center gap-3 pt-4 pr-6 pb-[10px] pl-5 h-full">
-        <div className="bg-white h-full relative rounded-lg shadow-md w-[365px]">
+        <div className="bg-white h-full relative rounded-lg shadow-md min-w-[300px]">
           <div
             onClick={() => navigate(-1)}
             className="absolute left-[-56px] hidden md:flex bg-[#16182308] rounded-full p-3"

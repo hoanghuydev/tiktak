@@ -14,6 +14,7 @@ class MessageController {
             const { chatroomId } = req.params;
             const resp = await messageServices.getListMessageOfChatroom(
                 chatroomId,
+                req.user.id,
                 req.query
             );
             return res.status(200).json({
@@ -157,6 +158,40 @@ class MessageController {
                     message: message,
                 });
             } else return badRequest('Message recall failed', res);
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res);
+        }
+    }
+    async deleteAllMessagesUpToNowForUser(req, res) {
+        const { userId, chatroomId } = req.body;
+        try {
+            const result =
+                await messageServices.deleteAllMessagesUpToNowForUser(
+                    userId,
+                    chatroomId
+                );
+            res.status(200).json({
+                err: 0,
+                mes: result.message,
+            });
+        } catch (error) {
+            console.log(error);
+            return internalServerError(res);
+        }
+    }
+    async deleteMessageForUser(req, res) {
+        const { userId, messageId } = req.params;
+
+        try {
+            const result = await messageServices.deleteMessageForUser(
+                userId,
+                messageId
+            );
+            res.status(200).json({
+                err: 0,
+                mes: result.message,
+            });
         } catch (error) {
             console.log(error);
             return internalServerError(res);

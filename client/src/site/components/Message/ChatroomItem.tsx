@@ -96,11 +96,11 @@ const ChatroomItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
         ))}
       </div>
       <div className="pl-3 w-full">
-        <p className="text-[16px] font-semibold text-ellipsis overflow-hidden line-clamp-1">
+        <p className="text-[16px] font-semibold text-ellipsis overflow-hidden max-w-[200px] line-clamp-1">
           {chatroomName}
         </p>
         <p className="flex flex-nowrap justify-between w-full">
-          <span className="text-ellipsis text-[14px] text-[#161823bf] max-h-[21px] line-clamp-1">
+          <span className="text-ellipsis text-[14px] max-w-[150px] text-[#161823bf] max-h-[21px] line-clamp-1">
             {(JSON.parse(chatroom.lastMessage) as MessageModel).content}
           </span>
           <span className="text-[14px] font-thin whitespace-nowrap">
