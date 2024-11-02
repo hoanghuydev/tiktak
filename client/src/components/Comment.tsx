@@ -164,6 +164,7 @@ const Comment = ({
                 placeholder="Add comment..."
                 handleSubmit={handleSubmitComment}
                 maxCharacters={150}
+                maxCharToShowCountText={24}
               />
               <IoClose
                 size={20}

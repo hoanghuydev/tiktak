@@ -1,4 +1,4 @@
-import { Op, where } from 'sequelize';
+import { literal, Op, where } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
@@ -22,6 +22,7 @@ export const findById = async (id) =>
     });
 export const getListMessageOfChatroom = async (
     chatroomId,
+    userId,
     { page, pageSize, orderBy, orderDirection, content }
 ) =>
     new Promise(async (resolve, reject) => {
@@ -36,7 +37,15 @@ export const getListMessageOfChatroom = async (
             if (content) query.content = { [Op.substring]: content };
             if (chatroomId) query.chatroomId = chatroomId;
             const { count, rows } = await db.Message.findAndCountAll({
-                where: query,
+                where: {
+                    ...query,
+                    id: {
+                        [Op.notIn]: literal(`
+                            (SELECT message_id FROM user_message_status
+                             WHERE user_id = ${userId} AND is_deleted = true)
+                        `),
+                    },
+                },
                 include: [
                     {
                         model: db.User,
@@ -101,6 +110,54 @@ export const findOne = (messageModel) =>
             if (resp) resolve(resp);
             else resolve(null);
         } catch (error) {
+            reject(error);
+        }
+    });
+export const deleteMessageForUser = (userId, messageId) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            await db.UserMessageStatus.upsert(
+                {
+                    user_id: userId,
+                    message_id: messageId,
+                    is_deleted: true,
+                },
+                {
+                    conflictFields: ['user_id', 'message_id'],
+                }
+            );
+
+            resolve({
+                message: `Message ${messageId} marked as deleted for user ${userId}.`,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+export const deleteAllMessagesUpToNowForUser = (userId, chatrommId) =>
+    new Promise(async (resolve, reject) => {
+        const transaction = await sequelize.transaction();
+        try {
+            await sequelize.query(
+                `
+                    INSERT INTO user_message_status (user_id, message_id, is_deleted)
+                    SELECT :userId, m.id, true
+                    FROM messages m
+                    WHERE m.chatroomId = :chatrommId
+                      AND m.createdAt <= NOW()
+                    ON DUPLICATE KEY UPDATE is_deleted = true;
+                    `,
+                {
+                    replacements: { userId, chatrommId },
+                    transaction,
+                }
+            );
+            await transaction.commit();
+            resolve({
+                message: 'All current messages marked as deleted for user.',
+            });
+        } catch (error) {
+            await transaction.rollback();
             reject(error);
         }
     });

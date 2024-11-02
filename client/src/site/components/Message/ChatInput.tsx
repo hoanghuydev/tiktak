@@ -16,6 +16,8 @@ const ChatInput = ({ chatroomId }: { chatroomId: number }) => {
   return (
     <div className=" border-t-[0.5px] border-[#1618231f]">
       <InputFormEditable
+        hasImage={true}
+        maxCharToShowCountText={24}
         placeholder="Send a message..."
         handleSubmit={handleSendMessage}
         maxCharacters={3000}

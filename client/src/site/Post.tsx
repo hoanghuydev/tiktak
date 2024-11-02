@@ -14,8 +14,10 @@ import { setPost } from '@/features/post/postSlice';
 import PostComment from './components/Post/PostComment';
 import CommentForm from './components/Post/CommentForm';
 import clsx from 'clsx';
-import { setComments } from '@/features/comment/commentSlice';
+import { commentPost, setComments } from '@/features/comment/commentSlice';
 import VideoLarge from '@/components/VideoLarge';
+import InputFormEditable from '@/components/InputFormEditable';
+import { message } from 'antd';
 
 const Post = () => {
   let { postId } = useParams();
@@ -55,6 +57,14 @@ const Post = () => {
       }
     };
   }, []);
+  const handleSubmitComment = async (commentText: string) => {
+    if (!commentText.trim()) return;
+    try {
+      await dispatch(commentPost({ postId: post.id, content: commentText }));
+    } catch (error) {
+      message.error('Failed to post comment');
+    }
+  };
 
   return (
     <div className="h-full">
@@ -74,8 +84,11 @@ const Post = () => {
               <PostInfo />
               <PostComment />
             </div>
-            <CommentForm
-              ref={commentFormRef}
+            <InputFormEditable
+              maxCharToShowCountText={24}
+              maxCharacters={150}
+              handleSubmit={handleSubmitComment}
+              placeholder="Add comment..."
               className="min-h-[85px] max-h-[166px] shadow-sm absolute left-0 right-0 bottom-0 border-t-[2px] border-[#e9e9ea]"
             />
           </div>

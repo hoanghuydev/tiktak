@@ -7,12 +7,14 @@ interface EmojiPickerProps {
   inputRef: React.RefObject<HTMLParagraphElement>;
   maxCharacters: number;
   setText: (text: string) => void;
+  text: string;
   isOpen?: boolean;
 }
 
 const EmojiPicker: React.FC<EmojiPickerProps> = ({
   inputRef,
   setText,
+  text,
   maxCharacters,
   isOpen = false,
 }) => {
@@ -42,7 +44,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
     event.preventDefault();
     setIsPickerOpen((prev) => {
       const selection = window.getSelection();
-      if (selection && inputRef.current) {
+      if (selection && inputRef.current && inputRef.current.childNodes[0]) {
         const range = document.createRange();
         range.setStart(
           inputRef.current.childNodes[0],
@@ -73,9 +75,8 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
   const handlePickEmoji = (emoji: any) => {
     if (!inputRef.current || !savedOffsets.current) return;
     const { start, end } = savedOffsets.current;
-    const currentTextLength = inputRef.current?.innerText.length || 0;
-    const textBeforeSelection = inputRef.current.innerText.slice(0, start);
-    const textAfterSelection = inputRef.current.innerText.slice(end);
+    const textBeforeSelection = text.slice(0, start);
+    const textAfterSelection = text.slice(end);
 
     if (
       textBeforeSelection.length +
@@ -85,7 +86,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
     ) {
       const newText = textBeforeSelection + emoji.native + textAfterSelection;
       inputRef.current.innerText = newText;
-
+      setText(newText);
       // Set focus and update the cursor position right after the inserted emoji
       inputRef.current.focus();
       const selection = window.getSelection();
@@ -103,10 +104,6 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
         start: start + emoji.native.length,
         end: start + emoji.native.length,
       };
-    } else {
-      console.log(
-        'Adding this emoji would exceed the maximum characters allowed.'
-      );
     }
   };
 
@@ -131,14 +128,15 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
         onMouseDown={togglePicker}
         className="flex justify-center items-center w-11 h-11 rounded-full hover:bg-primary hover:text-white"
       >
-        <BsEmojiSmile size={20} />
+        <BsEmojiSmile size={16} />
       </button>
       {isPickerOpen && (
-        <div className="absolute bottom-[100%] right-[-20%]">
+        <div className="absolute bottom-[100%] right-[0]">
           <Picker
             data={data}
             previewPosition="none"
             onEmojiSelect={handlePickEmoji}
+            sty
           />
         </div>
       )}

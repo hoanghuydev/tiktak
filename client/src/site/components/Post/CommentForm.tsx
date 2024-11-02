@@ -116,13 +116,13 @@ const CommentForm = forwardRef<HTMLDivElement, CommentFormProps>(
                       ? commentTextRef.current
                       : 'Add comment...'}
                   </p>
-                  <EmojiPicker
+                  {/* <EmojiPicker
                     inputRef={commentInputRef}
                     setText={(text: string) => {
                       commentTextRef.current = text;
                     }}
                     maxCharacters={maxCharacters}
-                  />
+                  /> */}
                 </div>
                 {commentTextRef.current.length > 24 && (
                   <div
