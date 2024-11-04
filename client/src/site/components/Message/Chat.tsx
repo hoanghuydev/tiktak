@@ -11,12 +11,15 @@ const Chat = () => {
   const chatroom = useSelector(getChatroomSelector());
   const currentUser = useSelector(currentUserSelector);
   const dispatch = useDispatch<AppDispatch>();
+  const [messagesFetched, setMessagesFetched] = useState(false);
   const [chatroomHeaderInfo, setChatroomHeaderInfo] =
     useState<ChatroomHeaderInfo>({ name: '', subName: '', avatarUrls: [''] });
   useEffect(() => {
     if (chatroom && chatroom.id) {
-      if (!chatroom.messages || chatroom.messages.length === 0) {
-        dispatch(fetchMessagesByChatroomId(chatroom.id));
+      if (!messagesFetched) {
+        dispatch(fetchMessagesByChatroomId(chatroom.id)).then(() => {
+          setMessagesFetched(true);
+        });
       }
       const otherMembers = chatroom.members.filter(
         (member) => member.memberData.id !== currentUser?.id

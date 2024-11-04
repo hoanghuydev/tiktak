@@ -30,6 +30,45 @@ export const fetchMessagesByChatroomId = createAsyncThunk(
     }
   }
 );
+
+export const deleteAllMessage = createAsyncThunk(
+  'socket/deleteAllMessage',
+  async (chatroomId: number, { rejectWithValue, dispatch }) => {
+    try {
+      await MessageService.deleteAllMessageUpToNow(chatroomId);
+      return { chatroomId };
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+export const deleteMessageById = createAsyncThunk(
+  'socket/deleteMessageById',
+  async (
+    data: { chatroomId: number; messageId: number },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      await MessageService.deleteMessageById(data.messageId);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+// Helper func
+const updateLastMessage = (chatroom: ChatroomModel) => {
+  const lastIndex = chatroom.messages.length - 1;
+  const lastMessage =
+    lastIndex >= 0
+      ? {
+          content: chatroom.messages[lastIndex].content,
+          createdAt: chatroom.messages[lastIndex].createdAt,
+        }
+      : { content: '', createdAt: '' };
+  chatroom.lastMessage = JSON.stringify(lastMessage);
+};
+
 const socketSlice = createSlice({
   name: 'socket',
   initialState,
@@ -51,14 +90,8 @@ const socketSlice = createSlice({
       const { chatroomId, message } = action.payload;
       const chatroom = state.chatrooms.find((room) => room.id == chatroomId);
       if (chatroom) {
-        chatroom.lastMessage = JSON.stringify({
-          content: message.content,
-          createdAt: message.createdAt,
-        });
-        if (!chatroom.messages) {
-          chatroom.messages = [];
-        }
-        chatroom.messages.unshift(message);
+        chatroom.messages = [message, ...(chatroom.messages || [])];
+        updateLastMessage(chatroom);
       }
     },
     recallMessage: (
@@ -70,17 +103,20 @@ const socketSlice = createSlice({
       );
       if (chatroom) {
         chatroom.messages = chatroom.messages.filter(
-          (msg: MessageModel) => msg.id !== action.payload.message.id
+          (msg) => msg.id !== action.payload.message.id
         );
-        const lastIndex = chatroom.messages.length - 1;
-        const lastMessage =
-          lastIndex >= 0
-            ? {
-                content: chatroom.messages[lastIndex].content || '',
-                createdAt: chatroom.messages[lastIndex].createdAt || '',
-              }
-            : { content: '', createdAt: '' };
-        chatroom.lastMessage = JSON.stringify(lastMessage);
+        updateLastMessage(chatroom);
+      }
+    },
+    setMessagesByChatroomId: (
+      state,
+      action: PayloadAction<{ chatroomId: number; messages: MessageModel[] }>
+    ) => {
+      const { chatroomId, messages } = action.payload;
+      const chatroom = state.chatrooms.find((room) => room.id === chatroomId);
+      if (chatroom) {
+        chatroom.messages = messages;
+        updateLastMessage(chatroom);
       }
     },
 
@@ -123,15 +159,54 @@ const socketSlice = createSlice({
             (room) => room.id === chatroomId
           );
           if (chatroom) {
-            if (!chatroom.messages) {
-              chatroom.messages = [];
-            }
-            chatroom.messages.unshift(...messages);
+            chatroom.messages = [
+              ...(messages || []),
+              ...(chatroom.messages || []),
+            ];
           }
         }
       )
       .addCase(fetchMessagesByChatroomId.rejected, (state, action: any) => {
         const errorMessage = action.payload.mes || 'Failed to fetch messages';
+        message.error(errorMessage);
+      })
+      .addCase(
+        deleteAllMessage.fulfilled,
+        (state, action: PayloadAction<{ chatroomId: number }>) => {
+          const { chatroomId } = action.payload;
+          const chatroom = state.chatrooms.find(
+            (room) => room.id === chatroomId
+          );
+          if (chatroom) {
+            chatroom.messages = [];
+            updateLastMessage(chatroom);
+          }
+        }
+      )
+      .addCase(deleteAllMessage.rejected, (state, action: any) => {
+        const errorMessage = action.payload.mes || 'Failed to delete messages';
+        message.error(errorMessage);
+      })
+      .addCase(
+        deleteMessageById.fulfilled,
+        (
+          state,
+          action: PayloadAction<{ chatroomId: number; messageId: number }>
+        ) => {
+          const { chatroomId, messageId } = action.payload;
+          const chatroom = state.chatrooms.find(
+            (room) => room.id === chatroomId
+          );
+          if (chatroom) {
+            chatroom.messages = chatroom.messages.filter(
+              (msg) => msg.id !== messageId
+            );
+            updateLastMessage(chatroom);
+          }
+        }
+      )
+      .addCase(deleteMessageById.rejected, (state, action: any) => {
+        const errorMessage = action.payload.mes || 'Failed to delete message';
         message.error(errorMessage);
       });
   },
@@ -144,6 +219,7 @@ export const {
   submitMessage,
   receiveMessage,
   // joinChatroom,
+  setMessagesByChatroomId,
   // leaveChatroom,
   setChatrooms,
 } = socketSlice.actions;

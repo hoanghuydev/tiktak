@@ -1,5 +1,5 @@
 import { literal, Op, where } from 'sequelize';
-import db from '../models';
+import db, { sequelize } from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 export const findById = async (id) =>

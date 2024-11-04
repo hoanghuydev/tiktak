@@ -38,5 +38,41 @@ const MessageService = {
       }
     });
   },
+  deleteMessageById(messageId: number) {
+    return new Promise<AbstractPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.delete(
+          routePath + `/${messageId}/delete`
+        );
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  recallMessage(messageId: number) {
+    return new Promise<AbstractPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.delete(
+          routePath + `/${messageId}/recall`
+        );
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  deleteAllMessageUpToNow(chatroomId: number) {
+    return new Promise<AbstractPayload>(async (resolve, reject) => {
+      try {
+        const resp = await axiosToken.delete(
+          routePath + `/chatroom/${chatroomId}`
+        );
+        resolve(resp.data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
 };
 export default MessageService;

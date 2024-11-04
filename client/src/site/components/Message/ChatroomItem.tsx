@@ -121,7 +121,7 @@ const ChatroomItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
           />
         )}
         <div className="relative">
-          {isShowOptionsMenu && <ModalOptionMessage />}
+          {isShowOptionsMenu && <ModalOptionMessage chatroomId={chatroom.id} />}
         </div>
       </div>
     </div>

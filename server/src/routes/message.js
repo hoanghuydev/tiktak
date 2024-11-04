@@ -21,13 +21,17 @@ router.post(
     MessageController.sendMessage
 );
 router.delete(
-    '/:messageId/user/:userId',
+    '/:messageId/delete',
     Auth.origin,
     MessageController.deleteMessageForUser
 );
-router.delete('/:messageId', Auth.origin, MessageController.recallMessage);
 router.delete(
-    '/up-to-now',
+    '/:messageId/recall',
+    Auth.origin,
+    MessageController.recallMessage
+);
+router.delete(
+    '/chatroom/:chatroomId',
     Auth.origin,
     MessageController.deleteAllMessagesUpToNowForUser
 );

@@ -118,11 +118,17 @@ class MessageController {
             const { messageId } = req.params;
             const message = await messageServices.findOne({ id: messageId });
             if (!message) return badRequest('Not found message', res);
-            if (message.sender != req.user.id)
+            const now = new Date();
+            const fiveMinutesLater = new Date(now.getTime() + 5 * 60 * 1000);
+            if (
+                message.sender != req.user.id ||
+                new Date(message.createdAt) > fiveMinutesLater
+            )
                 return forBidden(
                     'You are not allowed to recall this message',
                     res
                 );
+
             const getUsers = await chatroomServices.getUsersInChatroom(
                 message.chatroomId,
                 req.query
@@ -164,7 +170,8 @@ class MessageController {
         }
     }
     async deleteAllMessagesUpToNowForUser(req, res) {
-        const { userId, chatroomId } = req.body;
+        const { chatroomId } = req.params;
+        const userId = req.user.id;
         try {
             const result =
                 await messageServices.deleteAllMessagesUpToNowForUser(
@@ -181,8 +188,8 @@ class MessageController {
         }
     }
     async deleteMessageForUser(req, res) {
-        const { userId, messageId } = req.params;
-
+        const { messageId } = req.params;
+        const userId = req.user.id;
         try {
             const result = await messageServices.deleteMessageForUser(
                 userId,
