@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             UserInChatroom.belongsTo(models.Chatroom, {
                 foreignKey: 'chatroomId',
                 targetKey: 'id',
+                as: 'members',
             });
         }
     }

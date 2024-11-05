@@ -101,14 +101,12 @@ const ChatroomItem = ({ chatroom }: { chatroom: ChatroomModel }) => {
         </p>
         <p className="flex flex-nowrap justify-between w-full">
           <span className="text-ellipsis text-[14px] max-w-[150px] text-[#161823bf] max-h-[21px] line-clamp-1">
-            {(JSON.parse(chatroom.lastMessage) as MessageModel).content}
+            {chatroom.lastMessage?.content ?? 'Trò chuyện ngay'}
           </span>
           <span className="text-[14px] font-thin whitespace-nowrap">
-            <ReactTimeago
-              date={
-                (JSON.parse(chatroom.lastMessage) as MessageModel).createdAt
-              }
-            />
+            {chatroom.lastMessage?.createdAt && (
+              <ReactTimeago date={chatroom.lastMessage.createdAt} />
+            )}
           </span>
         </p>
       </div>

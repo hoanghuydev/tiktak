@@ -59,14 +59,7 @@ export const deleteMessageById = createAsyncThunk(
 // Helper func
 const updateLastMessage = (chatroom: ChatroomModel) => {
   const lastIndex = chatroom.messages.length - 1;
-  const lastMessage =
-    lastIndex >= 0
-      ? {
-          content: chatroom.messages[lastIndex].content,
-          createdAt: chatroom.messages[lastIndex].createdAt,
-        }
-      : { content: '', createdAt: '' };
-  chatroom.lastMessage = JSON.stringify(lastMessage);
+  chatroom.lastMessage = chatroom.messages[lastIndex];
 };
 
 const socketSlice = createSlice({

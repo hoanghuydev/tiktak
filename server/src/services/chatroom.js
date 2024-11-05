@@ -1,4 +1,4 @@
-import { literal, Op } from 'sequelize';
+import { literal, Op, where } from 'sequelize';
 import db from '../models';
 import { pagingConfig } from '../utils/pagination';
 import { query } from 'express';
@@ -80,28 +80,13 @@ export const getChatroomsOfUser = (
             const query = {};
             if (name) query.name = { [Op.substring]: name };
             const { count, rows } = await db.Chatroom.findAndCountAll({
-                attributes: [
-                    'createdAt',
-                    'id',
-                    'name',
-                    [
-                        db.sequelize.literal(`(
-                        SELECT JSON_OBJECT(
-                            'content', content, 
-                            'createdAt', createdAt
-                        ) FROM Messages
-                        WHERE Messages.chatroomId = Chatroom.id
-                        ORDER BY createdAt DESC
-                        LIMIT 1
-                    )`),
-                        'lastMessage',
-                    ],
-                ],
+                attributes: ['createdAt', 'id', 'name'],
                 include: [
                     {
                         model: db.UserInChatroom,
                         as: 'members',
                         attributes: ['member'],
+
                         include: [
                             {
                                 model: db.User,
@@ -111,10 +96,36 @@ export const getChatroomsOfUser = (
                             },
                         ],
                     },
+                    {
+                        model: db.Message,
+                        as: 'lastMessage',
+                        attributes: ['id', 'content', 'sender', 'createdAt'],
+                        where: {
+                            id: {
+                                [Op.notIn]: literal(`
+                                    (SELECT message_id FROM user_message_status
+                                     WHERE user_id = ${member} AND is_deleted = true)
+                                `),
+                            },
+                        },
+                        required: false,
+                        separate: false,
+                        limit: 1,
+                        order: [['createdAt', 'DESC']],
+                    },
                 ],
+                where: {
+                    ...query,
+                    id: {
+                        [Op.in]: db.Sequelize.literal(`
+                            (SELECT chatroomId FROM usersinchatroom WHERE member = ${member})
+                        `),
+                    },
+                },
                 // order: [[orderBy, orderDirection]],
                 // limit: pageSize,
                 // offset: (page - 1) * pageSize,
+                distinct: true,
             });
             const chatrooms = rows;
             const totalItems = count;

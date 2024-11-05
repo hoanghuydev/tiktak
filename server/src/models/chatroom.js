@@ -17,6 +17,12 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'chatroomId',
                 as: 'messages',
             });
+            Chatroom.hasOne(models.Message, {
+                foreignKey: 'chatroomId',
+                as: 'lastMessage',
+                scope: {},
+                constraints: false,
+            });
         }
     }
     Chatroom.init(
