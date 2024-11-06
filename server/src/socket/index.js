@@ -41,26 +41,25 @@ function handleSocket(io) {
             io.sockets.sockets[loginUserSession.socketId].disconnect();
         }
         addUser(socket.userId, socket.id);
+        // join user with id for easy send message
         socket.join(`user_${socket.userId}`);
+        // Emit return online user
         io.emit(process.env.GET_USER_ONLINE_ACTION_SOCKET, onlineUsers);
-        // socket.on(process.env.JOIN_CHATROOM_ACTION_SOCKET, (chatroomId) => {
-        //     socket.join(chatroomId);
-        //     console.log('A user joined chat room: ' + chatroomId);
-        // });
-        // socket.on(process.env.LEAVE_CHATROOM_ACTION_SOCKET, (chatroomId) => {
-        //     socket.leave(chatroomId);
-        //     console.log('A user left chat room: ' + chatroomId);
-        // });
-        // socket.on('sendMessage', async ({ sender, chatroomId, text }) => {
-        //     if (text.trim().length > 0) {
-        //         io.to(chatroomId).emit('newMessage', {
-        //             chatroomId,
-        //             text,
-        //             sender,
-        //             createdAt: Date.now(),
-        //         });
-        //     }
-        // });
+
+        // update peerId of user
+        socket.on(process.env.UPDATE_PEER_ID, async (peerId) => {
+            await userService.updateUser({ peerId }, socket.userId);
+        });
+
+        socket.on(process.env.JOIN_CHATROOM_ACTION_SOCKET, (chatroomId) => {
+            socket.join(chatroomId);
+            console.log('A user joined chat room: ' + chatroomId);
+        });
+        socket.on(process.env.LEAVE_CHATROOM_ACTION_SOCKET, (chatroomId) => {
+            socket.leave(chatroomId);
+            console.log('A user left chat room: ' + chatroomId);
+        });
+
         socket.on('disconnect', () => {
             console.log(`User ${socket.userId} disconnected`);
             removeUser(socket.id);

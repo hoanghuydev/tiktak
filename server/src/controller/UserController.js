@@ -87,7 +87,7 @@ class UserController {
                 userServices.findOne({ id: userId }).then((userData) => {
                     return res.status(200).json({
                         err: 0,
-                        mes: 'Uploaded avatar of user ' + userId,
+                        mes: 'Updated peer id ' + userId,
                         user: userData,
                     });
                 });
