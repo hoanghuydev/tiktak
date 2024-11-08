@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { UserModel } from '@/models/user';
 import { MessageModel } from '@/models/message';
@@ -12,23 +12,69 @@ import { getChatroomSelector } from '@/redux/selector';
 interface MessageListProps {
   messages: MessageModel[];
   currentUser: UserModel;
+  handleFetchMoreMessages: () => void;
 }
 
-const MessageList = ({ messages, currentUser }: MessageListProps) => {
+const MessageList = ({
+  messages,
+  currentUser,
+  handleFetchMoreMessages,
+}: MessageListProps) => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
+  const firstMessageRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const chatroom = useSelector(getChatroomSelector());
 
+  // To control whether new messages are being loaded
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    if (lastMessageRef.current && containerRef.current) {
-      const lastMessageOffset = lastMessageRef.current.offsetTop;
-      containerRef.current.scrollTo({
-        top: lastMessageOffset + 5,
-        behavior: 'smooth',
-      });
+    // Ensure the container scrolls to the bottom when the component mounts
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const container = containerRef.current;
+        const firstMessageOffset = firstMessageRef.current?.offsetTop || 0;
+        const containerTop = container.scrollTop;
+        console.log('First element :' + firstMessageOffset);
+        console.log('Current :' + containerTop);
+
+        // Check if the user has scrolled near the top of the chat (to fetch more messages)
+        if (containerTop == 0 && !isLoading) {
+          // setIsLoading(true);
+          // handleFetchMoreMessages();
+        }
+      }
+    };
+
+    const container = containerRef.current;
+
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [isLoading, handleFetchMoreMessages]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      return;
+    }
+
+    // Reset loading state after messages are fetched
+    setIsLoading(false);
+  }, [messages]);
+
   const handleDeleteMessageById = (messageId: number) => {
     if (chatroom?.id)
       dispatch(deleteMessageById({ chatroomId: chatroom.id, messageId })) // Assuming chatroomId is part of the message object
@@ -51,13 +97,20 @@ const MessageList = ({ messages, currentUser }: MessageListProps) => {
       </p>
     </div>
   );
+
   return (
     <div ref={containerRef} className="flex-1 overflow-auto">
       <div className="flex flex-col-reverse">
         {messages.map((message, index) => (
           <div
-            key={message.id}
-            ref={index === 0 ? lastMessageRef : null} // Attach ref only to the last message
+            key={index}
+            ref={
+              index === 0
+                ? lastMessageRef
+                : index === messages.length - 1
+                ? firstMessageRef
+                : null
+            } // Attach ref only to the last message
             className="my-2 group"
           >
             <div
@@ -84,7 +137,7 @@ const MessageList = ({ messages, currentUser }: MessageListProps) => {
                 <p>{message.content}</p>
               </div>
               <Tooltip title={tooltipContent(message.id)} trigger="click">
-                <div className="opacity-0 group-hover:opacity-100  transition-opacity duration-150 hover:cursor-pointer">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:cursor-pointer">
                   <IoIosMore size={16} />
                 </div>
               </Tooltip>

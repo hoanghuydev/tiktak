@@ -21,9 +21,24 @@ const initialState: SocketState = {
 
 export const fetchMessagesByChatroomId = createAsyncThunk(
   'socket/fetchMessagesByChatroomId',
-  async (chatroomId: number, { rejectWithValue, dispatch }) => {
+  async (
+    data: {
+      chatroomId: number;
+      options: {
+        page?: number;
+        pageSize?: number;
+        orderBy?: string;
+        orderDirection?: string;
+      };
+    },
+    { rejectWithValue, dispatch }
+  ) => {
     try {
-      const response = await MessageService.getMessagesByChatroomId(chatroomId);
+      const { chatroomId, options } = data;
+      const response = await MessageService.getMessagesByChatroomId(
+        chatroomId,
+        options
+      );
       return { chatroomId, messages: response.messages };
     } catch (error) {
       return rejectWithValue(error);
@@ -58,8 +73,7 @@ export const deleteMessageById = createAsyncThunk(
 );
 // Helper func
 const updateLastMessage = (chatroom: ChatroomModel) => {
-  const lastIndex = chatroom.messages.length - 1;
-  chatroom.lastMessage = chatroom.messages[lastIndex];
+  chatroom.lastMessage = chatroom.messages[0];
 };
 
 const socketSlice = createSlice({
@@ -151,10 +165,10 @@ const socketSlice = createSlice({
           const chatroom = state.chatrooms.find(
             (room) => room.id === chatroomId
           );
-          if (chatroom) {
+          if (chatroom && messages.length > 0) {
             chatroom.messages = [
-              ...(messages || []),
               ...(chatroom.messages || []),
+              ...(messages || []),
             ];
           }
         }

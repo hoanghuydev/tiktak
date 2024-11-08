@@ -14,12 +14,30 @@ const Chat = () => {
   const [messagesFetched, setMessagesFetched] = useState(false);
   const [chatroomHeaderInfo, setChatroomHeaderInfo] =
     useState<ChatroomHeaderInfo>({ name: '', subName: '', avatarUrls: [''] });
+  const [page, setPage] = useState(1);
+  const fetchMessage = (
+    chatroomId: number,
+    options: {
+      page?: number;
+      pageSize?: number;
+      orderBy?: string;
+      orderDirection?: string;
+    }
+  ) => {
+    dispatch(fetchMessagesByChatroomId({ chatroomId, options }))
+      .unwrap()
+      .then((data) => {
+        if (data.messages.length > 0) setPage((prev) => prev + 1);
+        setMessagesFetched(true);
+      })
+      .catch(() => {
+        setMessagesFetched(false);
+      });
+  };
   useEffect(() => {
     if (chatroom && chatroom.id) {
       if (!messagesFetched) {
-        dispatch(fetchMessagesByChatroomId(chatroom.id)).then(() => {
-          setMessagesFetched(true);
-        });
+        fetchMessage(chatroom.id, { page, pageSize: 15 });
       }
       const otherMembers = chatroom.members.filter(
         (member) => member.memberData.id !== currentUser?.id
@@ -37,8 +55,12 @@ const Chat = () => {
       );
       setChatroomHeaderInfo({ name, subName, avatarUrls });
     }
-  }, [chatroom, currentUser, dispatch]);
-
+  }, [chatroom?.id]);
+  const handleFetchMoreMessages = () => {
+    if (chatroom?.id) {
+      fetchMessage(chatroom.id, { page, pageSize: 15 });
+    }
+  };
   return (
     <div className="h-full overflow-hidden">
       {chatroom && (
@@ -47,6 +69,7 @@ const Chat = () => {
           <MessageList
             messages={chatroom.messages || []}
             currentUser={currentUser!}
+            handleFetchMoreMessages={handleFetchMoreMessages}
           />
           <ChatInput chatroomId={chatroom.id} />
         </div>

@@ -12,11 +12,32 @@ export interface MessagePayload extends AbstractPayload {
   message: MessageModel;
 }
 const MessageService = {
-  async getMessagesByChatroomId(chatroomId: number) {
+  async getMessagesByChatroomId(
+    chatroomId: number,
+    {
+      page = 1,
+      pageSize = 30,
+      orderBy,
+      orderDirection,
+    }: {
+      page?: number;
+      pageSize?: number;
+      orderBy?: string;
+      orderDirection?: string;
+    }
+  ) {
     return new Promise<MessagesPayload>(async (resolve, reject) => {
       try {
         const resp = await axiosToken.get(
-          routePath + `/chatroom/${chatroomId}`
+          routePath + `/chatroom/${chatroomId}`,
+          {
+            params: {
+              page,
+              pageSize,
+              orderBy,
+              orderDirection,
+            },
+          }
         );
         resolve(resp.data);
       } catch (error) {

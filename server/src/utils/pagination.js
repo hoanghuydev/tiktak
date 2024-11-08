@@ -1,11 +1,22 @@
-export const pagingConfig = (page, pageSize, orderBy, orderDirection) => {
-    const queries = { raw: true, nest: true };
-    const offset = !page || +page <= 1 ? 0 : +page - 1;
-    const limit = +pageSize || +process.env.LIMIT_ITEM;
-    queries.orderBy = orderBy ? orderBy : 'createdAt';
-    queries.orderDirection = orderDirection ? orderDirection : 'DESC';
-    queries.page = queries.offset = offset;
-    queries.limit = limit;
-    queries.order = [[queries.orderBy, queries.orderDirection]];
+export const pagingConfig = (
+    page = 1,
+    pageSize = process.env.LIMIT_ITEM,
+    orderBy = 'createdAt',
+    orderDirection = 'DESC'
+) => {
+    const pageNumber = Math.max(1, +page);
+    const limit = Math.max(1, +pageSize) || 10;
+    const offset = (pageNumber - 1) * limit;
+    const queries = {
+        raw: true,
+        nest: true,
+        orderBy,
+        orderDirection,
+        page: pageNumber,
+        offset,
+        limit,
+        order: [[orderBy, orderDirection]],
+    };
+
     return queries;
 };

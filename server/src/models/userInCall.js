@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             // Định nghĩa mối quan hệ với các model khác
             UserInCall.belongsTo(models.VideoCall, {
                 foreignKey: 'callId',
-                targetKey: 'call_id',
+                targetKey: 'id',
                 as: 'callData',
             });
             UserInCall.belongsTo(models.User, {
