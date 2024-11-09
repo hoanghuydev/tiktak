@@ -1,6 +1,6 @@
 import { literal, Op, where } from 'sequelize';
 import db, { sequelize } from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 export const findById = async (id) =>
     new Promise(async (resolve, reject) => {
@@ -56,21 +56,10 @@ export const getListMessageOfChatroom = async (
                 ],
                 ...queries,
             });
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
+
             resolve({
                 messages: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

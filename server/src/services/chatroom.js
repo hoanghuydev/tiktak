@@ -1,6 +1,6 @@
 import { literal, Op, where } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { query } from 'express';
 import { formatQueryUser } from './user';
 export const getUsersInChatroom = (
@@ -44,22 +44,9 @@ export const getUsersInChatroom = (
             const users = rows.map(
                 (userInChatroom) => userInChatroom['memberData']
             );
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
-
             resolve({
                 users,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);
@@ -127,23 +114,9 @@ export const getChatroomsOfUser = (
                 // offset: (page - 1) * pageSize,
                 distinct: true,
             });
-            const chatrooms = rows;
-            const totalItems = count;
-
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
             resolve({
-                chatrooms,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                chatrooms: rows,
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

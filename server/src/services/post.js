@@ -1,6 +1,6 @@
 import { Op, col, fn, literal, where } from 'sequelize';
 import db, { Sequelize } from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 import post from '../models/post';
 import {
@@ -227,21 +227,10 @@ export const getPosts = (
             const { count, rows } = await db.Post.findAndCountAll(
                 getPostsQuery
             );
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
+
             resolve({
                 posts: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

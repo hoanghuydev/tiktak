@@ -1,6 +1,6 @@
 import { Op, where } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 export const getLivestreams = (
     livestreamId,
     { page, pageSize, orderBy, orderDirection, userId, title }
@@ -40,21 +40,10 @@ export const getLivestreams = (
             const { count, rows } = await db.Livestream.findAndCountAll(
                 getLivestreamQuery
             );
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
+
             resolve({
                 livestreams: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

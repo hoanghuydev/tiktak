@@ -1,6 +1,6 @@
 import { Op, literal, where } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 export const formatQueryUserWithAtrr = {
     attributes: {
         exclude: ['roleCode', 'avatarPublicId'],
@@ -98,21 +98,10 @@ export const findUsers = (
                 ...formatQueryUser,
                 ...queries,
             });
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
+
             resolve({
                 users: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

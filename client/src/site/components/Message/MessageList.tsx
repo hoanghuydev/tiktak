@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import clsx from 'clsx';
 import { UserModel } from '@/models/user';
 import { MessageModel } from '@/models/message';
@@ -10,13 +11,11 @@ import { deleteMessageById } from '@/features/socket/socketSlice';
 import { getChatroomSelector } from '@/redux/selector';
 
 interface MessageListProps {
-  messages: MessageModel[];
   currentUser: UserModel;
   handleFetchMoreMessages: () => void;
 }
 
 const MessageList = ({
-  messages,
   currentUser,
   handleFetchMoreMessages,
 }: MessageListProps) => {
@@ -25,54 +24,12 @@ const MessageList = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const chatroom = useSelector(getChatroomSelector());
-
-  // To control whether new messages are being loaded
-  const [isLoading, setIsLoading] = useState(false);
+  const messages = chatroom?.messages ?? [];
 
   useEffect(() => {
-    // Ensure the container scrolls to the bottom when the component mounts
-    if (containerRef.current) {
+    if (containerRef.current && chatroom?.messagePagintation?.page == 1) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [messages]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const container = containerRef.current;
-        const firstMessageOffset = firstMessageRef.current?.offsetTop || 0;
-        const containerTop = container.scrollTop;
-        console.log('First element :' + firstMessageOffset);
-        console.log('Current :' + containerTop);
-
-        // Check if the user has scrolled near the top of the chat (to fetch more messages)
-        if (containerTop == 0 && !isLoading) {
-          // setIsLoading(true);
-          // handleFetchMoreMessages();
-        }
-      }
-    };
-
-    const container = containerRef.current;
-
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [isLoading, handleFetchMoreMessages]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      return;
-    }
-
-    // Reset loading state after messages are fetched
-    setIsLoading(false);
   }, [messages]);
 
   const handleDeleteMessageById = (messageId: number) => {
@@ -99,8 +56,20 @@ const MessageList = ({
   );
 
   return (
-    <div ref={containerRef} className="flex-1 overflow-auto">
-      <div className="flex flex-col-reverse">
+    <div
+      ref={containerRef}
+      className="flex-1 overflow-auto flex flex-col-reverse "
+      id="scrollableDiv"
+    >
+      <InfiniteScroll
+        dataLength={messages.length}
+        next={handleFetchMoreMessages}
+        style={{ display: 'flex', flexDirection: 'column-reverse' }}
+        inverse={true} //
+        hasMore={chatroom?.messagePagintation?.hasNextPage ?? false}
+        loader={<h4>Loading...</h4>}
+        scrollableTarget="scrollableDiv"
+      >
         {messages.map((message, index) => (
           <div
             key={index}
@@ -144,7 +113,7 @@ const MessageList = ({
             </div>
           </div>
         ))}
-      </div>
+      </InfiniteScroll>
     </div>
   );
 };

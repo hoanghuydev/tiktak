@@ -27,7 +27,8 @@ const Chat = () => {
     dispatch(fetchMessagesByChatroomId({ chatroomId, options }))
       .unwrap()
       .then((data) => {
-        if (data.messages.length > 0) setPage((prev) => prev + 1);
+        if (data.data.messages.length > 0)
+          setPage(data.data.pagination.page + 1);
         setMessagesFetched(true);
       })
       .catch(() => {
@@ -67,7 +68,6 @@ const Chat = () => {
         <div className="flex flex-col h-full">
           <ChatHeader chatroomHeaderInfo={chatroomHeaderInfo!} />
           <MessageList
-            messages={chatroom.messages || []}
             currentUser={currentUser!}
             handleFetchMoreMessages={handleFetchMoreMessages}
           />

@@ -3,9 +3,13 @@ import { ChatroomModel } from '@/models/chatroom';
 import { MessageModel } from '@/models/message';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { io, Socket } from 'socket.io-client';
-import MessageService from '../message/messageService';
+import MessageService, {
+  MessagePayload,
+  MessagesPayload,
+} from '../message/messageService';
 import { message } from 'antd';
 import AbstractPayload from '@/utils/abtractPayloadType';
+import { date } from 'yup';
 
 interface SocketState {
   chatrooms: ChatroomModel[];
@@ -39,7 +43,7 @@ export const fetchMessagesByChatroomId = createAsyncThunk(
         chatroomId,
         options
       );
-      return { chatroomId, messages: response.messages };
+      return { chatroomId, data: response };
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -158,17 +162,18 @@ const socketSlice = createSlice({
           state,
           action: PayloadAction<{
             chatroomId: number;
-            messages: MessageModel[];
+            data: MessagesPayload;
           }>
         ) => {
-          const { chatroomId, messages } = action.payload;
+          const { chatroomId, data } = action.payload;
           const chatroom = state.chatrooms.find(
             (room) => room.id === chatroomId
           );
-          if (chatroom && messages.length > 0) {
+          if (chatroom) {
+            chatroom.messagePagintation = data.pagination;
             chatroom.messages = [
               ...(chatroom.messages || []),
-              ...(messages || []),
+              ...(data.messages || []),
             ];
           }
         }

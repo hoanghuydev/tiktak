@@ -20,3 +20,22 @@ export const pagingConfig = (
 
     return queries;
 };
+export const paginationResponse = (queries, pageSize, page, count) => {
+    const totalItems = count;
+    const totalPages =
+        totalItems / pageSize >= 1 ? Math.ceil(totalItems / pageSize) : 1;
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    return {
+        pagination: {
+            orderBy: queries.orderBy,
+            page: queries.page,
+            pageSize: queries.limit,
+            orderDirection: queries.orderDirection,
+            totalItems,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
+        },
+    };
+};

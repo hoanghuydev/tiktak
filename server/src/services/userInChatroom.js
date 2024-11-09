@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 export const getUsersInChatroom = (
     chatroomId,
     { page, pageSize, orderBy, orderDirection }
@@ -17,22 +17,12 @@ export const getUsersInChatroom = (
                 where: {
                     chatroomId,
                 },
-                order: [[orderBy, orderDirection]],
-                limit: pageSize,
-                offset: (page - 1) * pageSize,
+                ...queries,
             });
-            const totalItems = count;
-            const totalPages = Math.ceil(totalItems / pageSize);
+
             resolve({
                 usersInChatroom: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

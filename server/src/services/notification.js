@@ -1,6 +1,6 @@
 import { Op, where } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 export const getNotificationsByUserId = (
     userId,
     { page, pageSize, orderBy, orderDirection }
@@ -20,21 +20,10 @@ export const getNotificationsByUserId = (
                 },
                 ...queries,
             });
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
+
             resolve({
                 users: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);
@@ -75,12 +64,12 @@ export const removeNotification = (id) =>
 /**
  * @param {NotifyModel} notifyModel - The notify object.
  */
-export const updateNotification = (id,notifyModel) =>
+export const updateNotification = (id, notifyModel) =>
     new Promise((resolve, reject) => {
         try {
             const resp = db.Notification.update({
-                where : {id},
-                data : notifyModel
+                where: { id },
+                data: notifyModel,
             });
             resolve(resp);
         } catch (error) {
@@ -91,8 +80,8 @@ export const seenNotification = async () => {
     try {
         const resp = await db.Notification.updateMany({
             data: {
-                isSeen: true
-            }
+                isSeen: true,
+            },
         });
         return resp;
     } catch (error) {

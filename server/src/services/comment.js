@@ -1,4 +1,4 @@
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { Op, literal, where } from 'sequelize';
 import db, { sequelize } from '../models';
 import { formatQueryUser } from './user';
@@ -147,21 +147,9 @@ export const getComments = (
                 ...commonQuery,
                 ...pagingQuery,
             });
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
             resolve({
                 comments: rows,
-                pagination: {
-                    orderBy: pagingQuery.orderBy,
-                    page: pagingQuery.offset + 1,
-                    pageSize: pagingQuery.limit,
-                    orderDirection: pagingQuery.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);

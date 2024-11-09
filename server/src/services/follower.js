@@ -1,6 +1,6 @@
 import { Op, literal } from 'sequelize';
 import db from '../models';
-import { pagingConfig } from '../utils/pagination';
+import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { formatQueryUser } from './user';
 
 // Helper to build attributes for user related queries
@@ -79,17 +79,9 @@ export async function getListFollower(
             },
         ],
     });
-
     return {
         users: rows.map((row) => row.followerData),
-        pagination: {
-            orderBy,
-            page,
-            pageSize,
-            orderDirection,
-            totalItems: count,
-            totalPages: Math.ceil(count / pageSize),
-        },
+        ...paginationResponse(queries, pageSize, page, count),
     };
 }
 
@@ -124,14 +116,7 @@ export async function getListFollowing(
 
     return {
         users: rows.map((row) => row.followeeData),
-        pagination: {
-            orderBy,
-            page,
-            pageSize,
-            orderDirection,
-            totalItems: count,
-            totalPages: Math.ceil(count / pageSize),
-        },
+        ...paginationResponse(queries, pageSize, page, count),
     };
 }
 export const getListFriend = (
@@ -192,27 +177,12 @@ export const getListFriend = (
                     },
                 ],
             });
-
-            const totalItems = count;
-            const totalPages =
-                totalItems / pageSize >= 1
-                    ? Math.ceil(totalItems / pageSize)
-                    : 1;
-
             const processedFriends = rows.map((item) => ({
                 ...item.dataValues,
             }));
-
             resolve({
                 users: rows,
-                pagination: {
-                    orderBy: queries.orderBy,
-                    page: queries.offset + 1,
-                    pageSize: queries.limit,
-                    orderDirection: queries.orderDirection,
-                    totalItems,
-                    totalPages,
-                },
+                ...paginationResponse(queries, pageSize, page, count),
             });
         } catch (error) {
             reject(error);
