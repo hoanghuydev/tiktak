@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 
 const VideoSearch = () => {
   const postSlice = useSelector(postSliceSelector);
+  console.log(postSlice?.posts);
+
   return (
     <div className="overflow-y-auto grid gap-x-6 gap-y-4 px-2 grid-cols-[repeat(auto-fit,_minmax(180px,_1fr))]">
       {!postSlice?.isLoading && postSlice?.posts.length == 0 && (

@@ -1,8 +1,9 @@
 import {
+  setCurrentUser,
   updateAvatar,
   updateFullNameAndUserName,
 } from '@/features/auth/authSlice';
-import UserService from '@/features/user/userService';
+import UserService, { UserPayload } from '@/features/user/userService';
 import { setUserAvatar } from '@/features/user/userSlice';
 import { UserModel } from '@/models/user';
 import { currentUserSelector } from '@/redux/selector';
@@ -68,22 +69,7 @@ const ModalEditProfile: React.FC<ModalEditProfileProps> = ({
       if (userInfo) {
         const { userName, fullName, bio } = userInfo;
 
-        interface UserInfo {
-          id: number;
-          userName: string;
-          fullName: string;
-          bio: string;
-        }
-
-        interface UpdateUserFields {
-          userId: number;
-          userName?: string;
-          fullName?: string;
-          bio?: string;
-        }
-
-        // Giả sử currentUserData và userInfo đã được định nghĩa và có kiểu UserInfo
-        const updatedFields: Partial<UpdateUserFields> = {};
+        const updatedFields: Partial<UserModel> = {};
 
         if (userName !== currentUserData!.userName) {
           updatedFields.userName = userName;
@@ -99,14 +85,8 @@ const ModalEditProfile: React.FC<ModalEditProfileProps> = ({
             updateFullNameAndUserName({
               userId: userInfo.id!,
               ...updatedFields,
-            } as UpdateUserFields)
+            })
           ).unwrap();
-
-          if (resp.err === 0) {
-            navigate(
-              `/profile/@${updatedFields.userName || currentUserData!.userName}`
-            );
-          }
         }
 
         // Check if there's a new avatar to update

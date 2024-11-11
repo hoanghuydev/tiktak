@@ -31,7 +31,7 @@ const Message = () => {
         <div className="bg-white h-full relative rounded-lg shadow-md min-w-[300px]">
           <div
             onClick={() => navigate(-1)}
-            className="absolute left-[-56px] hidden md:flex bg-[#16182308] rounded-full p-3"
+            className="absolute left-[-56px] hover:cursor-pointer hover:scale-95 hover:opacity-90 hidden md:flex bg-[#16182308] rounded-full p-3"
           >
             <GoArrowLeft size={18} />
           </div>

@@ -77,7 +77,7 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
       )}
       {user && (
         <form method="POST" onSubmit={handleInputSubmit}>
-          <div className="flex py-3 px-5">
+          <div className="flex py-3 px-5 flex-nowrap">
             <div className="bg-[#f1f1f2] flex-1 rounded-md px-2 flex-grow">
               <div className="flex gap-3 relative">
                 <p
@@ -112,7 +112,7 @@ const InputFormEditable: React.FC<InputFormEditableProps> = ({
                 </div>
               )}
             </div>
-            <div className="my-auto">
+            <div className="my-auto min-w-[47px]">
               <button
                 className={clsx(
                   'p-2 font-semibold',

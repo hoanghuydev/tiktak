@@ -122,11 +122,11 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({
   }, [pickerRef]);
 
   return (
-    <div ref={pickerRef} className="select-none">
+    <div ref={pickerRef} className="select-none flex">
       <button
         type="button"
         onMouseDown={togglePicker}
-        className="flex justify-center items-center w-11 h-11 rounded-full hover:bg-primary hover:text-white"
+        className="flex m-auto justify-center items-center w-11 h-11 rounded-full hover:bg-primary hover:text-white"
       >
         <BsEmojiSmile size={16} />
       </button>

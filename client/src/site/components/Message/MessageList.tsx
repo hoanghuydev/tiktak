@@ -103,7 +103,7 @@ const MessageList = ({
                   message.sender === currentUser.id ? 'bg-[#1618230f]' : ''
                 )}
               >
-                <p>{message.content}</p>
+                <p className="break-words">{message.content}</p>
               </div>
               <Tooltip title={tooltipContent(message.id)} trigger="click">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:cursor-pointer">

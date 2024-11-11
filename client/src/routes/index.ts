@@ -19,6 +19,7 @@ import Post from '@/site/Post';
 import TopSearch from '@/site/TopSearch';
 import NoSidebarLayout from '@/components/Layout/NoSidebarLayout';
 import Message from '@/site/Message';
+import EditVideo from '@/site/EditVideo';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -103,6 +104,12 @@ export const privateRoutes: RouteType[] = [
     path: '/upload',
     element: Upload,
     layout: DefaultLayout,
+    fullScreen: true,
+  },
+  {
+    path: '/video/edit',
+    element: EditVideo,
+    layout: NoSidebarLayout,
     fullScreen: true,
   },
 ];

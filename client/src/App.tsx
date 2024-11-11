@@ -28,8 +28,8 @@ function App() {
   useEffect(() => {
     const setMyInfo = async () => {
       setLoading(true);
-      const resp: UserPayload = await UserService.me()
-        .then((resp: UserPayload) => resp)
+      const resp = await UserService.me()
+        .then((resp) => resp)
         .catch(() => {
           localStorage.removeItem('accessToken');
           window.location.reload();

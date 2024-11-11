@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
@@ -18,6 +19,7 @@
     "@headlessui/react": "^2.1.9",
     "@reduxjs/toolkit": "^2.2.5",
     "@tippyjs/react": "^4.2.6",
+    "@xzdarcy/react-timeline-editor": "^0.1.9",
     "antd": "^5.17.2",
     "argsert": "^1.0.9",
     "autoprefixer": "^10.4.19",
@@ -29,6 +31,7 @@
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "normalize.css": "^3.0.3",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.38",
     "react": "^18.2.0",
     "react-circular-progressbar": "^2.1.0",
@@ -49,6 +52,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/node": "^22.9.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/react-timeago": "^4.1.7",
