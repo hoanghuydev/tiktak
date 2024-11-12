@@ -11,6 +11,7 @@ import {
 } from 'react-icons/ri';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import TextEdit from './components/EditVideo/TextEdit';
 
 const EditVideo = () => {
   const postUpload = useSelector(postUploadSelector);
@@ -31,7 +32,7 @@ const EditVideo = () => {
       id: 'text',
       label: 'Text',
       icon: <PiTextAUnderline size={20} />,
-      content: <div>Add text to your video here</div>,
+      content: <TextEdit />,
     },
     {
       id: 'overlay',
@@ -60,7 +61,7 @@ const EditVideo = () => {
   ];
 
   return (
-    <div className="p-8 bg-[#f8f8f8] h-screen flex flex-col">
+    <div className="p-8 bg-[#f8f8f8] h-screen flex gap-10 flex-col">
       <div className="flex h-[40%] gap-8">
         <div className="flex h-full gap-3 flex-1">
           <Tab items={tabItems} tabItemVertical defaultActiveId="text" />
