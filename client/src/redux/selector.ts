@@ -73,3 +73,8 @@ export const getCommentRepliesByIdSelector = (
     (comment: CommentModel) => comment.id === commentId
   );
 };
+// Selectors (optional but recommended)
+export const videoConfigSelector = (state: RootState) =>
+  state.editVideo.videoConfig;
+export const videoInfoSelector = (state: RootState) =>
+  state.editVideo.videoInfo;

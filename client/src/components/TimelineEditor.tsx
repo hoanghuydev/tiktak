@@ -77,14 +77,14 @@ const TimelineEditor = () => {
   }, [data]);
 
   return (
-    <div className="timeline-editor-example0">
+    <div className="timeline-editor-example0 h-full">
       <Timeline
         onChange={setData}
         editorData={data}
         effects={mockEffect}
         hideCursor={false}
         autoScroll={true}
-        style={{ width: '100%' }}
+        style={{ width: '100%', height: '100%', overflow: 'auto' }}
       />
     </div>
   );

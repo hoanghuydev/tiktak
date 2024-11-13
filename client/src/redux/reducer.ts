@@ -4,6 +4,7 @@ import postSlice, { InitStatePostType } from '@/features/post/postSlice';
 import tabSlice, { TabState } from '@/features/tab/tabSlice';
 import userSlice, { InitStateUserType } from '@/features/user/userSlice';
 import chatroomSlice from '@/features/chatroom/chatroomSlice';
+import editVideoSlice from '@/features/editVideo/editVideoSlice';
 
 import commentSlice, {
   InitStateCommentType,
@@ -12,6 +13,7 @@ import socketSlice, {
   InitStateSocketType,
 } from '@/features/socket/socketSlice';
 import { InitStateChatroomType } from '@/features/chatroom/chatroomSlice';
+import { InitStateEditVideoType } from '@/features/editVideo/editVideoSlice';
 
 export interface RootReducerType {
   auth: Reducer<InitStateAuthType>;
@@ -21,6 +23,7 @@ export interface RootReducerType {
   comment: Reducer<InitStateCommentType>;
   socket: Reducer<InitStateSocketType>;
   chatroom: Reducer<InitStateChatroomType>;
+  editVideo: Reducer<InitStateEditVideoType>;
 }
 
 export interface RootState {
@@ -31,6 +34,7 @@ export interface RootState {
   comment: InitStateCommentType;
   socket: InitStateSocketType;
   chatroom: InitStateChatroomType;
+  editVideo: InitStateEditVideoType;
 }
 
 const rootReducer: RootReducerType = {
@@ -41,6 +45,7 @@ const rootReducer: RootReducerType = {
   comment: commentSlice,
   socket: socketSlice,
   chatroom: chatroomSlice,
+  editVideo: editVideoSlice,
 };
 
 export default rootReducer;

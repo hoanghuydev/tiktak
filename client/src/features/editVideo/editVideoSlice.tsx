@@ -1,126 +1,188 @@
-type TextConfig = {
-  content: string;
-  position: string; // e.g., "10:10" for pixel coordinates or "50%:50%" for percentage
-  fontSize?: number; // Default: 24
-  color?: string; // Default: "white"
-  fontStyle?: 'normal' | 'italic' | 'bold'; // Text style
-  opacity?: number; // Default: 1 (range: 0 to 1)
-  animation?: 'fadeIn' | 'fadeOut' | 'slideIn' | 'slideOut'; // Text animations
-  duration?: number; // Duration in seconds
+// src/store/editVideoSlice.ts
+
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  VideoEditConfig,
+  TextConfig,
+  FilterConfig,
+  EffectConfig,
+  TransitionConfig,
+  AudioConfig,
+  OverlayConfig,
+  SubtitleConfig,
+  CutConfig,
+  VideoInfo,
+  Keyframe,
+} from '@/models/videoEdit';
+
+// Initial state definition with default values
+export type InitStateEditVideoType = {
+  videoInfo: VideoInfo;
+  videoConfig: VideoEditConfig;
+};
+const initialState: InitStateEditVideoType = {
+  videoInfo: {
+    width: 0,
+    height: 0,
+  },
+  videoConfig: {
+    text: [],
+    filter: undefined,
+    effect: undefined,
+    transition: undefined,
+    subtitle: undefined,
+    overlay: [],
+    audio: undefined,
+    cutVideo: undefined,
+    mergeWith: undefined,
+    exportType: 'mp4',
+    aspectRatio: '',
+    keyframes: [],
+  },
 };
 
-type FilterConfig = {
-  eq?: {
-    brightness?: number; // Default: 0
-    contrast?: number; // Default: 1
-    saturation?: number; // Default: 1
-    gamma?: number; // Default: 1
-  };
-  hue?: {
-    saturation?: number; // Default: 1 (0 for grayscale)
-  };
-  unsharp?: {
-    luma_msize_x?: number; // Default: 5
-    luma_msize_y?: number; // Default: 5
-    luma_amount?: number; // Default: 1
-  };
-  boxblur?: {
-    luma_radius?: number; // Default: 2
-    luma_power?: number; // Default: 1
-  };
-  colorchannelmixer?: {
-    rr?: number; // Default: 0.393
-    rg?: number; // Default: 0.769
-    rb?: number; // Default: 0.189
-    gr?: number; // Default: 0.349
-    gg?: number; // Default: 0.686
-    gb?: number; // Default: 0.168
-    br?: number; // Default: 0.272
-    bg?: number; // Default: 0.534
-    bb?: number; // Default: 0.131
-  };
-  crop?: {
-    out_w?: number; // Default: 640
-    out_h?: number; // Default: 480
-    x?: number; // Default: 0
-    y?: number; // Default: 0
-  };
-  rotate?: {
-    angle?: string; // Default: "0" (e.g., "PI/4" for 45 degrees)
-  };
-  fade?: {
-    type?: 'in' | 'out'; // Default: "in"
-    start_time?: number; // Default: 0
-    duration?: number; // Default: 3
-  };
-  colorEffect?: 'grayscale' | 'sepia' | 'negative' | 'vintage'; // Color effects
-};
+const editVideoSlice = createSlice({
+  name: 'editVideo',
+  initialState,
+  reducers: {
+    setVideoEditConfig(state, action: PayloadAction<VideoEditConfig>) {
+      state.videoConfig = {
+        ...initialState.videoConfig,
+        ...action.payload,
+        text: action.payload.text ?? [],
+        overlay: action.payload.overlay ?? [],
+        keyframes: action.payload.keyframes ?? [],
+      };
+    },
 
-type TransitionConfig = {
-  type: 'fade' | 'slide' | 'wipe' | 'zoom'; // Transition types
-  duration: number; // Duration in seconds
-  direction?: 'left' | 'right' | 'top' | 'bottom'; // Direction for sliding transitions
-  easing?: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'; // Easing functions
-};
+    setVideoInfo(state, action: PayloadAction<VideoInfo>) {
+      state.videoInfo = action.payload;
+    },
 
-type AudioConfig = {
-  muteSound?: boolean;
-  addSound?: {
-    filePath: string;
-    startAt: number;
-    volume?: number; // Default: 1
-  };
-  adjustVolume?: number; // e.g., 0.5 for 50%, 1.5 for 150%
-  fadeInOut?: {
-    fadeIn?: boolean;
-    fadeOut?: boolean;
-    duration?: number; // Default: 3 seconds
-  };
-};
+    setText(state, action: PayloadAction<TextConfig[]>) {
+      state.videoConfig.text = action.payload;
+    },
+    addText(state, action: PayloadAction<TextConfig>) {
+      state.videoConfig.text.push(action.payload);
+    },
+    updateText(state, action: PayloadAction<TextConfig>) {
+      const index = state.videoConfig.text.findIndex(
+        (text) => text.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.videoConfig.text[index] = action.payload;
+      }
+    },
+    removeText(state, action: PayloadAction<number>) {
+      state.videoConfig.text = state.videoConfig.text.filter(
+        (text) => text.id !== action.payload
+      );
+    },
 
-type OverlayConfig = {
-  imagePath: string;
-  position: string; // e.g., "10:10" for pixels or "50%:50%" for center
-  opacity?: number; // Default: 1 (range: 0 to 1)
-  scale?: number; // Default: 1
-  rotation?: number; // Degrees
-};
+    setFilter(state, action: PayloadAction<FilterConfig | undefined>) {
+      state.videoConfig.filter = action.payload;
+    },
+    setEffect(state, action: PayloadAction<EffectConfig | undefined>) {
+      state.videoConfig.effect = action.payload;
+    },
 
-type SubtitleConfig = {
-  filePath: string;
-  fontSize?: number; // Default: 24
-  color?: string; // Default: "white"
-  backgroundColor?: string; // Optional
-  position?: 'bottom' | 'top' | 'center'; // Default: 'bottom'
-};
+    setTransition(state, action: PayloadAction<TransitionConfig | undefined>) {
+      state.videoConfig.transition = action.payload;
+    },
+    setSubtitle(state, action: PayloadAction<SubtitleConfig | undefined>) {
+      state.videoConfig.subtitle = action.payload;
+    },
 
-type CutConfig = {
-  start: number; // Start time in seconds
-  end: number; // End time in seconds
-  split?: boolean; // Split at multiple points for scene separation
-};
+    setOverlay(state, action: PayloadAction<OverlayConfig[]>) {
+      state.videoConfig.overlay = action.payload;
+    },
+    addOverlay(state, action: PayloadAction<OverlayConfig>) {
+      state.videoConfig.overlay.push(action.payload);
+    },
+    updateOverlay(state, action: PayloadAction<OverlayConfig>) {
+      const index = state.videoConfig.overlay.findIndex(
+        (overlay) => overlay.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.videoConfig.overlay[index] = action.payload;
+      }
+    },
+    removeOverlay(state, action: PayloadAction<number>) {
+      state.videoConfig.overlay = state.videoConfig.overlay.filter(
+        (overlay) => overlay.id !== action.payload
+      );
+    },
+    setAudio(state, action: PayloadAction<AudioConfig | undefined>) {
+      state.videoConfig.audio = action.payload;
+    },
+    setCutVideo(state, action: PayloadAction<CutConfig | undefined>) {
+      state.videoConfig.cutVideo = action.payload;
+    },
 
-type EffectConfig = {
-  slowMotion?: { speed: number }; // e.g., { speed: 2.0 }
-  reverse?: boolean; // Reverse effect
-  zoom?: { level: number; duration: number }; // e.g., { level: 1.5, duration: 25 }
-  fade?: { type: 'in' | 'out'; start: number; duration: number };
-  blur?: { radius: number; power: number }; // e.g., { radius: 5, power: 1 }
-  vignette?: { angle: number; intensity: number };
-  colorEffect?: 'grayscale' | 'sepia'; // Predefined color effects
-};
+    setMergeWith(
+      state,
+      action: PayloadAction<{ filePath: string } | undefined>
+    ) {
+      state.videoConfig.mergeWith = action.payload;
+    },
+    setExportType(state, action: PayloadAction<'mp4' | 'avi' | 'mov' | 'mkv'>) {
+      state.videoConfig.exportType = action.payload;
+    },
+    setAspectRatio(state, action: PayloadAction<string>) {
+      state.videoConfig.aspectRatio = action.payload;
+    },
+    setKeyframes(state, action: PayloadAction<Keyframe[]>) {
+      state.videoConfig.keyframes = action.payload;
+    },
+    addKeyframe(state, action: PayloadAction<Keyframe>) {
+      state.videoConfig.keyframes.push(action.payload);
+    },
+    updateKeyframe(state, action: PayloadAction<Keyframe>) {
+      const index = state.videoConfig.keyframes.findIndex(
+        (kf) => kf.time === action.payload.time
+      );
+      if (index !== -1) {
+        state.videoConfig.keyframes[index] = action.payload;
+      }
+    },
+    removeKeyframe(state, action: PayloadAction<number>) {
+      state.videoConfig.keyframes = state.videoConfig.keyframes.filter(
+        (kf) => kf.time !== action.payload
+      );
+    },
 
-type VideoEditConfig = {
-  text?: TextConfig[];
-  filter?: FilterConfig;
-  effect?: EffectConfig;
-  transition?: TransitionConfig;
-  subtitle?: SubtitleConfig;
-  overlay?: OverlayConfig[];
-  audio?: AudioConfig;
-  cutVideo?: CutConfig;
-  mergeWith?: { filePath: string };
-  exportType?: 'mp4' | 'avi' | 'mov' | 'mkv'; // Default: 'mp4'
-  aspectRatio?: string; // e.g., "16:9", "4:3"
-  keyframes?: any; // Placeholder for keyframe animations
-};
+    resetVideoEditConfig() {
+      return initialState;
+    },
+  },
+});
+
+export const {
+  setVideoEditConfig,
+  setVideoInfo,
+  setText,
+  addText,
+  updateText,
+  removeText,
+  setFilter,
+  setEffect,
+  setTransition,
+  setSubtitle,
+  setOverlay,
+  addOverlay,
+  updateOverlay,
+  removeOverlay,
+  setAudio,
+  setCutVideo,
+  setMergeWith,
+  setExportType,
+  setAspectRatio,
+  setKeyframes,
+  addKeyframe,
+  updateKeyframe,
+  removeKeyframe,
+  resetVideoEditConfig,
+} = editVideoSlice.actions;
+
+// Export reducer
+export default editVideoSlice.reducer;

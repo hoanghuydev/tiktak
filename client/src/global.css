@@ -1,3 +1,22 @@
+.font-sans {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.font-mono {
+  font-family: 'Geist Mono', monospace;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-kanit {
+  font-family: 'Kanit', sans-serif;
+}
+
+.font-dancing {
+  font-family: 'Dancing Script', cursive;
+}
 .text-color-75 {
   color: #161823b5;
 }

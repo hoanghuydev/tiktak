@@ -12,6 +12,7 @@ import {
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import TextEdit from './components/EditVideo/TextEdit';
+import VideoEditPreview from './components/EditVideo/VideoEditPreview';
 
 const EditVideo = () => {
   const postUpload = useSelector(postUploadSelector);
@@ -25,8 +26,9 @@ const EditVideo = () => {
     }
   }, [video]);
   useEffect(() => {
-    if (!postUpload?.video) navigate('/video/edit');
-  }, []);
+    console.log(!postUpload?.video);
+    if (!postUpload?.video) navigate('/upload');
+  }, [postUpload?.video]);
   const tabItems = [
     {
       id: 'text',
@@ -61,16 +63,16 @@ const EditVideo = () => {
   ];
 
   return (
-    <div className="p-8 bg-[#f8f8f8] h-screen flex gap-10 flex-col">
-      <div className="flex h-[40%] gap-8">
+    <div className="p-4 bg-[#f8f8f8] h-screen flex gap-10 flex-col">
+      <div className="flex h-[60%] gap-8">
         <div className="flex h-full gap-3 flex-1">
           <Tab items={tabItems} tabItemVertical defaultActiveId="text" />
         </div>
-        <div className="flex relative rounded-md overflow-hidden flex-1">
-          <video controls src={videoUrl} className="w-full h-full"></video>
+        <div className="flex relative rounded-md justify-center overflow-hidden flex-1">
+          <VideoEditPreview videoUrl={videoUrl} />
         </div>
       </div>
-      <div className="flex-1">
+      <div className="h-[40%]">
         <TimelineEditor />
       </div>
     </div>

@@ -1,4 +1,9 @@
 import React from 'react';
+import '@fontsource/open-sans';
+import '@fontsource/geist-mono';
+import '@fontsource/playfair-display';
+import '@fontsource/kanit';
+import '@fontsource/dancing-script';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import 'normalize.css';

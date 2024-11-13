@@ -21,16 +21,18 @@ const VideoPreviewUpload: React.FC<VideoPreviewUploadProps> = ({
           src={videoUrl}
         ></video>
       </div>
-      <Link to={'/video/edit'}>
-        <Button
-          bgGray
-          secondary
-          className="p-[4px] mt-4 min-w-[108px] flex gap-2 w-[unset] mx-auto"
-        >
-          <RiScissors2Line size={16} className="my-auto" />
-          <p className="text-[14px] font-semibold">Edit video</p>
-        </Button>
-      </Link>
+      <div className="w-[150px]   mx-auto">
+        <Link to={'/video/edit'}>
+          <Button
+            bgGray
+            secondary
+            className="p-[4px] mt-4 min-w-[108px] flex gap-2"
+          >
+            <RiScissors2Line size={16} className="my-auto" />
+            <p className="text-[14px] font-semibold">Edit video</p>
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 };

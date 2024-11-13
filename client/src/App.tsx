@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { AppDispatch } from './redux/store';
 import UserService, { UserPayload } from './features/user/userService';
 import { setCurrentUser } from './features/auth/authSlice';
-
 import { ConfigProvider } from 'antd';
 import { startConnecting } from './features/socket/socketSlice';
 function App() {
