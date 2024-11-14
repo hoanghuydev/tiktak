@@ -20,6 +20,7 @@ import TopSearch from '@/site/TopSearch';
 import NoSidebarLayout from '@/components/Layout/NoSidebarLayout';
 import Message from '@/site/Message';
 import EditVideo from '@/site/EditVideo';
+import Fabric from '@/site/Fabric';
 export interface RouteType {
   path: string;
   element: React.ComponentType;
@@ -35,7 +36,12 @@ export const publicRoutes: RouteType[] = [
     layout: DefaultLayout,
     fullScreen: true,
   },
-
+  {
+    path: '/t',
+    element: Fabric,
+    layout: DefaultLayout,
+    fullScreen: true,
+  },
   {
     path: '/login',
     element: Login,

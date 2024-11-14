@@ -14,6 +14,7 @@ import {
   VideoInfo,
   Keyframe,
 } from '@/models/videoEdit';
+import { Canvas } from 'fabric/fabric-impl';
 
 // Initial state definition with default values
 export type InitStateEditVideoType = {

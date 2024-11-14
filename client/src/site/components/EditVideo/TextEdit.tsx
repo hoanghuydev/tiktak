@@ -2,52 +2,60 @@
 
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addText } from '@/features/editVideo/editVideoSlice';
 import { TextConfig, Position } from '@/models/videoEdit';
+import { message } from 'antd';
+import { fabric } from 'fabric';
 
 const TextEdit = () => {
   const dispatch = useDispatch();
 
-  // Available fonts
-  const [fonts] = useState<
-    ('sans' | 'mono' | 'playfair' | 'kanit' | 'dancing')[]
-  >(['sans', 'mono', 'playfair', 'kanit', 'dancing']);
-
-  // Local state for text input
+  const fonts = [
+    {
+      name: 'sans',
+      link: 'https://fonts.cdnfonts.com/s/14884/OpenSans-Regular.woff',
+    },
+    {
+      name: 'mono',
+      link: 'https://fonts.cdnfonts.com/s/118389/GeistMono-Regular.woff',
+    },
+    {
+      name: 'playfair',
+      link: 'https://fonts.cdnfonts.com/s/15447/PlayfairDisplay-Regular.woff',
+    },
+    {
+      name: 'kanit',
+      link: 'https://fonts.cdnfonts.com/s/15799/Kanit-Regular.woff',
+    },
+    {
+      name: 'dancing',
+      link: 'https://fonts.cdnfonts.com/s/15416/DancingScript-Regular.woff',
+    },
+  ];
   const [textContent, setTextContent] = useState('');
-  const [selectedFont, setSelectedFont] = useState<
-    'sans' | 'mono' | 'playfair' | 'kanit' | 'dancing'
-  >('sans');
-
-  // Optional: Default position, size, color, etc.
-  const defaultPosition: Position = { x: '50%', y: '50%' };
+  const [selectedFont, setSelectedFont] = useState('sans');
+  const defaultPosition: Position = { x: 100, y: 100 };
   const defaultFontSize = 50;
   const defaultColor = '#FFFFFF';
   const defaultOpacity = 1;
 
-  const handleAddText = (
-    font: 'sans' | 'mono' | 'playfair' | 'kanit' | 'dancing'
-  ) => {
+  const handleAddText = (font: { name: string; link: string }) => {
     if (!textContent.trim()) {
-      alert('Please enter some text before adding.');
+      message.error('Please enter some text before adding.');
       return;
     }
-
     const newText: TextConfig = {
-      id: Date.now(), // Simple unique ID
+      id: Date.now(),
       content: textContent,
       position: defaultPosition,
-      fontFamily: font,
+      fontFamily: font.name,
       fontSize: defaultFontSize,
       color: defaultColor,
       opacity: defaultOpacity,
-      // You can add more properties or allow user to set them
     };
 
     dispatch(addText(newText));
-
-    // Reset text input
     setTextContent('');
   };
 
@@ -69,15 +77,17 @@ const TextEdit = () => {
             <button
               key={i}
               onClick={() => {
-                setSelectedFont(font);
+                setSelectedFont(font.name);
                 handleAddText(font);
               }}
               className={clsx(
                 'max-w-[120px] min-w-[90px] flex justify-center items-center rounded-[8px] aspect-square bg-[#c1c1c1] hover:bg-[#a1a1a1] transition-colors',
-                selectedFont === font ? 'border-2 border-blue-500' : ''
+                selectedFont === font.name ? 'border-2 border-blue-500' : ''
               )}
             >
-              <p className={clsx('text-white text-[20px]', `font-${font}`)}>
+              <p
+                className={clsx('text-white text-[20px]', `font-${font.name}`)}
+              >
                 Abc
               </p>
             </button>
