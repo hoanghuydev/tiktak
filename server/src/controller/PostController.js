@@ -17,7 +17,7 @@ import client from '../config/db/redis';
 import { sequelize } from '../models';
 const fs = require('fs');
 class PostController {
-    async likePost(req, res) {
+    async likePost(req, res, next) {
         try {
             const { postId } = req.params;
             const post = await postService.getOne(postId);
@@ -37,11 +37,10 @@ class PostController {
             }
             return badRequest('Unknow error', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async unlikePost(req, res) {
+    async unlikePost(req, res, next) {
         try {
             const { postId } = req.params;
             const likeData = { liker: req.user.id, postId };
@@ -55,10 +54,10 @@ class PostController {
                 mes: 'Unlike post successfully',
             });
         } catch (error) {
-            return internalServerError(res);
+            next(error);
         }
     }
-    async watchPost(req, res) {
+    async watchPost(req, res, next) {
         try {
             const { postId } = req.params;
             const ipAddress = req.ip || req.connection.remoteAddress;
@@ -87,12 +86,11 @@ class PostController {
 
             return badRequest('Unknown error', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async sharePost(req, res) {
+    async sharePost(req, res, next) {
         try {
             const { postId } = req.params;
             const resp = await postServices.sharePost(postId);
@@ -104,12 +102,11 @@ class PostController {
             }
             return badRequest('Unknow error', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async getPostById(req, res) {
+    async getPostById(req, res, next) {
         try {
             const postList = await postServices.getPosts(
                 req.params.postId,
@@ -126,8 +123,7 @@ class PostController {
                 });
             else return badRequest('Not found post', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
     async handleGetPosts(req, res, type) {
@@ -145,20 +141,19 @@ class PostController {
                 ...posts,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async getPosts(req, res) {
+    async getPosts(req, res, next) {
         return new PostController().handleGetPosts(req, res, 'all');
     }
 
-    async getFriendPosts(req, res) {
+    async getFriendPosts(req, res, next) {
         return new PostController().handleGetPosts(req, res, 'friends');
     }
 
-    async getFollowingPosts(req, res) {
+    async getFollowingPosts(req, res, next) {
         return new PostController().handleGetPosts(req, res, 'following');
     }
 
@@ -215,7 +210,7 @@ class PostController {
         }
     }
 
-    async upload(req, res) {
+    async upload(req, res, next) {
         // init variables
 
         let postId;
@@ -310,10 +305,10 @@ class PostController {
                 video,
                 thumnail
             );
-            return internalServerError(res);
+            next(error);
         }
     }
-    async removePost(req, res) {
+    async removePost(req, res, next) {
         const removeFile = await UploadFile.removeFromGGDriver(
             req.body.thumnailId
         );

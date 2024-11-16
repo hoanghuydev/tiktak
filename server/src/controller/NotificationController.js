@@ -1,7 +1,7 @@
 import { badRequest, internalServerError } from '../utils/handleResp';
 import * as notificationServices from '../services/notification';
 class NotificationController {
-    async getNotifies(req, res) {
+    async getNotifies(req, res, next) {
         try {
             const { userId } = req.params;
             const resp = await notificationServices.getNotificationsByUserId(
@@ -14,23 +14,23 @@ class NotificationController {
                 ...resp,
             });
         } catch (error) {
-            return internalServerError(res);
+            next(error);
         }
     }
-    async seenNotify(req, res) {
+    async seenNotify(req, res, next) {
         try {
             const resp = await notificationServices.seenNotification();
             if (resp)
-            return res.status(200).json({
-                err: 0,
-                mes: '',
-            });
-            else return badRequest("Some error occured",res)
+                return res.status(200).json({
+                    err: 0,
+                    mes: '',
+                });
+            else return badRequest('Some error occured', res);
         } catch (error) {
-            return internalServerError(res);
+            next(error);
         }
     }
-    async insertNotify(req, res) {
+    async insertNotify(req, res, next) {
         try {
             const { userId } = req.params;
             const { content } = req.body;
@@ -43,10 +43,10 @@ class NotificationController {
                 mes: 'Sent notification to user ' + userId,
             });
         } catch (error) {
-            return internalServerError(res);
+            next(error);
         }
     }
-    async removeNotify(req, res) {
+    async removeNotify(req, res, next) {
         try {
             const { notifyId } = req.params;
             const resp = await notificationServices.removeNotification(
@@ -57,8 +57,7 @@ class NotificationController {
                 mes: 'Removed notfifycation',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

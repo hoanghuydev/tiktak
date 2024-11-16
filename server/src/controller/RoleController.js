@@ -5,7 +5,7 @@ import {
 } from '../utils/handleResp';
 import * as roleServices from '../services/role';
 class RoleController {
-    async insertRole(req, res) {
+    async insertRole(req, res, next) {
         try {
             const { code, value } = req.body;
             const resp = await roleServices.insertRole(code, value);
@@ -16,11 +16,10 @@ class RoleController {
                 });
             else return alreadyExistRow('Role already exists', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async removeRole(req, res) {
+    async removeRole(req, res, next) {
         try {
             const { id, code } = req.body;
             let resp = null;
@@ -33,8 +32,7 @@ class RoleController {
                 });
             else return badRequest('Not found role', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

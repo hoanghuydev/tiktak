@@ -9,7 +9,7 @@ import * as chatroomServices from '../services/chatroom';
 import { v4 as uuidv4 } from 'uuid';
 import { MESSAGE_TYPE } from '../../constant';
 class MessageController {
-    async getMessagesOfChatroom(req, res) {
+    async getMessagesOfChatroom(req, res, next) {
         try {
             const { chatroomId } = req.params;
             const resp = await messageServices.getListMessageOfChatroom(
@@ -23,11 +23,10 @@ class MessageController {
                 ...resp,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async uploadImage(req, res) {
+    async uploadImage(req, res, next) {
         try {
             const { files } = req;
             for (const file of files) {
@@ -64,11 +63,10 @@ class MessageController {
                 images: imagesLink,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async sendMessage(req, res) {
+    async sendMessage(req, res, next) {
         try {
             const { chatroomId } = req.params;
             const { content, type } = req.body;
@@ -109,11 +107,10 @@ class MessageController {
                 message,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async recallMessage(req, res) {
+    async recallMessage(req, res, next) {
         try {
             const { messageId } = req.params;
             const message = await messageServices.findOne({ id: messageId });
@@ -165,11 +162,10 @@ class MessageController {
                 });
             } else return badRequest('Message recall failed', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async deleteAllMessagesUpToNowForUser(req, res) {
+    async deleteAllMessagesUpToNowForUser(req, res, next) {
         const { chatroomId } = req.params;
         const userId = req.user.id;
         try {
@@ -183,11 +179,10 @@ class MessageController {
                 mes: result.message,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async deleteMessageForUser(req, res) {
+    async deleteMessageForUser(req, res, next) {
         const { messageId } = req.params;
         const userId = req.user.id;
         try {
@@ -200,8 +195,7 @@ class MessageController {
                 mes: result.message,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

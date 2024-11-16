@@ -14,11 +14,10 @@ class LivestreamController {
                 ...livestreams,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async getLivestreamById(req, res) {
+    async getLivestreamById(req, res, next) {
         try {
             const livestream = await livestreamServices.getOne(
                 req.params.livestreamId
@@ -31,11 +30,10 @@ class LivestreamController {
                 });
             else return badRequest('Not found post', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async createLivestream(req, res) {
+    async createLivestream(req, res, next) {
         try {
             const livestreamModel = {
                 streamer: req.user.id,
@@ -52,7 +50,7 @@ class LivestreamController {
                 });
             else return badRequest('Something went wrong! Please try again');
         } catch (error) {
-            return internalServerError(res);
+            next(error);
         }
     }
 }

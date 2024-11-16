@@ -3,7 +3,7 @@ import * as followerServices from '../services/follower';
 import * as chatroomServices from '../services/chatroom';
 import * as userInChatroomServices from '../services/userInChatroom';
 class FollowController {
-    async getListFollower(req, res) {
+    async getListFollower(req, res, next) {
         try {
             const { userId } = req.params;
             const followings = await followerServices.getListFollower(
@@ -13,11 +13,10 @@ class FollowController {
             );
             return res.status(200).json({ ...followings });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async getListFollowing(req, res) {
+    async getListFollowing(req, res, next) {
         try {
             const { userId } = req.params;
             const followings = await followerServices.getListFollowing(
@@ -27,11 +26,10 @@ class FollowController {
             );
             return res.status(200).json({ ...followings });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async getListFriend(req, res) {
+    async getListFriend(req, res, next) {
         try {
             const { userId } = req.params;
             const friends = await followerServices.getListFriend(
@@ -41,11 +39,10 @@ class FollowController {
             );
             return res.status(200).json({ ...friends });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async followUser(req, res) {
+    async followUser(req, res, next) {
         try {
             const { userId } = req.params;
             if (userId == req.user.id)
@@ -79,11 +76,10 @@ class FollowController {
                 follow: follow[0],
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async unfollowUser(req, res) {
+    async unfollowUser(req, res, next) {
         try {
             const { userId } = req.params;
             if (userId == req.user.id)
@@ -121,8 +117,7 @@ class FollowController {
                 mes: 'Unfollowed',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

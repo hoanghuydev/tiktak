@@ -101,9 +101,8 @@ class AuthController {
                 console.error(err);
                 return unauthorized('Refresh token is not valid', res);
             }
-        } catch (err) {
-            console.error(err);
-            return internalServerError(res);
+        } catch (error) {
+            next(error);
         }
     };
     setRefreshTokenToRedis = (token, userId) => {
@@ -136,7 +135,7 @@ class AuthController {
             resolve(true);
         });
     };
-    async register(req, res) {
+    async register(req, res, next) {
         try {
             let { email, fullName, userName, password, association } = req.body;
             association = association ? association : '';
@@ -180,11 +179,10 @@ class AuthController {
                 );
             }
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async vertifyAccount(req, res) {
+    async vertifyAccount(req, res, next) {
         try {
             const { email, otp } = req.body;
             const resp = await authServices.vertifyAccount(email, otp);
@@ -208,11 +206,10 @@ class AuthController {
                 mes: 'Verified successfully, now you can login',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async OAuth2(req, res) {
+    async OAuth2(req, res, next) {
         try {
             const user = req.user;
             const refreshToken = new AuthController().generateRefreshToken(
@@ -236,10 +233,10 @@ class AuthController {
             );
         }
     }
-    async loginSuccess(req, res) {
+    async loginSuccess(req, res, next) {
         new AuthController().refreshNewToken(req, res);
     }
-    async login(req, res) {
+    async login(req, res, next) {
         try {
             const { emailOrUsername, password } = req.body;
             if (!emailOrUsername && !password)
@@ -274,11 +271,10 @@ class AuthController {
                 accessToken,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async logout(req, res) {
+    async logout(req, res, next) {
         const user = req.user;
         await new AuthController().removeRefreshTokenFromRedis(user.id);
         res.clearCookie('refreshToken');
@@ -288,7 +284,7 @@ class AuthController {
             mes: 'Logout successful',
         });
     }
-    async refreshToken(req, res) {
+    async refreshToken(req, res, next) {
         new AuthController().refreshNewToken(req, res);
     }
 }

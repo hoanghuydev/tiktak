@@ -21,7 +21,7 @@ class UserController {
      * @param {Object} res - The response object.
      * @returns {Promise<void>} - The function returns a promise.
      */
-    async findUser(req, res) {
+    async findUser(req, res, next) {
         try {
             let users = await userServices.findUsers(req.query, req.user?.id);
             return res.status(200).json({
@@ -30,11 +30,10 @@ class UserController {
                 ...users,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async me(req, res) {
+    async me(req, res, next) {
         try {
             const user = await userServices.findOne({ id: req.user.id });
             if (!user) return notFound('User not found', res);
@@ -45,11 +44,10 @@ class UserController {
                 user,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async getProfile(req, res) {
+    async getProfile(req, res, next) {
         try {
             const { username } = req.params;
             const user = await userServices.getProfile(username, req.user?.id);
@@ -60,11 +58,10 @@ class UserController {
                 user,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async getUser(req, res) {
+    async getUser(req, res, next) {
         try {
             const user = await userServices.findOne({ id: req.params.userId });
             if (!user) return notFound('User not found', res);
@@ -75,11 +72,10 @@ class UserController {
                 user,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async updatePeerId(req, res) {
+    async updatePeerId(req, res, next) {
         try {
             const { peerId } = req.body;
             const resp = await userServices.updateUser({ peerId }, req.user.id);
@@ -93,10 +89,10 @@ class UserController {
                 });
             else return badRequest('Cannot update peer id', res);
         } catch (error) {
-            console.log(error);
+            next(error);
         }
     }
-    async updateAvatar(req, res) {
+    async updateAvatar(req, res, next) {
         try {
             if (!req.file) return badRequest('Please choose avatar', res);
             const avatarImage = req.file.buffer;
@@ -139,11 +135,10 @@ class UserController {
                     } else return badRequest('Something error occurred');
                 });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async removeAvatar(req, res) {
+    async removeAvatar(req, res, next) {
         try {
             const { userId } = req.params;
 
@@ -167,11 +162,10 @@ class UserController {
                 });
             } else return badRequest('Remove avatar failed', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async updateUser(req, res) {
+    async updateUser(req, res, next) {
         try {
             const { userName, fullName, bio } = req.body;
             if (!userName && !fullName && !bio)
@@ -195,8 +189,7 @@ class UserController {
                 });
             else return badRequest('Not found user', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

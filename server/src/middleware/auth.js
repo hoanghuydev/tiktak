@@ -104,7 +104,7 @@ class Auth {
                 else return forBidden('You are not allowed to access', res);
             } catch (error) {
                 console.log(error);
-                return internalServerError(res);
+                next(error);
             }
         });
     }
@@ -119,7 +119,7 @@ class Auth {
                 else return forBidden('You are not allowed to access', res);
             } catch (error) {
                 console.log(error);
-                return internalServerError(res);
+                next(error);
             }
         });
     }

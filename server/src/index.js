@@ -13,7 +13,7 @@ startCron();
 dotenv.config();
 require('./config/oauth/passport');
 import client from './config/db/redis';
-global._basedir = __dirname;
+import { globalErrorHandler } from './middleware/errorHandler';
 const { Server } = require('socket.io');
 const handleSocket = require('./socket');
 getConnection();
@@ -46,3 +46,5 @@ app.use((req, res, next) => {
 route(app);
 
 handleSocket(io);
+
+app.use(globalErrorHandler);

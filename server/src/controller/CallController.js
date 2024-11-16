@@ -7,7 +7,7 @@ import * as chatroomServices from '../services/chatroom';
 
 class CallController {
     // Gửi Offer cho một phòng
-    async sendOffer(req, res) {
+    async sendOffer(req, res, next) {
         try {
             const { chatroomId } = req.params;
             const { offer } = req.body;
@@ -44,13 +44,12 @@ class CallController {
                 mes: 'Offer sent successfully',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
     // Gửi Answer cho một phòng
-    async sendAnswer(req, res) {
+    async sendAnswer(req, res, next) {
         try {
             const { chatroomId } = req.params;
             const { answer } = req.body;
@@ -87,13 +86,12 @@ class CallController {
                 mes: 'Answer sent successfully',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
     // Gửi ICE Candidate cho một phòng
-    async sendCandidate(req, res) {
+    async sendCandidate(req, res, next) {
         try {
             const { chatroomId } = req.params;
             const { candidate } = req.body;
@@ -130,8 +128,7 @@ class CallController {
                 mes: 'ICE Candidate sent successfully',
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }

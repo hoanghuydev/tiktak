@@ -21,7 +21,7 @@ import {
  * @property {string} content - The content of the comment reply.
  */
 class CommentController {
-    async getCommentsByPostId(req, res) {
+    async getCommentsByPostId(req, res, next) {
         try {
             const comments = await commentServices.getComments(
                 req.params.postId,
@@ -35,12 +35,11 @@ class CommentController {
                 ...comments,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async getReplyCommentsOfCommentPost(req, res) {
+    async getReplyCommentsOfCommentPost(req, res, next) {
         try {
             const comments = await commentServices.getComments(
                 req.params.postId,
@@ -54,11 +53,10 @@ class CommentController {
                 ...comments,
             });
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async insertCommentPost(req, res) {
+    async insertCommentPost(req, res, next) {
         try {
             const postId = req.params.postId;
             const post = await postServices.getOne(postId);
@@ -76,11 +74,10 @@ class CommentController {
                 });
             else return badRequest('Some error occured', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async insertReplyComment(req, res) {
+    async insertReplyComment(req, res, next) {
         try {
             const { postId, parentCommentId } = req.params;
             const commentPost = await commentServices.findCommentById(
@@ -102,12 +99,11 @@ class CommentController {
                 });
             else return badRequest('Some error occured', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async editComment(req, res) {
+    async editComment(req, res, next) {
         try {
             const { content } = req.body;
             const { commentId } = req.params;
@@ -129,12 +125,11 @@ class CommentController {
                 });
             else return badRequest('Some error occured', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
-    async removeComment(req, res) {
+    async removeComment(req, res, next) {
         try {
             const deleted = await commentServices.removeComment(
                 req.params.commentId
@@ -146,8 +141,7 @@ class CommentController {
                 });
             else return badRequest('Not found comment', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 
@@ -156,7 +150,7 @@ class CommentController {
      * @property {number} liker - The ID of the liker.
      * @property {number} commentId - The ID of the comment.
      */
-    async likeComment(req, res) {
+    async likeComment(req, res, next) {
         try {
             /**
              * @type {LikeCommentModel}
@@ -181,11 +175,10 @@ class CommentController {
                 });
             else badRequest('Not found comment', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
-    async unlikeComment(req, res) {
+    async unlikeComment(req, res, next) {
         try {
             /**
              * @type {LikeCommentModel}
@@ -210,8 +203,7 @@ class CommentController {
                 });
             else badRequest('Not found comment', res);
         } catch (error) {
-            console.log(error);
-            return internalServerError(res);
+            next(error);
         }
     }
 }
