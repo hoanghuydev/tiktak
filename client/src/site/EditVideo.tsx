@@ -19,6 +19,7 @@ const EditVideo = () => {
   const video = postUpload?.video;
   const navigate = useNavigate();
   const [videoUrl, setVideoUrl] = useState<string>('');
+  const [canvas, setCanvas] = useState<fabric.Canvas>();
   useEffect(() => {
     if (video && video.originFileObj) {
       const url = URL.createObjectURL(video.originFileObj);

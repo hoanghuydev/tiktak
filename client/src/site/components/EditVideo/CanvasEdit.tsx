@@ -39,6 +39,14 @@ const CanvasEdit = ({
   }, [videoRef.current, canvasRef.current]);
   useEffect(() => {
     if (canvas) {
+      // Remove only text objects
+      canvas.getObjects().forEach((obj) => {
+        if (obj.type === 'textbox' || obj.type === 'text') {
+          canvas.remove(obj);
+        }
+      });
+
+      // Add each text configuration to the canvas
       videoConfig.text.forEach((textConfig: TextConfig) => {
         const {
           content,
@@ -49,11 +57,17 @@ const CanvasEdit = ({
           fontStyle = 'normal',
           opacity = 1,
         } = textConfig;
+
+        // Create a new Textbox with valid configurations
         const fabricText = new fabric.Textbox(content, {
           left:
-            typeof position.x === 'number' ? position.x : parseInt(position.x),
+            typeof position.x === 'number'
+              ? position.x
+              : parseInt(position.x, 10),
           top:
-            typeof position.y === 'number' ? position.y : parseInt(position.y),
+            typeof position.y === 'number'
+              ? position.y
+              : parseInt(position.y, 10),
           fontFamily,
           fontSize,
           fill: color,
@@ -61,13 +75,15 @@ const CanvasEdit = ({
           opacity,
           selectable: true,
         });
+
+        // Add the text to the canvas
         canvas.add(fabricText);
-        canvas.setActiveObject(fabricText);
       });
 
+      // Render the updated canvas
       canvas.renderAll();
     }
-  }, [videoConfig.text]);
+  }, [videoConfig.text, canvas]);
 
   return (
     <div className="w-full h-full">

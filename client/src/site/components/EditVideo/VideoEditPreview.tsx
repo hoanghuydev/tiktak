@@ -10,7 +10,7 @@ const VideoEditPreview: React.FC<VideoEditPreviewProps> = ({ videoUrl }) => {
   return (
     <div className="relative flex w-full h-full">
       <div className="flex-1 z-30 bg-[#f8f8f8]"></div>
-      <div className="bg-black h-full aspect-[9/16]">
+      <div className="bg-black h-full relative aspect-[9/16]">
         <video
           ref={videoRef}
           src={videoUrl}
@@ -19,11 +19,11 @@ const VideoEditPreview: React.FC<VideoEditPreviewProps> = ({ videoUrl }) => {
           autoPlay
           muted
         ></video>
+        <div className="absolute z-10 inset-0 overflow-hidden h-full mx-auto aspect-[9/16]">
+          <CanvasEdit videoRef={videoRef} />
+        </div>
       </div>
       <div className="flex-1 z-30 bg-[#f8f8f8]"></div>
-      <div className="absolute z-10 top-0 left-0 h-full mx-auto aspect-[9/16]">
-        <CanvasEdit videoRef={videoRef} />
-      </div>
     </div>
   );
 };

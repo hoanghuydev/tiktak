@@ -13,7 +13,7 @@ export const axiosNoToken = axios.create({
 export const axiosToken = axios.create({
   baseURL,
   headers: {
-    token: localStorage.getItem('accessToken'),
+    Authorization: localStorage.getItem('accessToken'),
   },
   withCredentials: true,
 });
@@ -35,7 +35,7 @@ axiosToken.interceptors.request.use(async (config) => {
         localStorage.removeItem('accessToken');
       }
     }
-    config.headers['token'] = accessToken;
+    config.headers['Authorization'] = accessToken;
   }
   return config;
 });

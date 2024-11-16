@@ -40,7 +40,7 @@ class Auth {
         })(req, res, next);
     }
     setUser(req, res, next) {
-        const token = req.headers.token;
+        const token = req.headers.authorization;
         if (!token) {
             next();
         } else {
@@ -62,7 +62,8 @@ class Auth {
         }
     }
     origin(req, res, next) {
-        const token = req.headers.token;
+        const token = req.headers.authorization;
+        console.log(token);
         if (!token) {
             return unauthorized(`You're not authenticated`, res);
         }
