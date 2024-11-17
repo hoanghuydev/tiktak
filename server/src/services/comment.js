@@ -1,7 +1,7 @@
 import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { Op, literal, where } from 'sequelize';
 import db, { sequelize } from '../models';
-import { formatQueryUser } from './user';
+import { formatQueryUserWithAvatarData } from './user';
 
 /**
  * @typedef {Object} LikeCommentModel
@@ -95,7 +95,7 @@ export const getComments = (
                     {
                         model: db.User,
                         attributes: ['id', 'userName', 'fullName'],
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                         as: 'commenterData',
                         where: userQuery,
                     },

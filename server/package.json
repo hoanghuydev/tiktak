@@ -31,10 +31,12 @@
         "sequelize": "^6.36.0",
         "socket.io": "^4.7.4",
         "stream": "^0.0.2",
-        "uuid": "^9.0.1"
+        "uuid": "^9.0.1",
+        "yup": "^1.4.0"
     },
     "scripts": {
-        "start": "nodemon --exec babel-node ./src/index.js"
+        "start": "nodemon --exec babel-node ./src/index.js",
+        "debug": "nodemon --inspect --exec babel-node ./src/index.js"
     },
     "devDependencies": {
         "@babel/core": "^7.23.9",

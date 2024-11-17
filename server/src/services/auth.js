@@ -1,7 +1,10 @@
 import { Op, where } from 'sequelize';
 import db, { Sequelize } from '../models';
 import bcrypt from 'bcrypt';
-import { formatQueryUser, formatQueryUserWithAtrr } from './user';
+import {
+    formatQueryUserWithAvatarData,
+    formatQueryUserWithRoleAndAvatarData,
+} from './user';
 
 export const register = (
     email,
@@ -15,7 +18,7 @@ export const register = (
         try {
             const resp = await db.User.findOrCreate({
                 where: { [Op.or]: [{ email }, { userName }] },
-                ...formatQueryUserWithAtrr,
+                ...formatQueryUserWithRoleAndAvatarData(),
                 defaults: {
                     email,
                     fullName,
@@ -55,7 +58,7 @@ export const login = (emailOrUserName) =>
                     isVertified: true,
                     association: '',
                 },
-                ...formatQueryUserWithAtrr,
+                ...formatQueryUserWithRoleAndAvatarData(),
             });
             resolve(resp);
         } catch (error) {

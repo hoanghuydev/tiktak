@@ -1,7 +1,7 @@
 import { Op, col, fn, literal, where } from 'sequelize';
 import db, { Sequelize } from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
-import { formatQueryUser } from './user';
+import { formatQueryUserWithAvatarData } from './user';
 import post from '../models/post';
 import {
     VISIBILITY_POST_FRIEND,
@@ -137,14 +137,14 @@ export const getPosts = (
                     attributes: ['id', 'userName', 'fullName'],
                     as: 'posterData',
                     where: { id: userId },
-                    ...formatQueryUser,
+                    ...formatQueryUserWithAvatarData,
                 });
             else
                 query.include.push({
                     model: db.User,
                     attributes: ['id', 'userName', 'fullName'],
                     as: 'posterData',
-                    ...formatQueryUser,
+                    ...formatQueryUserWithAvatarData,
                 });
             query.attributes = {
                 include: [
@@ -247,7 +247,7 @@ export const getOne = (id) =>
                         model: db.User,
                         attributes: ['id', 'userName', 'fullName'],
                         as: 'posterData',
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ],
             });

@@ -1,7 +1,7 @@
 import { literal, Op, where } from 'sequelize';
 import db, { sequelize } from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
-import { formatQueryUser } from './user';
+import { formatQueryUserWithAvatarData } from './user';
 export const findById = async (id) =>
     new Promise(async (resolve, reject) => {
         try {
@@ -11,7 +11,7 @@ export const findById = async (id) =>
                         model: db.User,
                         as: 'senderData',
                         attributes: ['id', 'userName', 'fullName'],
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ],
             });
@@ -51,7 +51,7 @@ export const getListMessageOfChatroom = async (
                         model: db.User,
                         as: 'senderData',
                         attributes: ['id', 'userName', 'fullName'],
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ],
                 ...queries,

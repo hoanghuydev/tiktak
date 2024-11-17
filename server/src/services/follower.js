@@ -1,7 +1,7 @@
 import { Op, literal } from 'sequelize';
 import db from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
-import { formatQueryUser } from './user';
+import { formatQueryUserWithAvatarData } from './user';
 
 // Helper to build attributes for user related queries
 const buildUserAttributes = (myId, isFollowee) => ({

@@ -24,7 +24,7 @@ export const getLivestreams = (
                         attributes: ['id', 'userName', 'fullName'],
                         as: 'streamerData',
                         where: { id: userId },
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ];
             else
@@ -33,7 +33,7 @@ export const getLivestreams = (
                         model: db.User,
                         attributes: ['id', 'userName', 'fullName'],
                         as: 'streamerData',
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ];
             const getLivestreamQuery = Object.assign(query, queries);
@@ -60,7 +60,7 @@ export const getOne = (id) =>
                         model: db.User,
                         attributes: ['id', 'userName', 'fullName'],
                         as: 'streamerData',
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                     },
                 ],
             });

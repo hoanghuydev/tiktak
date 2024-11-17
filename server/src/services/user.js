@@ -1,26 +1,38 @@
 import { Op, literal, where } from 'sequelize';
 import db from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
-export const formatQueryUserWithAtrr = {
-    attributes: {
-        exclude: ['roleCode', 'avatarPublicId'],
-    },
-    include: [
-        {
-            model: db.Avatar,
-            as: 'avatarData',
-            attributes: {
-                exclude: ['createdAt', 'updatedAt', 'id', 'publicId', 'code'],
+export const formatQueryUserWithRoleAndAvatarData = (havePassword) => {
+    return {
+        attributes: {
+            exclude: [
+                'roleCode',
+                'avatarPublicId',
+                !havePassword && 'password',
+            ],
+        },
+        include: [
+            {
+                model: db.Avatar,
+                as: 'avatarData',
+                attributes: {
+                    exclude: [
+                        'createdAt',
+                        'updatedAt',
+                        'id',
+                        'publicId',
+                        'code',
+                    ],
+                },
             },
-        },
-        {
-            model: db.Role,
-            as: 'roleData',
-            attributes: ['id', 'code', 'value'],
-        },
-    ],
+            {
+                model: db.Role,
+                as: 'roleData',
+                attributes: ['id', 'code', 'value'],
+            },
+        ],
+    };
 };
-export const formatQueryUser = {
+export const formatQueryUserWithAvatarData = {
     include: [
         {
             model: db.Avatar,
@@ -95,7 +107,7 @@ export const findUsers = (
             const { count, rows } = await db.User.findAndCountAll({
                 where: whereClause,
                 attributes,
-                ...formatQueryUser,
+                ...formatQueryUserWithAvatarData,
                 ...queries,
             });
 
@@ -201,7 +213,7 @@ export const getProfile = (partnerUsername, myId) =>
                     username: partnerUsername,
                 },
                 attributes,
-                ...formatQueryUser,
+                ...formatQueryUserWithAvatarData,
             });
             resolve(user);
         } catch (error) {
@@ -228,7 +240,7 @@ export const findOne = (user) =>
                 attributes: {
                     exclude: ['roleCode'],
                 },
-                ...formatQueryUserWithAtrr,
+                ...formatQueryUserWithRoleAndAvatarData(),
             });
             resolve(resp);
         } catch (error) {

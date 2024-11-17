@@ -2,7 +2,7 @@ import { literal, Op, where } from 'sequelize';
 import db from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
 import { query } from 'express';
-import { formatQueryUser } from './user';
+import { formatQueryUserWithAvatarData } from './user';
 export const getUsersInChatroom = (
     chatroomId,
     {
@@ -35,7 +35,7 @@ export const getUsersInChatroom = (
                         model: db.User,
                         as: 'memberData',
                         attributes: ['id', 'userName', 'fullName'],
-                        ...formatQueryUser,
+                        ...formatQueryUserWithAvatarData,
                         where: query,
                     },
                 ],
@@ -79,7 +79,7 @@ export const getChatroomsOfUser = (
                                 model: db.User,
                                 as: 'memberData',
                                 attributes: ['id', 'userName', 'fullName'],
-                                ...formatQueryUser,
+                                ...formatQueryUserWithAvatarData,
                             },
                         ],
                     },
