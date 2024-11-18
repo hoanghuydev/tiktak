@@ -1,12 +1,12 @@
-import * as userServices from '../services/user';
+import AvatarService from '../services/AvatarService';
+import { validateSchema } from '../utils/validateUtil';
+import { avatarSchema } from '../validators/avatarValidator';
 import {
-    alreadyExistRow,
-    badRequest,
-    internalServerError,
-    notFound,
-} from '../utils/handleResp';
-import UploadFile from '../utils/uploadFile';
-import * as avatarServices from '../services/avatar';
+    getUserByIdvalidator,
+    updatePeerIdValidator,
+    updateUserValidator,
+} from '../validators/userValidator';
+import UserService from '../services/UserService';
 class UserController {
     /**
      * Find users with pagination and sorting options.
@@ -23,11 +23,13 @@ class UserController {
      */
     async findUser(req, res, next) {
         try {
-            let users = await userServices.findUsers(req.query, req.user?.id);
+            const resp = await UserService.findUsersByName(
+                req.query,
+                req.user?.id
+            );
             return res.status(200).json({
                 err: 0,
-                mes: '',
-                ...users,
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -35,13 +37,10 @@ class UserController {
     }
     async me(req, res, next) {
         try {
-            const user = await userServices.findOne({ id: req.user.id });
-            if (!user) return notFound('User not found', res);
-            user.password = '';
+            const resp = await UserService.findById(req.user.id);
             return res.status(200).json({
                 err: 0,
-                mes: 'Found user',
-                user,
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -50,12 +49,13 @@ class UserController {
     async getProfile(req, res, next) {
         try {
             const { username } = req.params;
-            const user = await userServices.getProfile(username, req.user?.id);
-            if (!user) return badRequest('Not found user', res);
+            const resp = await UserService.getProfileByUsername(
+                username,
+                req.user?.id
+            );
             return res.status(200).json({
                 err: 0,
-                mes: 'Get profile successfull',
-                user,
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -63,13 +63,11 @@ class UserController {
     }
     async getUser(req, res, next) {
         try {
-            const user = await userServices.findOne({ id: req.params.userId });
-            if (!user) return notFound('User not found', res);
-            user.password = '';
+            await validateSchema(getUserByIdvalidator, req.params);
+            const resp = await UserService.findById({ id: req.params.userId });
             return res.status(200).json({
                 err: 0,
-                mes: 'Found user',
-                user,
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -77,63 +75,27 @@ class UserController {
     }
     async updatePeerId(req, res, next) {
         try {
+            await validateSchema(updatePeerIdValidator, req.body);
             const { peerId } = req.body;
-            const resp = await userServices.updateUser({ peerId }, req.user.id);
-            if (resp)
-                userServices.findOne({ id: userId }).then((userData) => {
-                    return res.status(200).json({
-                        err: 0,
-                        mes: 'Updated peer id ' + userId,
-                        user: userData,
-                    });
-                });
-            else return badRequest('Cannot update peer id', res);
+            const resp = await UserService.updatePeerId(peerId, req.user.id);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
+            });
         } catch (error) {
             next(error);
         }
     }
     async updateAvatar(req, res, next) {
         try {
-            if (!req.file) return badRequest('Please choose avatar', res);
-            const avatarImage = req.file.buffer;
+            const avatarImage = req.file?.buffer;
             const { userId } = req.params;
-
-            const user = await userServices.findOne({
-                id: userId,
+            await validateSchema(avatarSchema, { avatarImage, userId });
+            const resp = await AvatarService.updateAvatar(avatarImage, userId);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
             });
-            const oldPublicId = user.avatarData.publicId;
-
-            if (user.avatarData.code != process.env.CODE_DEFAULT_AVATAR) {
-                await UploadFile.removeFromCloudinary(
-                    process.env.IMAGE_TYPE_FILE,
-                    oldPublicId
-                );
-            }
-            const avatarUploaded = await UploadFile.uploadToCloudinary(
-                avatarImage,
-                process.env.IMAGE_TYPE_FILE,
-                process.env.CLOUDINARY_FOLDER_AVATAR
-            );
-            const avatarModel = {
-                publicId: avatarUploaded.id,
-                url: avatarUploaded.url,
-                code: 'avatarOfUser' + userId,
-            };
-            await avatarServices
-                .updateAvatar(oldPublicId, userId, avatarModel)
-                .then((resp) => {
-                    if (resp) {
-                        userServices
-                            .findOne({ id: userId })
-                            .then((userData) => {
-                                return res.status(200).json({
-                                    err: 0,
-                                    mes: 'Uploaded avatar of user ' + userId,
-                                    user: userData,
-                                });
-                            });
-                    } else return badRequest('Something error occurred');
-                });
         } catch (error) {
             next(error);
         }
@@ -141,53 +103,25 @@ class UserController {
     async removeAvatar(req, res, next) {
         try {
             const { userId } = req.params;
-
-            const user = await userServices.findOne({ id: userId });
-            const publicId = user.avatarData.publicId;
-            if (publicId == process.env.PUBLIC_ID_DEFAULT_AVATAR)
-                return badRequest('Not have avatar to remove', res);
-            const removeAvatar = await avatarServices.removeAvatar(
-                userId,
-                publicId
-            );
-
-            if (removeAvatar) {
-                await UploadFile.removeFromCloudinary(
-                    process.env.IMAGE_TYPE_FILE,
-                    publicId
-                );
-                return res.status(200).json({
-                    err: 0,
-                    mes: 'Removed avatar',
-                });
-            } else return badRequest('Remove avatar failed', res);
+            const resp = await AvatarService.removeAvatar(userId);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
+            });
         } catch (error) {
             next(error);
         }
     }
     async updateUser(req, res, next) {
         try {
-            const { userName, fullName, bio } = req.body;
-            if (!userName && !fullName && !bio)
-                return badRequest('Missing payload', res);
-            const updateData = {};
             const { userId } = req.params;
-            if (userName) {
-                const existUser = await userServices.findOne({ userName });
-                if (existUser)
-                    return alreadyExistRow('Username already exists', res);
-                updateData.userName = userName;
-            }
-            if (fullName) updateData.fullName = fullName;
-            if (bio) updateData.bio = bio;
-
-            const user = await userServices.updateUser(updateData, userId);
-            if (user)
-                return res.status(200).json({
-                    err: 0,
-                    mes: 'Updated user',
-                });
-            else return badRequest('Not found user', res);
+            await validateSchema(updateUserValidator, req.body);
+            const resp = await UserService.updateUserInfo(req.body, userId);
+            return res.status(200).json({
+                err: 0,
+                mes: resp.message,
+                user: resp.user,
+            });
         } catch (error) {
             next(error);
         }

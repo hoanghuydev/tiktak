@@ -7,7 +7,7 @@ export const pagingConfig = (
     const pageNumber = Math.max(1, +page);
     const limit = Math.max(1, +pageSize) || 10;
     const offset = (pageNumber - 1) * limit;
-    const queries = {
+    const paginationQuery = {
         raw: true,
         nest: true,
         orderBy,
@@ -18,9 +18,9 @@ export const pagingConfig = (
         order: [[orderBy, orderDirection]],
     };
 
-    return queries;
+    return paginationQuery;
 };
-export const paginationResponse = (queries, pageSize, page, count) => {
+export const paginationResponse = (paginationQuery, pageSize, page, count) => {
     const totalItems = count;
     const totalPages =
         totalItems / pageSize >= 1 ? Math.ceil(totalItems / pageSize) : 1;
@@ -28,10 +28,9 @@ export const paginationResponse = (queries, pageSize, page, count) => {
     const hasPreviousPage = page > 1;
     return {
         pagination: {
-            orderBy: queries.orderBy,
-            page: queries.page,
-            pageSize: queries.limit,
-            orderDirection: queries.orderDirection,
+            page: paginationQuery.page,
+            pageSize: paginationQuery.limit,
+            orderDirection: paginationQuery.orderDirection,
             totalItems,
             totalPages,
             hasNextPage,

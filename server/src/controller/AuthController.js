@@ -1,8 +1,8 @@
 // controllers/AuthController.js
-import authService from '../services/AuthService';
-import tokenService from '../services/TokenService';
-import oauthService from '../services/OAuthService';
-import userRepository from '../repositories/UserRepository';
+import AuthService from '../services/AuthService';
+import TokenService from '../services/TokenService';
+import OauthService from '../services/OAuthService';
+import UserRepository from '../repositories/UserRepository';
 import createError from 'http-errors';
 import { validateSchema } from '../utils/validateUtil';
 import {
@@ -17,7 +17,7 @@ class AuthController {
             await validateSchema(registerSchema, req.body, res, next);
             const { email, fullName, userName, password, association } =
                 req.body;
-            const response = await authService.register({
+            const response = await AuthService.register({
                 email,
                 fullName,
                 userName,
@@ -38,7 +38,7 @@ class AuthController {
         try {
             await validateSchema(verifySchema, req.body, res, next);
             const { email, otp } = req.body;
-            const response = await authService.verifyAccount({ email, otp });
+            const response = await AuthService.verifyAccount({ email, otp });
             return res.status(200).json({
                 err: 0,
                 mes: response.message,
@@ -52,17 +52,17 @@ class AuthController {
         try {
             await validateSchema(loginSchema, req.body, res, next);
             const { emailOrUsername, password } = req.body;
-            const { user } = await authService.login({
+            const { user } = await AuthService.login({
                 emailOrUsername,
                 password,
             });
 
             // Tạo token
-            const accessToken = tokenService.generateAccessToken(user);
-            const refreshToken = tokenService.generateRefreshToken(user);
+            const accessToken = TokenService.generateAccessToken(user);
+            const refreshToken = TokenService.generateRefreshToken(user);
 
             // Lưu refresh token vào Redis
-            await tokenService.setRefreshTokenToRedis(refreshToken, user.id);
+            await TokenService.setRefreshTokenToRedis(refreshToken, user.id);
 
             // Gửi refresh token qua cookie
             res.cookie('refreshToken', refreshToken, {
@@ -86,7 +86,7 @@ class AuthController {
         try {
             const user = req.user;
             if (user) {
-                await tokenService.removeRefreshTokenFromRedis(user.id);
+                await TokenService.removeRefreshTokenFromRedis(user.id);
             }
             res.clearCookie('refreshToken');
             return res.status(200).json({
@@ -101,7 +101,7 @@ class AuthController {
     async OAuth2(req, res, next) {
         try {
             const user = req.user;
-            const refreshToken = await oauthService.handleOAuth2(user);
+            const refreshToken = await OauthService.handleOAuth2(user);
 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
@@ -125,38 +125,27 @@ class AuthController {
             if (!refreshToken) {
                 throw createError.Unauthorized("You're not authenticated");
             }
-
             // Xác thực refresh token
-            const decoded = await tokenService.verifyToken(refreshToken);
-            const user = await userRepository.findById(decoded.id);
-
-            if (!user) {
-                throw createError.Unauthorized('User not found');
-            }
-
-            const storedToken = await tokenService.getStoredRefreshToken(
+            const decoded = await TokenService.verifyToken(refreshToken);
+            const user = await UserRepository.findById(decoded.id);
+            if (!user) throw createError.Unauthorized('User not found');
+            const storedToken = await TokenService.getStoredRefreshToken(
                 user.id
             );
-
-            if (storedToken !== refreshToken) {
+            if (storedToken !== refreshToken)
                 throw createError.Unauthorized('Refresh token is not valid');
-            }
-
             // Tạo token mới
-            const newAccessToken = tokenService.generateAccessToken(user);
-            const newRefreshToken = tokenService.generateRefreshToken(user);
-
+            const newAccessToken = TokenService.generateAccessToken(user);
+            const newRefreshToken = TokenService.generateRefreshToken(user);
             // Cập nhật refresh token trong Redis
-            await tokenService.removeRefreshTokenFromRedis(user.id);
-            await tokenService.setRefreshTokenToRedis(newRefreshToken, user.id);
-
+            await TokenService.removeRefreshTokenFromRedis(user.id);
+            await TokenService.setRefreshTokenToRedis(newRefreshToken, user.id);
             // Gửi refresh token mới qua cookie
             res.cookie('refreshToken', newRefreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 path: '/',
             });
-
             return res.status(200).json({
                 err: 0,
                 mes: 'Successfully',

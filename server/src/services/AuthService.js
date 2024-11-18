@@ -2,14 +2,14 @@
 import bcrypt from 'bcrypt';
 import otpGenerator from 'otp-generator';
 import createError from 'http-errors';
-import userRepository from '../repositories/UserRepository';
-import otpRepository from '../repositories/OtpRepository';
+import UserRepository from '../repositories/UserRepository';
+import OtpRepository from '../repositories/OtpRepository';
 import { sendMail, otpTemplateMail } from '../utils/MailUtil';
 
 class AuthService {
     async register({ email, fullName, userName, password, association }) {
         // Tạo người dùng
-        const [user, created] = await userRepository.findOrCreateUser({
+        const [user, created] = await UserRepository.findOrCreateUser({
             email,
             fullName,
             userName,
@@ -27,7 +27,7 @@ class AuthService {
             specialChars: false,
             digits: true,
         });
-        await otpRepository.createOtp({ email, otp });
+        await OtpRepository.createOtp({ email, otp });
 
         // Gửi email OTP
         // await sendMail(
@@ -39,14 +39,13 @@ class AuthService {
 
         // Trả về kết quả
         return {
-            message:
-                'Registered successfully, Your OTP has been sent to email address. OTP will be expired in 5 minutes',
+            mes: 'Registered successfully, Your OTP has been sent to email address. OTP will be expired in 5 minutes',
             user: { ...user.dataValues, password: undefined },
         };
     }
 
     async verifyAccount({ email, otp }) {
-        const otpRecord = await otpRepository.findByEmailAndOtp(email, otp);
+        const otpRecord = await OtpRepository.findByEmailAndOtp(email, otp);
         if (!otpRecord) {
             throw createError.BadRequest('OTP is not valid or expired');
         }
@@ -59,16 +58,16 @@ class AuthService {
         }
 
         // Cập nhật trạng thái xác thực người dùng
-        await userRepository.updateUser({ isVertified: true }, email);
+        await UserRepository.updateUser({ isVertified: true }, { email });
 
         // Xóa OTP sau khi xác thực
-        await otpRepository.deleteOtp(email, otp);
+        await OtpRepository.deleteOtp(email, otp);
 
-        return { message: 'Verified successfully, now you can login' };
+        return { mes: 'Verified successfully, now you can login' };
     }
 
     async login({ emailOrUsername, password }) {
-        const user = await userRepository.findByEmailOrUsername(
+        const user = await UserRepository.findByEmailOrUsername(
             emailOrUsername
         );
         if (!user) {

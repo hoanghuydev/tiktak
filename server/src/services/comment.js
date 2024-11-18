@@ -149,7 +149,7 @@ export const getComments = (
             });
             resolve({
                 comments: rows,
-                ...paginationResponse(queries, pageSize, page, count),
+                ...paginationResponse(pagingQuery, pageSize, page, count),
             });
         } catch (error) {
             reject(error);
