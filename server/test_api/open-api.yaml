@@ -89,7 +89,7 @@ paths:
                                                 type: string
                                                 example: '2024-06-17T18:44:20.839Z'
 
-    /auth/vertify-email:
+    /auth/Verify-email:
         post:
             summary: Verify email address after registration
             tags: [Auth]

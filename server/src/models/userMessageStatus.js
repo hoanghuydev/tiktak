@@ -36,7 +36,8 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: 'UserMessageStatus',
             tableName: 'user_message_status',
-            timestamps: false,
+            timestamps: true,
+            paranoid: true,
         }
     );
 

@@ -30,6 +30,8 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: 'UserInChatroom',
             tableName: 'usersinchatroom',
+            timestamps: true,
+            paranoid: true,
         }
     );
     return UserInChatroom;

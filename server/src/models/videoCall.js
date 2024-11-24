@@ -55,6 +55,8 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: 'VideoCall',
             tableName: 'video_calls',
+            timestamps: true,
+            paranoid: true,
         }
     );
 

@@ -1,4 +1,4 @@
-import { literal, Op } from 'sequelize';
+import { literal, Op, where } from 'sequelize';
 import db from '../models';
 import {
     formatQueryUserWithAvatarData,
@@ -35,28 +35,28 @@ class UserRepository {
         if (viewerId) {
             userAttributes.push(
                 [
-                    literal(`(
-                    SELECT EXISTS (
+                    literal(`
+                    EXISTS (
                         SELECT 1
                         FROM followers f
                         WHERE 
-                            f.follower = ${myId} 
+                            f.follower = ${viewerId} 
                             AND User.id = f.followee
                     )
-                    )`),
+                    `),
                     'isFollow',
                 ],
                 [
-                    literal(`(
-                    SELECT EXISTS (
-                        SELECT 1 FROM followers f1 
-                        JOIN followers f2 ON f1.follower = f2.followee 
-                        AND f1.followee = f2.follower
-                         WHERE f1.follower = ${viewerId} 
-                         AND f1.followee = User.id
+                    literal(`
+                    EXISTS 
+                        (
+                            SELECT 1 FROM followers f1 
+                            JOIN followers f2 ON f1.follower = f2.followee 
+                            AND f1.followee = f2.follower
+                            WHERE f1.follower = ${viewerId} 
+                            AND f1.followee = User.id
                         ) 
-                        AS isFriend
-                  )`),
+                  `),
                     'isFriend',
                 ]
             );
@@ -97,6 +97,11 @@ class UserRepository {
             ...formatQueryUserWithRoleAndAvatarData(),
         });
     }
+    async remove(id) {
+        return await db.User.destroy({
+            where: { id },
+        });
+    }
     async findUserByAttributes(filter, fields = null) {
         return await db.User.findOne({
             where: filter,
@@ -120,11 +125,10 @@ class UserRepository {
     }
 
     async updateUser(data, filter) {
-        const [, userUpdated] = await db.User.update(data, {
+        const update = await db.User.update(data, {
             where: filter,
-            returning: true,
         });
-        return this.findOne(filter);
+        return update[0] ? this.findOne(filter) : null;
     }
     async findOrCreateUser(data) {
         return await db.User.findOrCreate({

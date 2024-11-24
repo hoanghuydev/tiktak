@@ -38,9 +38,10 @@ class AuthService {
         // );
 
         // Trả về kết quả
+        const { password: _, ...other } = user.dataValues;
         return {
             mes: 'Registered successfully, Your OTP has been sent to email address. OTP will be expired in 5 minutes',
-            user: { ...user.dataValues, password: undefined },
+            user: { other },
         };
     }
 
@@ -80,8 +81,9 @@ class AuthService {
         if (!isPasswordValid) {
             throw createError.BadRequest('Password is incorrect');
         }
+        const { password: _, ...other } = user.dataValues;
 
-        return { user };
+        return { user: other };
     }
 }
 

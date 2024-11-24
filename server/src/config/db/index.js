@@ -1,4 +1,7 @@
 const dotenv = require('dotenv');
+import path from 'path';
+import fs from 'fs';
+import { log } from 'console';
 dotenv.config();
 const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize(
@@ -11,6 +14,7 @@ const sequelize = new Sequelize(
         logging: false,
     }
 );
+
 async function getConnection() {
     try {
         await sequelize.authenticate();
@@ -19,4 +23,14 @@ async function getConnection() {
         console.error('Unable to connect to the database:', error);
     }
 }
-module.exports = { getConnection };
+
+// Hàm dùng để đồng bộ model từ code sang mysql
+async function syncDb() {
+    try {
+        await sequelize.sync({ alter: true });
+        console.log('All models synchronized successfully.');
+    } catch (error) {
+        console.error('Error synchronizing models:', error);
+    }
+}
+module.exports = { getConnection, syncDb };

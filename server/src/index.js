@@ -6,7 +6,7 @@ const port = 8000;
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-const { getConnection } = require('./config/db');
+const { getConnection, syncDb } = require('./config/db');
 import route from './routes';
 import startCron from './cron';
 startCron();
@@ -14,9 +14,11 @@ dotenv.config();
 require('./config/oauth/passport');
 import client from './config/db/redis';
 import { globalErrorHandler } from './middleware/errorHandler';
+import applyGatewayLimiter from './middleware/rateLimiter/gatewayLimiter';
 const { Server } = require('socket.io');
 const handleSocket = require('./socket');
 getConnection();
+
 app.use(
     cors({
         origin: ['http://localhost:5173', 'http://localhost:8000'], // 8000 is port of mobile client, 5173 is port of web
@@ -38,6 +40,7 @@ const io = new Server(server, {
         credentials: true,
     },
 });
+app.use(applyGatewayLimiter());
 app.use((req, res, next) => {
     res.io = io;
     next();

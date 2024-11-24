@@ -51,6 +51,10 @@ module.exports = {
                     'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
                 ),
             },
+            deletedAt: {
+                allowNull: false,
+                type: 'TIMESTAMP',
+            },
         });
 
         // Create an index on `user_id` column for faster lookups

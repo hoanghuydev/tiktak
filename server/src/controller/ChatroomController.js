@@ -7,18 +7,21 @@ import * as chatroomServices from '../services/chatroom';
 import * as followerServices from '../services/follower';
 import * as userInChatroomServices from '../services/userInChatroom';
 import { chat } from 'googleapis/build/src/apis/chat';
+import ChatroomService from '../services/ChatroomService';
+import { validateSchema } from '../utils/validateUtil';
+import { createChatroomSchema } from '../validators/chatroomValidator';
 class ChatroomController {
     async getUsersInChatroom(req, res, next) {
         try {
             const { chatroomId } = req.params;
-            const users = await chatroomServices.getUsersInChatroom(
-                chatroomId,
-                req.query
+            const resp = await ChatroomService.getUsersInChatroom(
+                req.query,
+                chatroomId
             );
             return res.status(200).json({
                 err: 0,
-                mes: '',
-                ...users,
+                mes: 'Successfully retrieved users',
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -27,14 +30,14 @@ class ChatroomController {
     async getChatroomsOfUser(req, res, next) {
         try {
             const { userId } = req.params;
-            const chatrooms = await chatroomServices.getChatroomsOfUser(
-                userId,
-                req.query
+            const resp = await ChatroomService.getChatroomsByUserId(
+                req.query,
+                userId
             );
             return res.status(200).json({
                 err: 0,
-                mes: '',
-                ...chatrooms,
+                mes: 'Get chatrooms successfully',
+                ...resp,
             });
         } catch (error) {
             next(error);
@@ -42,16 +45,24 @@ class ChatroomController {
     }
     async getChatroom(req, res, next) {
         try {
-            const chatroom = await chatroomServices.getChatroom({
-                id: req.params.chatroomId,
+            const { chatroomId } = req.params;
+            const resp = await ChatroomService.getChatroomById(chatroomId);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
             });
-            if (chatroom)
-                return res.status(200).json({
-                    err: 0,
-                    mes: '',
-                    chatroom,
-                });
-            else return badRequest('Not found chatroom', res);
+        } catch (error) {
+            next(error);
+        }
+    }
+    async createChatroom(req, res, next) {
+        try {
+            await validateSchema(createChatroomSchema, req.body);
+            const resp = await ChatroomService.createChatroom(req.body.name);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
+            });
         } catch (error) {
             next(error);
         }
@@ -59,10 +70,8 @@ class ChatroomController {
     async addUserIntoChatroom(req, res, next) {
         try {
             const { userId, chatroomId } = req.params;
-            await userInChatroomServices.addUserIntoChatroom(
-                userId,
-                chatroomId
-            );
+
+            await ChatroomService.addUserIntoChatroom(userId, chatroomId);
             return res.status(200).json({
                 err: 0,
                 mes: 'Added use into chatroom',
@@ -74,14 +83,22 @@ class ChatroomController {
     async removeUserFromChatroom(req, res, next) {
         try {
             const { userId, chatroomId } = req.params;
-
-            await userInChatroomServices.removeUserFromChatroom(
-                userId,
-                chatroomId
-            );
+            await ChatroomService.removeUserFromChatroom(userId, chatroomId);
             return res.status(200).json({
                 err: 0,
                 mes: 'Removed user from chatroom',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+    async removeChatroom(req, res, next) {
+        try {
+            const { chatroomId } = req.params;
+            await ChatroomService.removeChatroom(chatroomId);
+            return res.status(200).json({
+                err: 0,
+                mes: 'Removed chatroom',
             });
         } catch (error) {
             next(error);

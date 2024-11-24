@@ -119,8 +119,19 @@ class UserController {
             const resp = await UserService.updateUserInfo(req.body, userId);
             return res.status(200).json({
                 err: 0,
-                mes: resp.message,
-                user: resp.user,
+                ...resp,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+    async removeUser(req, res, next) {
+        try {
+            const { userId } = req.params;
+            const resp = await UserService.removeUser(userId);
+            return res.status(200).json({
+                err: 0,
+                ...resp,
             });
         } catch (error) {
             next(error);

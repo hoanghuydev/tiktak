@@ -25,6 +25,10 @@ module.exports = {
                 type: Sequelize.BOOLEAN,
                 defaultValue: false,
             },
+            deletedAt: {
+                allowNull: false,
+                type: 'TIMESTAMP',
+            },
         });
 
         // Add a unique composite primary key on (user_id, message_id)

@@ -16,5 +16,7 @@ router.post(
     UserController.updateAvatar
 );
 router.delete('/avatar/:userId', Auth.isSeftUser, UserController.removeAvatar);
+router.delete('/:userId', Auth.isSeftUser, UserController.removeUser);
+
 router.put('/:userId', Auth.isSeftUser, UserController.updateUser);
 module.exports = router;

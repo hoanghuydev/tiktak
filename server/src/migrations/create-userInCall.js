@@ -45,6 +45,10 @@ module.exports = {
                 defaultValue: Sequelize.NOW,
                 onUpdate: Sequelize.NOW,
             },
+            deletedAt: {
+                allowNull: false,
+                type: 'TIMESTAMP',
+            },
         });
     },
 

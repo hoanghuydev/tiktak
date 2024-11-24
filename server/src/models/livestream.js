@@ -26,6 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: 'Livestream',
+            timestamps: true,
+            paranoid: true,
         }
     );
     return Livestream;

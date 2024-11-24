@@ -3,7 +3,15 @@ const passport = require('passport');
 const router = express.Router();
 import AuthController from '../controller/AuthController';
 import Auth from '../middleware/auth';
-router.post('/register', AuthController.register);
+import applyServiceLimiter from '../middleware/rateLimiter/serviceLimiter';
+import generateRateLimiterKey from '../utils/generateRateLimiterKey';
+router.post(
+    '/register',
+    applyServiceLimiter('REGISTRATION', (req) =>
+        generateRateLimiterKey(req, 'ip')
+    ),
+    AuthController.register
+);
 router.get(
     '/google',
     passport.authenticate('google', {
@@ -20,7 +28,17 @@ router.get(
     passport.authenticate('github', { scope: ['user:email'] })
 );
 router.get('/github/callback', Auth.authGithub, AuthController.OAuth2);
-router.post('/vertify-email', AuthController.verifyAccount);
-router.post('/login', AuthController.login);
+router.post(
+    '/verify-email',
+    applyServiceLimiter('VERIFY_EMAIL', (req) =>
+        generateRateLimiterKey(req, 'ip')
+    ),
+    AuthController.verifyAccount
+);
+router.post(
+    '/login',
+    applyServiceLimiter('LOGIN', (req) => generateRateLimiterKey(req, 'ip')),
+    AuthController.login
+);
 router.post('/token/refresh', AuthController.refreshToken);
 module.exports = router;

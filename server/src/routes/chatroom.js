@@ -13,6 +13,10 @@ router.get(
     ChatroomController.getUsersInChatroom
 );
 router.get('/:chatroomId', Auth.isInChatroom, ChatroomController.getChatroom);
+router.delete('/:chatroomId', Auth.isAdmin, ChatroomController.removeChatroom);
+
+router.post('/', Auth.isAdmin, ChatroomController.createChatroom);
+
 router.post(
     '/:chatroomId/user/:userId',
     Auth.isInChatroom,

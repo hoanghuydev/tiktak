@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: 'Otp',
+            timestamps: true,
+            paranoid: true,
         }
     );
     return Otp;

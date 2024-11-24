@@ -3,7 +3,7 @@ import AuthService, {
   AuthPayload,
   LoginParams,
   RegisterParams,
-  VertifyParams,
+  VerifyParams,
 } from './authService';
 import { UserModel } from '@/models/user';
 import { Bounce, toast } from 'react-toastify';
@@ -39,8 +39,8 @@ export const login = createAsyncThunk(
   }
 );
 export const verifyAccount = createAsyncThunk(
-  'auth/vertify',
-  async (verifyInfo: VertifyParams, thunkAPI) => {
+  'auth/Verify',
+  async (verifyInfo: VerifyParams, thunkAPI) => {
     try {
       return await AuthService.verifyAccount(verifyInfo);
     } catch (error: any) {

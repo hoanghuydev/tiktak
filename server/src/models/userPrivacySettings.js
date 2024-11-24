@@ -52,6 +52,8 @@ module.exports = (sequelize, DataTypes) => {
             modelName: 'UserPrivacySetting',
             tableName: 'user_privacy_settings',
             underscored: true,
+            timestamps: true,
+            paranoid: true,
         }
     );
 

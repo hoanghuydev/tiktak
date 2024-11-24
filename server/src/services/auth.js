@@ -33,7 +33,7 @@ export const register = (
             reject(error);
         }
     });
-export const vertifyAccount = (email, otp) =>
+export const verifyAccount = (email, otp) =>
     new Promise((resolve, reject) => {
         try {
             const resp = db.Otp.findOne({

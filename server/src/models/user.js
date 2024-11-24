@@ -55,6 +55,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: 'User',
+            timestamps: true,
+            paranoid: true,
         }
     );
     User.beforeCreate(async (user, options) => {

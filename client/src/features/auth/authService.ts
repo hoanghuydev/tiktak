@@ -10,7 +10,7 @@ export interface RegisterParams {
   password: string;
   userName: string;
 }
-export interface VertifyParams {
+export interface VerifyParams {
   email: string;
   otp: string;
 }
@@ -53,7 +53,7 @@ const AuthService = {
     });
   },
 
-  async verifyAccount({ email, otp }: VertifyParams) {
+  async verifyAccount({ email, otp }: VerifyParams) {
     return new Promise(async (resolve, reject) => {
       try {
         const resp = await axiosNoToken.post(routePath + '/verify-email', {

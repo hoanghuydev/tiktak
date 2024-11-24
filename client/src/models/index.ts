@@ -4,7 +4,6 @@ export interface AbstractModel {
   updatedAt: Date | number | string;
 }
 export interface PaginationModel {
-  orderBy: string;
   page: number;
   pageSize: number;
   orderDirection: string;

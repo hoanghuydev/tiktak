@@ -59,5 +59,13 @@ class UserService {
             user,
         };
     }
+    async removeUser(userId) {
+        const user = await UserRepository.remove(userId);
+        if (!user) throw createError.BadRequest('Not found user');
+        return {
+            mes: 'Removed user successfully',
+            user,
+        };
+    }
 }
 export default new UserService();
