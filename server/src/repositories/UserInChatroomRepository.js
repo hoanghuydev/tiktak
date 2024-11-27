@@ -1,8 +1,11 @@
-import { literal, Op } from 'sequelize';
+import { literal, Op, where } from 'sequelize';
 import db from '../models';
 import { paginationResponse, pagingConfig } from '../utils/pagination';
 
 class UserInChatroomRepository {
+    async findOne(filter) {
+        return await db.UserInChatroom.findOne({ where: filter });
+    }
     async getUsersInChatroomByChatoomId(
         { page, pageSize, orderBy, orderDirection },
         chatroomId

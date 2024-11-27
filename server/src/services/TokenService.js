@@ -1,4 +1,3 @@
-// services/tokenService.js
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';

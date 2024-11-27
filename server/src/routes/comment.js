@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-import CommentController from '../controller/CommentController';
+import CommentController from '../controllers/CommentController';
 import Auth from '../middleware/auth';
 // Get comment
 router.get(

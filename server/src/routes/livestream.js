@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 import Auth from '../middleware/auth';
-import MessageController from '../controller/MessageController';
+import MessageController from '../controllers/MessageController';
 router.get(
     '/:chatroomId',
     Auth.isInChatroom,

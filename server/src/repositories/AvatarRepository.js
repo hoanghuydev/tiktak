@@ -1,21 +1,27 @@
-class AvatarRepository {
+import AbstractRepository from '@repositories/AbstractRepository';
+import db from '@models'; // Sequelize models
+
+class AvatarRepository extends AbstractRepository {
+    constructor() {
+        super(db.Avatar);
+    }
+
     async createAvatar(data) {
         const { publicId, url, code } = data;
-        return await db.Avatar.create({ publicId, url, code });
+        return await this.model.create({ publicId, url, code });
     }
+
     async updateAvatar(data, filter) {
         const { publicId, url, code } = data;
-        return await db.Avatar.update(
+        return await this.model.update(
             { publicId, url, code },
-            {
-                where: filter,
-            }
+            { where: filter }
         );
     }
+
     async deleteAvatar(filter) {
-        return await db.Avatar.destroy({
-            where: filter,
-        });
+        return await this.model.destroy({ where: filter });
     }
 }
+
 export default new AvatarRepository();

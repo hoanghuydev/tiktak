@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-import EditVideoController from '../controller/EditVideoController';
+import EditVideoController from '../controllers/EditVideoController';
 import Auth from '../middleware/auth';
 router.get('/fonts', Auth.setUser, EditVideoController.getListFonts);
 router.post('/fonts/new', Auth.isAdmin, EditVideoController.addNewFont);

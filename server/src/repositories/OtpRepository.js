@@ -2,7 +2,8 @@ import { Op } from 'sequelize';
 import db from '../models';
 
 class OtpRepository {
-    async findByEmailAndOtp(email, otp) {
+    async findOne(filter) {
+        const { email, otp } = filter;
         return await db.Otp.findOne({
             where: {
                 [Op.and]: [{ email }, { otp }],
@@ -17,6 +18,7 @@ class OtpRepository {
     async deleteOtp(email, otp) {
         return await db.Otp.destroy({
             where: { email, otp },
+            force: true,
         });
     }
 }

@@ -26,5 +26,4 @@ const applyGatewayLimiter = () => {
             });
     };
 };
-
-export default applyGatewayLimiter;
+module.exports = applyGatewayLimiter;

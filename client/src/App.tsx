@@ -1,11 +1,11 @@
 import './App.css';
-import Auth from './site/Login';
+import Auth from '@site/login/Login.tsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { RouteType, privateRoutes, publicRoutes } from './routes';
 import DefaultLayout from './components/Layout/DefaultLayout';
-import Page404 from './site/Page404';
+import Page404 from '@site/page404/Page404.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { currentUserSelector } from './redux/selector';
 import { useEffect, useState } from 'react';

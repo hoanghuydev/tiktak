@@ -16,6 +16,7 @@
         "joi": "^17.12.1",
         "jsonwebtoken": "^9.0.2",
         "mkdirp": "^3.0.1",
+        "module-alias": "^2.2.3",
         "monent": "^0.0.2-security",
         "multer": "^1.4.5-lts.1",
         "mysql2": "^3.9.1",
@@ -36,13 +37,26 @@
         "yup": "^1.4.0"
     },
     "scripts": {
-        "start": "nodemon --exec babel-node ./src/index.js",
-        "debug": "nodemon --inspect --exec babel-node ./src/index.js"
+        "start": "nodemon --exec babel-node -r module-alias/register ./src/index.js",
+        "debug": "nodemon --inspect --exec babel-node -r module-alias/register ./src/index.js"
     },
     "devDependencies": {
         "@babel/core": "^7.23.9",
         "@babel/node": "^7.23.9",
         "@babel/preset-env": "^7.23.9",
         "sequelize-cli": "^6.6.2"
+    },
+    "_moduleAliases": {
+        "@": "src",
+        "@controller": "src/controller",
+        "@models": "src/models",
+        "@utils": "src/utils",
+        "@config": "src/config",
+        "@utils": "src/utils",
+        "@repositories": "src/repositories",
+        "@services": "src/services",
+        "@model": "src/model",
+        "@commands": "src/commands",
+        "@queries": "src/queries"
     }
 }

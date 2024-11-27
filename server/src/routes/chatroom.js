@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-import ChatroomController from '../controller/ChatroomController';
+import ChatroomController from '../controllers/ChatroomController';
 import Auth from '../middleware/auth';
 router.get(
     '/user/:userId',

@@ -1,23 +1,25 @@
 const express = require('express');
-import cors from 'cors';
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const app = express();
-const port = 8000;
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
 const { getConnection, syncDb } = require('./config/db');
 import route from './routes';
 import startCron from './cron';
-startCron();
-dotenv.config();
-require('./config/oauth/passport');
-import client from './config/db/redis';
-import { globalErrorHandler } from './middleware/errorHandler';
-import applyGatewayLimiter from './middleware/rateLimiter/gatewayLimiter';
+import './config/oauth/passport';
+const client = require('./config/db/redis');
+const { globalErrorHandler } = require('./middleware/errorHandler');
+const applyGatewayLimiter = require('./middleware/rateLimiter/gatewayLimiter');
 const { Server } = require('socket.io');
 const handleSocket = require('./socket');
+require('module-alias/register');
+
+const app = express();
+const port = 8000;
+dotenv.config();
 getConnection();
+startCron();
+app.use(cookieParser());
 
 app.use(
     cors({
@@ -27,6 +29,8 @@ app.use(
 );
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+app.use(applyGatewayLimiter());
 
 const server = app.listen(port, function () {
     console.log('Server listening on port ' + port);
@@ -40,7 +44,7 @@ const io = new Server(server, {
         credentials: true,
     },
 });
-app.use(applyGatewayLimiter());
+
 app.use((req, res, next) => {
     res.io = io;
     next();

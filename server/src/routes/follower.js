@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-import FollowerController from '../controller/FollowerController';
+import FollowerController from '../controllers/FollowerController';
 import Auth from '../middleware/auth';
 router.get(
     '/followers/:userId',
