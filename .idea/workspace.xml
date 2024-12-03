@@ -5,52 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="081ba208-b3a3-4d12-b792-9f36208f7518" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/androidTest/java/com/example/tiktokapp/ExampleInstrumentedTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/java/com/example/tiktokapp/MainActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/java/com/example/tiktokapp/ui/theme/Color.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/java/com/example/tiktokapp/ui/theme/Theme.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/java/com/example/tiktokapp/ui/theme/Type.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/drawable/ic_launcher_foreground.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/values/themes.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/xml/backup_rules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/main/res/xml/data_extraction_rules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/app/src/test/java/com/example/tiktokapp/ExampleUnitTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradle/libs.versions.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client_mobile/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.42c/conf.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Layout/components/DefaultLayout/LinkSidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Layout/components/DefaultLayout/LinkSidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/components/Layout/components/DefaultLayout/Sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/Layout/components/DefaultLayout/Sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/post/postService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/post/postService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/post/postSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/post/postSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/models/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/models/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/controller/PostController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/controller/PostController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server2/post-service/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thunder-collection_postman_Tiktok.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,9 +19,13 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\xampp8\php\php.exe" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -81,9 +44,30 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main"
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/New/Developer/Full Stack/Tiktok",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\New\Developer\Full Stack\Tiktok\server2\post-service" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -92,7 +76,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1718563937521</updated>
+      <workItem from="1733211415483" duration="1923000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
