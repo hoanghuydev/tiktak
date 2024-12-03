@@ -1,6 +1,8 @@
 /server/node_modules
 /server/.env
 /server/src/config/credentials.json
-
+/server/.idea
+/.idea
 /client/.env
 /client/node_modules
+/client/.idea
