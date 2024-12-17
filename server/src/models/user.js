@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
             password: DataTypes.STRING,
             association: DataTypes.STRING,
             avatarPublicId: DataTypes.STRING,
-            isVertified: DataTypes.BOOLEAN,
+            isVerified: DataTypes.BOOLEAN,
             peerId: DataTypes.STRING,
         },
         {

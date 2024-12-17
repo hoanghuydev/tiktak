@@ -1,11 +1,9 @@
-import tokenService from './TokenService';
-import userRepository from '../repositories/UserRepository';
+import TokenSerivce from './TokenService';
 
 class OAuthService {
     async handleOAuth2(user) {
-        const refreshToken = tokenService.generateRefreshToken(user);
-        await tokenService.setRefreshTokenToRedis(refreshToken, user.id);
-        return refreshToken;
+        const refreshToken = await TokenSerivce.generateRefreshToken(user);
+        return { refreshToken };
     }
 }
 

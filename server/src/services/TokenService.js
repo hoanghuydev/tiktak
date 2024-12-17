@@ -3,6 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import client from '../config/db/redis';
 import createError from 'http-errors';
+import CreateAccessTokenCommand from '@commands/token/CreateAccessTokenCommand';
+import CreateRefreshTokenCommand from '../commands/token/CreateRefreshTokenCommand';
+import DeleteRefreshToken from '../commands/token/DeleteRefreshToken';
+import GetRefreshTokenQuery from '../queries/token/GetRefreshTokenQuery';
 
 class TokenService {
     constructor() {
@@ -11,32 +15,12 @@ class TokenService {
         this.privateKey = fs.readFileSync(this.privateKeyPath, 'utf8');
         this.publicKey = fs.readFileSync(this.publicKeyPath, 'utf8');
     }
-
-    generateAccessToken(user) {
-        return (
-            'Bearer ' +
-            jwt.sign(
-                {
-                    id: user.id,
-                    email: user.email,
-                    roleValue: user.roleData.value,
-                },
-                this.privateKey,
-                { expiresIn: '2d', algorithm: 'RS256' }
-            )
-        );
+    async generateAccessToken(user) {
+        return await CreateAccessTokenCommand(user);
     }
 
-    generateRefreshToken(user) {
-        return jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                roleValue: user.roleData.value,
-            },
-            this.privateKey,
-            { expiresIn: '365d', algorithm: 'RS256' }
-        );
+    async generateRefreshToken(user) {
+        return await CreateRefreshTokenCommand(user);
     }
 
     async verifyToken(token) {
@@ -47,45 +31,19 @@ class TokenService {
         }
     }
 
-    async setRefreshTokenToRedis(token, userId) {
-        return new Promise(async (resolve, reject) => {
-            await client.set(
-                String(`refreshToken:userId:${userId}`),
-                token,
-                {
-                    EX: 356 * 24 * 60 * 60,
-                },
-                (err, reply) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                }
-            );
-            resolve(true);
-        });
-    }
-
     async removeRefreshTokenFromRedis(userId) {
-        const key = `refreshToken:userId:${userId}`;
         try {
-            await client.del(String(key));
-            return true;
+            return await DeleteRefreshToken(userId);
         } catch (err) {
-            throw createError.InternalServerError(
-                'Failed to remove refresh token'
-            );
+            throw createError.BadRequest('Failed to remove refresh token');
         }
     }
 
     async getStoredRefreshToken(userId) {
-        const key = `refreshToken:userId:${userId}`;
         try {
-            const reply = await client.get(String(key));
-            return reply;
+            return await GetRefreshTokenQuery(userId);
         } catch (err) {
-            throw createError.InternalServerError(
-                'Failed to get refresh token'
-            );
+            throw createError.BadRequest('Failed to get refresh token');
         }
     }
 }

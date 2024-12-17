@@ -12,4 +12,4 @@ class FindUserByEmailOrUsernameQuery {
         return user;
     }
 }
-export default new FindUserByEmailOrUsernameQuery();
+export default new FindUserByEmailOrUsernameQuery().execute;

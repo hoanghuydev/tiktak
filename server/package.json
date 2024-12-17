@@ -57,6 +57,7 @@
         "@services": "src/services",
         "@model": "src/model",
         "@commands": "src/commands",
-        "@queries": "src/queries"
+        "@queries": "src/queries",
+        "@validators": "src/validators"
     }
 }

@@ -1,16 +1,15 @@
 // controllers/AuthController.js
-import TokenService from '../services/TokenService';
-import OauthService from '../services/OAuthService';
-import UserRepository from '../repositories/UserRepository';
+import TokenService from '@services/TokenService';
+import OauthService from '@services/OAuthService';
+import UserRepository from '@repositories/UserRepository';
 import createError from 'http-errors';
-import { validateSchema } from '../utils/validateUtil';
+import { validateSchema } from '@utils/validateUtil';
 import {
     loginSchema,
     registerSchema,
     verifySchema,
-} from '../validators/authValidator';
-import AuthCommandService from '../services/auth/command/AuthCommandService';
-import AuthQueryService from '../services/auth/query/AuthQueryService';
+} from '@validators/authValidator';
+import AuthService from '@services/AuthService';
 
 class AuthController {
     async register(req, res, next) {
@@ -18,7 +17,7 @@ class AuthController {
             await validateSchema(registerSchema, req.body, res, next);
             const { email, fullName, userName, password, association } =
                 req.body;
-            const response = await AuthCommandService.register({
+            const { user } = await AuthService.register({
                 email,
                 fullName,
                 userName,
@@ -27,8 +26,8 @@ class AuthController {
             });
             return res.status(200).json({
                 err: 0,
-                mes: response.message,
-                user: response.user,
+                mes: 'Register user successfully',
+                user,
             });
         } catch (error) {
             next(error);
@@ -39,43 +38,34 @@ class AuthController {
         try {
             await validateSchema(verifySchema, req.body, res, next);
             const { email, otp } = req.body;
-            const response = await AuthCommandService.verifyAccount({
+            await AuthService.verifyAccount({
                 email,
                 otp,
             });
             return res.status(200).json({
                 err: 0,
-                mes: response.message,
+                mes: 'Verified account, now you available to login',
             });
         } catch (error) {
             next(error);
         }
     }
-
     async login(req, res, next) {
         try {
             await validateSchema(loginSchema, req.body, res, next);
             const { emailOrUsername, password } = req.body;
-            const { user } = await AuthQueryService.login({
-                emailOrUsername,
-                password,
-            });
-
-            // Tạo token
-            const accessToken = TokenService.generateAccessToken(user);
-            const refreshToken = TokenService.generateRefreshToken(user);
-
-            // Lưu refresh token vào Redis
-            await TokenService.setRefreshTokenToRedis(refreshToken, user.id);
-
-            // Gửi refresh token qua cookie
+            const { user, accessToken, refreshToken } = await AuthService.login(
+                {
+                    emailOrUsername,
+                    password,
+                }
+            );
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 path: '/',
             });
-
-            return res.status(200).json({
+            return response.status(200).json({
                 err: 0,
                 mes: 'Login successful',
                 user,
@@ -88,10 +78,7 @@ class AuthController {
 
     async logout(req, res, next) {
         try {
-            const user = req.user;
-            if (user) {
-                await TokenService.removeRefreshTokenFromRedis(user.id);
-            }
+            await AuthService.logout(req.user);
             res.clearCookie('refreshToken');
             return res.status(200).json({
                 err: 0,
@@ -105,7 +92,7 @@ class AuthController {
     async OAuth2(req, res, next) {
         try {
             const user = req.user;
-            const refreshToken = await OauthService.handleOAuth2(user);
+            const { refreshToken } = await OauthService.handleOAuth2(user);
 
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
@@ -125,27 +112,11 @@ class AuthController {
 
     async loginSuccess(req, res, next) {
         try {
-            const refreshToken = req.cookies.refreshToken;
-            if (!refreshToken) {
-                throw createError.Unauthorized("You're not authenticated");
-            }
-            // Xác thực refresh token
-            const decoded = await TokenService.verifyToken(refreshToken);
-            const user = await UserRepository.findById(decoded.id);
-            if (!user) throw createError.Unauthorized('User not found');
-            const storedToken = await TokenService.getStoredRefreshToken(
-                user.id
-            );
-            if (storedToken !== refreshToken)
-                throw createError.Unauthorized('Refresh token is not valid');
-            // Tạo token mới
-            const newAccessToken = TokenService.generateAccessToken(user);
-            const newRefreshToken = TokenService.generateRefreshToken(user);
-            // Cập nhật refresh token trong Redis
-            await TokenService.removeRefreshTokenFromRedis(user.id);
-            await TokenService.setRefreshTokenToRedis(newRefreshToken, user.id);
+            const { user, refreshToken, accessToken } =
+                await AuthService.loginSuccess(req.cookies.refreshToken);
+
             // Gửi refresh token mới qua cookie
-            res.cookie('refreshToken', newRefreshToken, {
+            res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 path: '/',
@@ -153,7 +124,7 @@ class AuthController {
             return res.status(200).json({
                 err: 0,
                 mes: 'Successfully',
-                accessToken: newAccessToken,
+                accessToken,
                 user,
             });
         } catch (error) {

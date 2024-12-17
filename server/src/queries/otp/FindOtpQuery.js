@@ -6,4 +6,4 @@ class FindOtpQuery {
         return otpModel;
     }
 }
-export default new FindOtpQuery();
+export default new FindOtpQuery().execute;

@@ -3,53 +3,40 @@ import bcrypt from 'bcrypt';
 import otpGenerator from 'otp-generator';
 import createError from 'http-errors';
 import UserRepository from '../repositories/UserRepository';
-import OtpRepository from '../repositories/OtpRepository';
-import { sendMail, otpTemplateMail } from '../utils/MailUtil';
+import OtpRepository from '@repositories/OtpRepository';
+import { otpTemplateMail } from '@utils/MailUtil';
+import FindUserByEmailOrUsernameQuery from '@queries/user/FindUserByEmailOrUsernameQuery';
+import FindUserQuery from '@queries/user/FindUserQuery';
+import MailService from '@services/MailService';
+import CreateOtpCommand from '../commands/otp/CreateOtpCommand';
+import FindOtpQuery from '../queries/otp/FindOtpQuery';
+import UpdateUserCommand from '../commands/user/UpdateUserCommand';
+import DeleteOtpCommand from '../commands/otp/DeleteOtpCommand';
 
 class AuthService {
     async register({ email, fullName, userName, password, association }) {
         // Tạo người dùng
-        const [user, created] = await UserRepository.findOrCreateUser({
-            email,
-            fullName,
-            userName,
-            password: await bcrypt.hash(password, 10),
-            association: association || '',
-        });
-
-        if (!created) {
+        const user = await FindUserQuery({ email, userName });
+        if (user) {
             throw createError.Conflict('Email or username already exists');
         }
+        const otpModel = await CreateOtpCommand(email);
 
-        // Tạo OTP
-        const otp = otpGenerator.generate(6, {
-            upperCaseAlphabets: false,
-            specialChars: false,
-            digits: true,
+        await MailService.sendMail({
+            template: otpTemplateMail,
+            title: 'OTP Mail',
+            content: `Your OTP is ${otpModel.otp}`,
+            email,
         });
-        await OtpRepository.createOtp({ email, otp });
 
-        // Gửi email OTP
-        // await sendMail(
-        //     otpTemplateMail,
-        //     'OTP Mail',
-        //     `Your OTP is ${otp}`,
-        //     email
-        // );
-
-        // Trả về kết quả
-        const { password: _, ...other } = user.dataValues;
+        const { password: _, ...other } = user;
         return {
-            mes: 'Registered successfully, Your OTP has been sent to email address. OTP will be expired in 5 minutes',
             user: { other },
         };
     }
 
     async verifyAccount({ email, otp }) {
-        const otpRecord = await OtpRepository.findByEmailAndOtp(email, otp);
-        if (!otpRecord) {
-            throw createError.BadRequest('OTP is not valid or expired');
-        }
+        const otpRecord = await FindOtpQuery({ email, otp });
 
         const createdAt = new Date(otpRecord.createdAt).getTime();
         const now = Date.now();
@@ -59,32 +46,49 @@ class AuthService {
         }
 
         // Cập nhật trạng thái xác thực người dùng
-        await UserRepository.updateUser({ isVertified: true }, { email });
+        await UpdateUserCommand({ isVerified: true }, { email });
 
         // Xóa OTP sau khi xác thực
-        await OtpRepository.deleteOtp(email, otp);
+        await DeleteOtpCommand({ email, otp });
 
-        return { mes: 'Verified successfully, now you can login' };
+        return true;
     }
 
     async login({ emailOrUsername, password }) {
-        const user = await UserRepository.findByEmailOrUsername(
-            emailOrUsername
+        const userInfo = await FindUserByEmailOrUsernameQuery(emailOrUsername);
+        const isValidPassword = await bcrypt.compare(
+            userInfo.password,
+            password
         );
-        if (!user) {
-            throw createError.NotFound(
-                'Account not found or not yet verified.'
-            );
-        }
+        if (!isValidPassword)
+            throw createHttpError.BadRequest('Password is incorrect');
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            throw createError.BadRequest('Password is incorrect');
-        }
-        const { password: _, ...other } = user.dataValues;
+        const { password: _, ...other } = userInfo.dataValues;
 
-        return { user: other };
+        const accessToken = await TokenService.generateAccessToken(user);
+        const refreshToken = await TokenService.generateRefreshToken(user);
+
+        return { user: other, accessToken, refreshToken };
+    }
+    async logout(user) {
+        if (!user) throw createError.Unauthorized('You have not logged in yet');
+        await TokenService.removeRefreshTokenFromRedis(user.id);
+    }
+    async loginSuccess(refreshToken) {
+        if (!refreshToken)
+            throw createError.Unauthorized("You're not authenticated");
+        const decoded = await TokenService.verifyToken(refreshToken);
+        const user = await FindUserQuery({ id: decoded.id });
+        const storedToken = await TokenService.getStoredRefreshToken(user.id);
+        if (storedToken !== refreshToken)
+            throw createError.Unauthorized('Refresh token is not valid');
+        const newAccessToken = TokenService.generateAccessToken(user);
+        const newRefreshToken = TokenService.generateRefreshToken(user);
+        return {
+            user,
+            refreshToken: newRefreshToken,
+            accessToken: newAccessToken,
+        };
     }
 }
-
 export default new AuthService();
